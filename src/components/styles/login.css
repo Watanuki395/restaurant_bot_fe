@@ -13,3 +13,20 @@
     border-radius: 10px;
     box-shadow: 0px 0px 10px 0px #0000;
 }
+
+.forgot {
+    color: #353131;
+    text-decoration: none;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -15px;
+}
+
+.register {
+    color: #353131;
+}
+
+.forgot:hover,
+.register:hover {
+    color: #000;
+}

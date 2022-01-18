@@ -1,0 +1,20 @@
+.form-text {
+    width: 100%;
+/*     margin-top: -10px; */
+}
+
+.btn {
+    width: 100%;
+    border-radius: 25px;
+}
+
+span.littleSpan {
+    font-size: 12px;
+    margin-bottom: 20px;
+    color: #a3a3a3;
+}
+
+span.haveAccount {
+    color: #a3a3a3;
+    font-size: 14px;
+}
