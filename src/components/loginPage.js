@@ -54,7 +54,7 @@ class LoginPage extends Component {
                 </div>
                 <span id="forgotPass" className="form-text"><Link to='forgotpass' className='forgot'>Olvidé mi contraseña</Link></span>
                 <div class="d-grid gap-2 py-3">
-                  <button className="btn btn-dark" type="sumit">Entrar</button>
+                  <button className="btn btn-dark btn-action" type="sumit">Entrar</button>
                 </div>
                 <div>
                   <p id="register" className="form-text text-center">No tengo una cuenta?   
