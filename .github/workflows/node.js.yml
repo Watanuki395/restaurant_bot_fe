@@ -37,8 +37,8 @@ jobs:
           restore-keys: '${{ runner.os }}-node-'
     - name: Install Dependencies
       run: npm ci
-    - name: Build FrontEnd
-      run: npm run build
+   # - name: Build FrontEnd
+   #   run: npm run build
     - name: Store Build Artifact
       uses: actions/upload-artifact@v2
       with:
