@@ -6,12 +6,12 @@ name: Node.js CI
 on:
   push:
     branches: 
-          - development
           - main
+          - development
   pull_request:
     branches: 
-          - development
           - main
+          - development
 
 jobs:
   build:
