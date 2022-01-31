@@ -14,25 +14,26 @@ class LoginPage extends Component {
     let password = event.target.password.value;
 
     const data = {
-      email, password
+      email,
+      password,
     };
 
     this.props.dispatch(loginUserAction(data));
-  }
+  };
 
   componentDidMount() {
-    document.title = 'React Login';
+    document.title = "React Login";
   }
 
   render() {
     let isSuccess, message;
 
-    if (this.props.response.login.hasOwnProperty('response')) {
+    if (this.props.response.login.hasOwnProperty("response")) {
       isSuccess = this.props.response.login.response.user.admin;
       message = this.props.response.login.response.user.business_nm;
-      
+
       if (isSuccess) {
-        setCookie('token', this.props.response.login.response.token, 1);
+        setCookie("token", this.props.response.login.response.token, 1);
       }
     }
 
@@ -41,24 +42,50 @@ class LoginPage extends Component {
         <section className="row justify-content-center">
           <section className="col-12 col-sm-6 col-md-3">
             <div>
-              {!isSuccess ? <div>{message}</div> : <Redirect to='dashboard' />}
+              {!isSuccess ? <div>{message}</div> : <Redirect to="dashboard" />}
               <form className="form-container" onSubmit={this.onHandleLogin}>
                 <div className="mb-3">
-                  <label htmlFor="email" className="form-label">Email</label>
-                  <input type="email" name="email" id="email" className="form-control"/>
-                  <div id="emailHelp" className="form-text">Nunca compartiremos tu correo con nadie más.</div>
+                  <label htmlFor="email" className="form-label">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    className="form-control"
+                  />
+                  <div id="emailHelp" className="form-text">
+                    Nunca compartiremos tu correo con nadie más.
+                  </div>
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="password" className="form-label">Password</label>
-                  <input type="password" name="password" id="password" className="form-control"/>
+                  <label htmlFor="password" className="form-label">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    className="form-control"
+                  />
                 </div>
-                <span id="forgotPass" className="form-text"><Link to='forgotpass' className='forgot'>Olvidé mi contraseña</Link></span>
+                <span id="forgotPass" className="form-text">
+                  <Link to="forgotpass" className="forgot">
+                    Olvidé mi contraseña
+                  </Link>
+                </span>
                 <div class="d-grid gap-2 py-3">
-                  <button className="btn btn-dark btn-action" type="sumit">Entrar</button>
+                  <button className="btn btn-dark btn-action" type="sumit">
+                    Entrar
+                  </button>
                 </div>
                 <div>
-                  <p id="register" className="form-text text-center">No tengo una cuenta?   
-                    <Link to='register' className="register"> Registrarme</Link>
+                  <p id="register" className="form-text text-center">
+                    No tengo una cuenta?
+                    <Link to="register" className="register">
+                      {" "}
+                      Registrarme
+                    </Link>
                   </p>
                 </div>
               </form>
