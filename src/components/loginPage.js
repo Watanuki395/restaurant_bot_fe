@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { loginUserAction } from '../actions/authenticationActions';
 import { setCookie } from '../utils/cookies';
-import style from './styles/login.css'
+//import style from './styles/login.css'
 
 class LoginPage extends Component {
   onHandleLogin = (event) => {
