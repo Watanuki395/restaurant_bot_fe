@@ -52,13 +52,13 @@ class LoginPage extends Component {
                   <label htmlFor="password" className="form-label">Password</label>
                   <input type="password" name="password" id="password" className="form-control"/>
                 </div>
-                <a id="forgotPass" class="form-text"><Link to='forgotpass'>Olvide mi contraseña</Link></a>
+                <span id="forgotPass" className="form-text"><Link to='forgotpass' className='forgot'>Olvidé mi contraseña</Link></span>
                 <div class="d-grid gap-2 py-3">
-                  <button className="btn btn-primary" type="sumit">Entrar</button>
+                  <button className="btn btn-dark" type="sumit">Entrar</button>
                 </div>
                 <div>
-                  <p id="register" classNames="form-text">No tengo una cuenta, 
-                    <Link to='register'> Registrarme</Link>
+                  <p id="register" className="form-text text-center">No tengo una cuenta?   
+                    <Link to='register' className="register"> Registrarme</Link>
                   </p>
                 </div>
               </form>
