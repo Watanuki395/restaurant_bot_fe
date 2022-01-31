@@ -11,18 +11,49 @@ import style from './styles/register.css'
 toast.configure();
 
 class RegisterPage extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {};
+    
+    
+  }
+
   onHandleRegistration = (event) => {
     event.preventDefault();
 
     let name = event.target.name.value;
+    let business_nm = event.target.business_nm.value;
     let email = event.target.email.value;
-    let password = event.target.password.value;
+    let password = event.target.password.value;//Agregar campo nombre de la empresa -> Revisa API
 
     const data = {
-      name, email, password
+      name, business_nm, email, password
     };
+    
+    if(data.name !== '' || data.business_nm !== '' || data.email !== '' || data.password !== ''){
+      
+      this.props.dispatch(registerUserAction(data));
+      
+      let isSuccess;
 
-    this.props.dispatch(registerUserAction(data));
+      if (!this.props.response.register.hasOwnProperty('response')) {
+
+        isSuccess = this.props.response.register.success;
+        console.log(this.props.response);
+        console.log(isSuccess);
+
+        this.props.history.push('/login');
+
+        if (isSuccess) {
+          
+        }
+    
+      }
+
+    }else {
+      toast.warning('Campos vacíos!', { position: toast.POSITION.TOP_RIGHT })
+    }
   }
 
   componentDidMount() {
@@ -30,13 +61,6 @@ class RegisterPage extends Component {
   }
 
   render() {
-    let message, isSuccess;
-
-    if (this.props.response.register.hasOwnProperty('response')) {
-      isSuccess = this.props.response.register.response.success;
-      message = this.props.response.register.response.message;
-    }
-    toast.success('Registrado!!', { position: toast.POSITION.BOTTOM_RIGHT });
     
     return (
       <div className='bg-register'>
@@ -45,7 +69,7 @@ class RegisterPage extends Component {
             <div className="col-12 col-sm-6 col-md-5">
               <div className='form-container-register'>
                 <h3 className='text-center mb-5'>Registro</h3>
-                {!isSuccess ? <div>{message}</div> : <Redirect to='login' />}
+                {/* {!isSuccess ? <div>{message}</div> : <Redirect to='login' />} */}
                 <form className="" onSubmit={this.onHandleRegistration}>
                   <div className='mb-3'>
                     <label htmlFor="name" className="form-label">Nombre completo</label>
@@ -54,7 +78,7 @@ class RegisterPage extends Component {
                   </div>
                   <div className='mb-3'>
                     <label htmlFor='businessName' className="form-label">Nombre del negocio</label>
-                    <input type="text" className='form-text form-control' name='businessName' id='businessName'/>
+                    <input type="text" className='form-text form-control' name='business_nm' id='business_nm'/>
                     <span className='littleSpan'>Confirmaremos que seas el dueño del negocio.</span>
                   </div>
                   <div className='mb-3'>
@@ -73,7 +97,7 @@ class RegisterPage extends Component {
                     mayúsculas, minúsculas y algún caracter especial.</span>
                   </div>
                   <div>
-                    <button type='submit' className="btn btn-primary btn-block">Register</button>
+                    <button type='submit' className="btn btn-dark btn-block">Register</button>
                   </div>
                 </form>
                   <span className='haveAccount'>Already have account? <Link to='login'>Login here</Link></span>
