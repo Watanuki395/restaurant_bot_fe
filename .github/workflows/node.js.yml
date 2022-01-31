@@ -35,11 +35,11 @@ jobs:
           path: '~/.npm'
           key: "${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}"
           restore-keys: '${{ runner.os }}-node-'
-    - name: Install dependencies
+    - name: Install Dependencies
       run: npm ci
-    - name: Build frontEnd
+    - name: Build FrontEnd
       run: npm run build
-    - name: Store build artifact
+    - name: Store Build Artifact
       uses: actions/upload-artifact@v2
       with:
           name: build-artifact
