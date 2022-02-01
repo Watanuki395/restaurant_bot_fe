@@ -2,7 +2,7 @@ import * as types from '../actions';
 
 const initialState = {
   user: [],
-  success: false
+  success: null
 }
 
 export default function(state = initialState, action) {
@@ -12,9 +12,9 @@ export default function(state = initialState, action) {
     case types.REGISTER_USER:
       return { ...state };
     case types.REGISTER_USER_SUCCESS:
-      return { ...state, success: true,response };
+      return { ...state, response, success: true };
     case types.REGISTER_USER_ERROR:
-      return { ...state, response };
+      return { ...state, response, success: false };
     default:
       return state;
   }

@@ -12,7 +12,6 @@ export function* registerSaga(payload) {
     yield [
       put({ type: types.REGISTER_USER_SUCCESS, response }),
       toast.success('Registrado!!', { position: toast.POSITION.TOP_RIGHT })
-
     ];
   } catch(error) {
     yield put({ type: types.REGISTER_USER_ERROR, error });
