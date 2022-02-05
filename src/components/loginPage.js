@@ -2,11 +2,19 @@ import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-//import { loginUserAction } from '../actions/loginActions';
-import { loginSaga } from '../sagas/loginSaga';
+import { loginUser } from '../actions/loginActions';
+//import { loginSaga } from '../sagas/loginSaga';
 import { setCookie } from '../utils/cookies';
+import './styles/login.css'
+
 
 class LoginPage extends Component {
+  constructor(props) {
+    super();
+    this.isSuccess = ''
+    this.message = ''
+  }
+
   onHandleLogin = (event) => {
     event.preventDefault();
 
@@ -17,31 +25,33 @@ class LoginPage extends Component {
       email, password
     };
 
-    this.props.dispatch(loginSaga(data));
+    this.props.dispatch(loginUser(data));
   }
 
   componentDidMount() {
     document.title = 'React Login';
   }
 
-  render() {
-    let isSuccess, message;
+  stateChange(state){
 
     if (this.props.response.login.hasOwnProperty('response')) {
-      isSuccess = this.props.response.login.response.user.admin;
-      message = this.props.response.login.response.user.business_nm;
+      this.isSuccess = this.props.response.login.response.user.admin;
+      this.message = this.props.response.login.response.user.business_nm;
       
-      if (isSuccess) {
+      if (this.isSuccess) {
         setCookie('token', this.props.response.login.response.token, 1);
       }
     }
+  }
 
+  render() {
+    
     return (
       <section className="container-fluid bg">
         <section className="row justify-content-center">
           <section className="col-12 col-sm-6 col-md-3">
             <div>
-              {!isSuccess ? <div>{message}</div> : <Redirect to='dashboard' />}
+              {!this.isSuccess ? <div>{this.message}</div> : <Redirect to='dashboard' />}
               <form className="form-container" onSubmit={this.onHandleLogin}>
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">Email</label>

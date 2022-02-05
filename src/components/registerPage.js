@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import './styles/register.css'
+;
+
 
 import { registerUserAction } from "../actions/registerAction";
-import { store } from '../store/configureStore'
 
 toast.configure();
 class RegisterPage extends Component {
