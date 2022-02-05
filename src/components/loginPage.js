@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { loginUserAction } from '../actions/authenticationActions';
+//import { loginUserAction } from '../actions/loginActions';
+import { loginSaga } from '../sagas/loginSaga';
 import { setCookie } from '../utils/cookies';
-import style from './styles/login.css'
 
 class LoginPage extends Component {
   onHandleLogin = (event) => {
@@ -17,7 +17,7 @@ class LoginPage extends Component {
       email, password
     };
 
-    this.props.dispatch(loginUserAction(data));
+    this.props.dispatch(loginSaga(data));
   }
 
   componentDidMount() {
@@ -57,7 +57,7 @@ class LoginPage extends Component {
                   <button className="btn btn-dark" type="sumit">Entrar</button>
                 </div>
                 <div>
-                  <p id="register" className="form-text text-center">No tengo una cuenta?   
+                  <p id="register" className="form-text text-center">No tengo una cuenta?    
                     <Link to='register' className="register"> Registrarme</Link>
                   </p>
                 </div>
