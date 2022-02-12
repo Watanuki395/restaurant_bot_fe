@@ -111,15 +111,15 @@ class RegisterPage extends Component {
         this.props.response.entries.register.success = null;
         toast.success("Registrado!!", { position: toast.POSITION.TOP_RIGHT });
         this.props.history.push("/login");
-      } else if(this.props.response.entries.register.response.error !== ''){
+      }else if(isSuccess === false || this.props.response.entries.register.response.error !== ''){
         this.props.response.entries.register.success = null;
-        toast.error("Ese correo electrónico ya está registrado.", {position: toast.POSITION.TOP_RIGHT});
+        if(isSuccess === true && this.props.response.entries.register.response.error === 'El usuario ya existe'){
+          toast.error("Ese correo electrónico ya está registrado!!", {position: toast.POSITION.TOP_RIGHT});
+        }else{
+          toast.error("No se pudo registrar!!", {position: toast.POSITION.TOP_RIGHT});
+        }
         this.props.history.push("/register");
-      }else {
-        this.props.response.entries.register.success = null;
-        toast.error("No se pudo registrar!!", {position: toast.POSITION.TOP_RIGHT});
-        this.props.history.push("/register");
-      } 
+      }  
     }
   }  
 
