@@ -1,21 +1,23 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import './styles/register.css'
-;
-
 
 import { registerUserAction } from "../actions/registerAction";
+
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./styles/register.css";
 
 toast.configure();
 class RegisterPage extends Component {
   constructor(props) {
-    super();
+    super(props);
+    this.state = {
+      success: false,
+    };
   }
 
- /*  validar_email( email ) 
+  /*  validar_email( email ) 
   {
       var regex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
       return regex.test(email) ? true : false;
@@ -36,8 +38,6 @@ class RegisterPage extends Component {
       password,
     };
 
-
-
     //#region validación form
     if (
       data.name.trim() !== "" &&
@@ -45,19 +45,16 @@ class RegisterPage extends Component {
       data.email.trim() !== "" &&
       data.password.trim() !== ""
     ) {
-
-        this.isValidated = true;
-        console.log("Pasé por avlidacion true");
-        console.log(this.isValidated);
-
-      
+      this.isValidated = true;
     } else {
-        //Crear helper para hacer la validación, llamar la función para validar los campos
+      //Crear helper para hacer la validación, llamar la función para validar los campos
       if (data.name.trim() === "") {
         document.getElementById("name").classList.add("is-invalid");
         this.isValidated = false;
       }
-      document.getElementById("name").addEventListener("click", function focus() {
+      document
+        .getElementById("name")
+        .addEventListener("click", function focus() {
           document.getElementById("name").classList.remove("is-invalid");
         });
 
@@ -65,7 +62,9 @@ class RegisterPage extends Component {
         document.getElementById("business_nm").classList.add("is-invalid");
         this.isValidated = false;
       }
-      document.getElementById("business_nm").addEventListener("click", function focus() {
+      document
+        .getElementById("business_nm")
+        .addEventListener("click", function focus() {
           document.getElementById("business_nm").classList.remove("is-invalid");
         });
 
@@ -73,37 +72,28 @@ class RegisterPage extends Component {
         document.getElementById("email").classList.add("is-invalid");
         this.isValidated = false;
       }
-      document.getElementById("email").addEventListener("click", function focus() {
+      document
+        .getElementById("email")
+        .addEventListener("click", function focus() {
           document.getElementById("email").classList.remove("is-invalid");
         });
       if (data.password.trim() === "") {
         document.getElementById("password").classList.add("is-invalid");
         this.isValidated = false;
       }
-      document.getElementById("password").addEventListener("click", function focus() {
+      document
+        .getElementById("password")
+        .addEventListener("click", function focus() {
           document.getElementById("password").classList.remove("is-invalid");
         });
-      toast.warning("Debes llenar todos los campos!!", {position: toast.POSITION.TOP_RIGHT,});
+      toast.warning("Debes llenar todos los campos!!", {
+        position: toast.POSITION.TOP_RIGHT,
+      });
     }
     //#endregion
 
     if (this.isValidated === true) {
-      const result = this.props.dispatch(registerUserAction(data));
-      console.log(result);
-
-      //Validación que viene de las Props para saber el resultado del registro
-      let isSuccess;
-      if (!this.props.response.register.hasOwnProperty("response")) {
-        isSuccess = this.props.response.register.success;
-        console.log(this.props.response.register.success + " - success");
-        if (isSuccess !== true) {//Aquí debe ser === true
-          toast.success("Registrado!!", { position: toast.POSITION.TOP_RIGHT });
-          this.props.history.push("/login");
-        } else {
-          toast.error("No se pudo registrar!!", {position: toast.POSITION.TOP_RIGHT});
-          this.props.history.push("/register");
-        }
-      }
+      this.props.dispatch(registerUserAction(data));
     }
   };
 
@@ -111,7 +101,31 @@ class RegisterPage extends Component {
     document.title = "React Login";
   }
 
+  componentDidUpdate() {
+    let isSuccess;
+    console.log(this.props.response.entries.register.success);
+    if (this.props.response.entries.register.success !== null) {
+      isSuccess = this.props.response.entries.register.success;
+      if (isSuccess === true && this.props.response.entries.register.response.error !== 'El usuario ya existe') {
+        isSuccess = null;
+        this.props.response.entries.register.success = null;
+        toast.success("Registrado!!", { position: toast.POSITION.TOP_RIGHT });
+        this.props.history.push("/login");
+      } else if(this.props.response.entries.register.response.error !== ''){
+        this.props.response.entries.register.success = null;
+        toast.error("Ese correo electrónico ya está registrado.", {position: toast.POSITION.TOP_RIGHT});
+        this.props.history.push("/register");
+      }else {
+        this.props.response.entries.register.success = null;
+        toast.error("No se pudo registrar!!", {position: toast.POSITION.TOP_RIGHT});
+        this.props.history.push("/register");
+      } 
+    }
+  }  
+
   render() {
+    
+
     return (
       <div className="bg-register">
         <div className="container ">
@@ -141,7 +155,6 @@ class RegisterPage extends Component {
                       className="form-text form-control"
                       name="business_nm"
                       id="business_nm"
-                      
                     />
                     <span className="littleSpan">
                       Confirmaremos que seas el dueño del negocio.
@@ -156,7 +169,6 @@ class RegisterPage extends Component {
                       className="form-text form-control"
                       name="email"
                       id="email"
-                      
                     />
                     <span className="littleSpan">
                       Nunca compartiremos tu correo con nadie más.
@@ -171,7 +183,6 @@ class RegisterPage extends Component {
                       className="form-text form-control"
                       name="password"
                       id="password"
-                      
                     />
                   </div>
                   <div className="mb-3">
@@ -183,7 +194,6 @@ class RegisterPage extends Component {
                       className="form-text form-control"
                       name="confirmPassword"
                       id="confirmPassword"
-                      
                     />
                     <span className="littleSpan">
                       La contraseña debe contener al menos 8 caracteres,
@@ -212,8 +222,7 @@ class RegisterPage extends Component {
 }
 
 const mapStateToProps = (response) => ({
-  response
+  response,
 });
-
 
 export default connect(mapStateToProps)(RegisterPage);

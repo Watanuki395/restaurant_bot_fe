@@ -2,7 +2,7 @@ import * as types from '../actions';
 
 const initialState = {
   user: [],
-  success: false,
+  success: null,
   isLoading: false
 } 
 
@@ -18,7 +18,7 @@ function registerReducer(state = initialState, action) {
         success: true, 
         isLoading: false };
     case types.REGISTER_USER_ERROR:
-      return { ...state, response, success: false };
+      return { ...state, response, success: false, isLoading: false };
     default:
       return state;
   }
