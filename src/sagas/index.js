@@ -1,6 +1,11 @@
-import { fork } from 'redux-saga/effects';
-import watchUserAuthentication from './watchers';
+import { all, fork } from 'redux-saga/effects';
 
-export default function* startForman() {
-  yield fork(watchUserAuthentication);
+import loginSaga from './loginSaga';
+import registerSaga from './registerSaga';
+
+export default function* rootSaga() {
+  yield all([
+    fork(loginSaga),
+    fork(registerSaga)
+  ]);
 }
