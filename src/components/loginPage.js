@@ -2,19 +2,11 @@ import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { loginUser } from '../actions/loginActions';
-//import { loginSaga } from '../sagas/loginSaga';
+import { loginUserAction } from '../actions/authenticationActions';
 import { setCookie } from '../utils/cookies';
-import './styles/login.css'
-
+import style from './styles/login.css'
 
 class LoginPage extends Component {
-  constructor(props) {
-    super();
-    this.isSuccess = ''
-    this.message = ''
-  }
-
   onHandleLogin = (event) => {
     event.preventDefault();
 
@@ -25,33 +17,31 @@ class LoginPage extends Component {
       email, password
     };
 
-    this.props.dispatch(loginUser(data));
+    this.props.dispatch(loginUserAction(data));
   }
 
   componentDidMount() {
     document.title = 'React Login';
   }
 
-  stateChange(state){
+  render() {
+    let isSuccess, message;
 
     if (this.props.response.login.hasOwnProperty('response')) {
-      this.isSuccess = this.props.response.login.response.user.admin;
-      this.message = this.props.response.login.response.user.business_nm;
+      isSuccess = this.props.response.login.response.user.admin;
+      message = this.props.response.login.response.user.business_nm;
       
-      if (this.isSuccess) {
+      if (isSuccess) {
         setCookie('token', this.props.response.login.response.token, 1);
       }
     }
-  }
 
-  render() {
-    
     return (
       <section className="container-fluid bg">
         <section className="row justify-content-center">
           <section className="col-12 col-sm-6 col-md-3">
             <div>
-              {!this.isSuccess ? <div>{this.message}</div> : <Redirect to='dashboard' />}
+              {!isSuccess ? <div>{message}</div> : <Redirect to='dashboard' />}
               <form className="form-container" onSubmit={this.onHandleLogin}>
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">Email</label>
@@ -67,7 +57,7 @@ class LoginPage extends Component {
                   <button className="btn btn-dark" type="sumit">Entrar</button>
                 </div>
                 <div>
-                  <p id="register" className="form-text text-center">No tengo una cuenta?    
+                  <p id="register" className="form-text text-center">No tengo una cuenta?   
                     <Link to='register' className="register"> Registrarme</Link>
                   </p>
                 </div>
