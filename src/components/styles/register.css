@@ -29,7 +29,8 @@ span.littleSpan {
     color: #6c757d;
 }
 
-span.haveAccount {
+span.haveAccount,
+span.haveAccount a {
     color: #353131;
     font-size: 14px;
 }
