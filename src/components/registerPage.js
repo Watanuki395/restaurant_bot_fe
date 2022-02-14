@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
 import { registerUserAction } from "../actions/registerAction";
+import { validateInputs } from '../helpers/validationRegisterHelper'
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -39,24 +40,16 @@ class RegisterPage extends Component {
     };
 
     //#region validación form
-    if (
-      data.name.trim() !== "" &&
-      data.business_nm.trim() !== "" &&
-      data.email.trim() !== "" &&
-      data.password.trim() !== ""
-    ) {
-      this.isValidated = true;
+    /* if (data.name.trim() !== "" &&data.business_nm.trim() !== "" &&data.email.trim() !== "" &&data.password.trim() !== "") {this.isValidated = true;
     } else {
       //Crear helper para hacer la validación, llamar la función para validar los campos
       if (data.name.trim() === "") {
         document.getElementById("name").classList.add("is-invalid");
         this.isValidated = false;
       }
-      document
-        .getElementById("name")
-        .addEventListener("click", function focus() {
+      document.getElementById("name").addEventListener("click", function focus() {
           document.getElementById("name").classList.remove("is-invalid");
-        });
+      });
 
       if (data.business_nm.trim() === "") {
         document.getElementById("business_nm").classList.add("is-invalid");
@@ -89,10 +82,11 @@ class RegisterPage extends Component {
       toast.warning("Debes llenar todos los campos!!", {
         position: toast.POSITION.TOP_RIGHT,
       });
-    }
+    } */
     //#endregion
+    console.log(validateInputs(data.name));
 
-    if (this.isValidated === true) {
+    if (validateInputs(data.name, data.business_nm, data.email, data.password) === true) {
       this.props.dispatch(registerUserAction(data));
     }
   };
