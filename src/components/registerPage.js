@@ -31,12 +31,15 @@ class RegisterPage extends Component {
     let business_nm = event.target.business_nm.value;
     let email = event.target.email.value;
     let password = event.target.password.value;
+    let password2 = event.target.password2.value;
+
 
     const data = {
       name,
       business_nm,
       email,
       password,
+      password2
     };
 
     //#region validación form
@@ -119,7 +122,6 @@ class RegisterPage extends Component {
 
   render() {
     
-
     return (
       <div className="bg-register">
         <div className="container ">
@@ -180,14 +182,14 @@ class RegisterPage extends Component {
                     />
                   </div>
                   <div className="mb-3">
-                    <label htmlFor="confirmPassword" className="form-label">
+                    <label htmlFor="password2" className="form-label">
                       Confirmar Contraseña
                     </label>
                     <input
                       type="password"
                       className="form-text form-control"
-                      name="confirmPassword"
-                      id="confirmPassword"
+                      name="password2"
+                      id="password2"
                     />
                     <span className="littleSpan">
                       La contraseña debe contener al menos 8 caracteres,
