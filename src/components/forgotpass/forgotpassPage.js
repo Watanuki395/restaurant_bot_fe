@@ -1,21 +1,32 @@
-import React, { Component } from "react";
-import { Link, Redirect } from "react-router-dom";
+import React, { Component, useState } from "react";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { forgotPassRequest } from "../actions/forgotpassAction";
-import './styles/forgotpass.css'
+import { forgotPassRequest } from "../../actions/forgotpassAction";
+import './forgotpass.css'
 
+// const dispatch = useDispatch()
+// useEffect(()=>{
+//   dispatch(forgotPassRequest(data))
+// },[])
 class ForgotPassPage extends Component {
+  constructor(props) {
+    super(props);
+  }
+  state = {
+    isSuccess:'',
+    isFetching:''
+  }
 
   onHandleSubmit = (event) => {
+    const { dispatch } = this.props
     event.preventDefault();
     let email = event.target.email.value;
 
     const data = {
       email,
     };
-
-    this.props.dispatch(forgotPassRequest(data));
+    dispatch(forgotPassRequest(data))
   };
 
   componentDidMount() {
@@ -25,6 +36,7 @@ class ForgotPassPage extends Component {
   render() {
 
     return (
+      this.state.isSuccess? <div>pronto le enviaremos un correo</div>:
       <div className="container-fluid bg">
         <div className="row justify-content-center">
           <div className="col-12 col-sm-6 col-md-5">
@@ -53,7 +65,7 @@ class ForgotPassPage extends Component {
                     type="submit"
                     className="btn btn-dark btn-block btn-action"
                   >
-                    Register
+                    Recuperar contraseña
                   </button>
                 </div>
                 <span className="tx">

@@ -9,8 +9,8 @@ import {
 import PrivateRoute from './privateRoute';
 import LoginPage from '../components/loginPage';
 import RegisterPage from '../components/registerPage';
-import DashboardPage from '../components/dashboardPage';
-import ForgotPassPage from '../components/forgotpassPage';
+import DashboardPage from '../components/dashboard/dashboardPage';
+import ForgotPassPage from '../components/forgotpass/forgotpassPage';
 
 class App extends Component {
   render() {
