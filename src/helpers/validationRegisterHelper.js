@@ -1,9 +1,8 @@
 
-const validateInputs = (name, business_nm, email, password) => {
+const validateInputs = (name, business_nm, email, password, password2) => {
     if (name !== "" && business_nm !== "" && email !== "" && password !== "") {
         this.isValidated = true;
     } else {
-      //Crear helper para hacer la validación, llamar la función para validar los campos
       if (name === "") {
         document.getElementById("name").classList.add("is-invalid");
         this.isValidated = false;
@@ -40,18 +39,31 @@ const validateInputs = (name, business_nm, email, password) => {
         .addEventListener("click", function focus() {
           document.getElementById("password").classList.remove("is-invalid");
         });
+      if (password2 === "") {
+        document.getElementById("password2").classList.add("is-invalid");
+        this.isValidated = false;
+      }
+      document
+        .getElementById("password2")
+        .addEventListener("click", function focus() {
+          document.getElementById("password2").classList.remove("is-invalid");
+        });
     }
     return this.isValidated;
 }
 
-module.exports = { validateInputs }
+const validatePasswords = (password, password2) => {
+  if (password !== password2) {
+    document.getElementById("password2").classList.add("is-invalid");
+    return false;
+  } else {
 
-/* if (data.name.trim() !== "" &&data.business_nm.trim() !== "" &&data.email.trim() !== "" &&data.password.trim() !== "") {this.isValidated = true;
-    } else {
-      
-      
-      
-      toast.warning("Debes llenar todos los campos!!", {
-        position: toast.POSITION.TOP_RIGHT,
-      });
-    } */
+    document.getElementById("password2").addEventListener("click", function focus() {
+      document.getElementById("password2").classList.remove("is-invalid");
+    });
+
+    return true;
+  }
+}
+
+module.exports = { validateInputs, validatePasswords }

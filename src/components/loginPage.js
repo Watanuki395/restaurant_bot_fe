@@ -4,7 +4,11 @@ import { connect } from 'react-redux';
 
 import { loginUser } from '../actions/loginActions';
 //import { loginSaga } from '../sagas/loginSaga';
+import { validateLogin } from '../helpers/validationLoginHelper'
 import { setCookie } from '../utils/cookies';
+
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import './styles/login.css'
 
 
@@ -25,7 +29,28 @@ class LoginPage extends Component {
       email, password
     };
 
-    this.props.dispatch(loginUser(data));
+    if(validateLogin(data.email, data.password)){
+      this.props.dispatch(loginUser(data));
+    }else{
+      toast.warning("Debes llenar todos los campos!!", { position: toast.POSITION.TOP_RIGHT });
+    }
+  }
+
+  componentDidUpdate(){
+    let response = this.props.response.entries.login;
+
+    if(response.success !== null){
+      if(response.success === true){
+        console.log(response.success );
+        response.success = null;
+        this.props.history.push("/dashboard");
+        toast.success("Bienvenido: ", { position: toast.POSITION.TOP_RIGHT })
+      }else{
+        response.success = null;
+        toast.error("Error", { position: toast.POSITION.TOP_RIGHT })
+        this.props.history.push("/login");
+      }
+    }
   }
 
   componentDidMount() {
