@@ -5,10 +5,6 @@ import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 
 import { registerUserAction } from "../actions/registerAction";
-import {
-  validateInputs,
-  validatePasswords,
-} from "../helpers/validationRegisterHelper";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
