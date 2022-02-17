@@ -42,10 +42,9 @@ class LoginPage extends Component {
 
     if(response.success !== null){
       if(response.success === true){
-        console.log(response.success );
-        response.success = null;
+        toast.success("Bienvenido: "+response.response.user.name, { position: toast.POSITION.TOP_RIGHT })
         this.props.history.push("/dashboard");
-        toast.success("Bienvenido: ", { position: toast.POSITION.TOP_RIGHT })
+        response.success = null;
       }else{
         response.success = null;
         toast.error("Error", { position: toast.POSITION.TOP_RIGHT })
@@ -90,6 +89,7 @@ class LoginPage extends Component {
         }}
         validationSchema={this.formSchema}
         onSubmit={(values) => this.props.dispatch(loginUser(values))}
+        //onSubmit={(values) => console.log(values)}
       >
         <Form>
         <section className="container-fluid bg">
