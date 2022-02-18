@@ -4,13 +4,15 @@ import {
   LOGIN_USER_ERROR
 } from '../actions';
 
+
 const initialState = {
   logged: null,
   success: null,
   error: false
 }
 
-export default function(state = initialState, action) {
+export default function(state = [initialState], action) {
+
   const response = action.response;
 
   switch(action.type) {
@@ -23,4 +25,4 @@ export default function(state = initialState, action) {
     default:
       return state;
   }
-};
+}

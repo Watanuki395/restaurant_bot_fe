@@ -22,10 +22,17 @@
     margin-top: -15px;
 }
 
+.tx{
+    color: #2c343f;
+    font-size: small;
+}
 .register {
-    color: #2e2a2a;
+    color: #2c343f;
 }
 
+.haveAccount{
+    color: #353131;
+}
 .forgot:hover,
 .register:hover {
     color: #000;
