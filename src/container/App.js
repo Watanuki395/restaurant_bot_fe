@@ -10,7 +10,7 @@ import PrivateRoute from './privateRoute';
 import LoginPage from '../components/loginPage';
 import RegisterPage from '../components/registerPage';
 import DashboardPage from '../components/dashboard/dashboardPage';
-import ForgotPassPage from '../components/forgotpass/forgotpassPage';
+import ForgotPassPage from '../components/forgotpass/ForgotpassPage';
 
 class App extends Component {
   render() {

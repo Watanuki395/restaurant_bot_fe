@@ -6,10 +6,11 @@ import {
   
   const initialState = {
     isFetching: false,
-    error: false
+    error: false,
+    success: false,
   }
 
-  export default function (state = [], action) {
+  export default function (state = [initialState], action) {
     const response = action.response;
   
     switch(action.type) {
@@ -17,6 +18,7 @@ import {
         return { 
           ...state,
           isFetching: true, 
+          success: false,
           response };
       case FORGOT_PASS_SUCCESS:
         return { 
