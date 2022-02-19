@@ -1,4 +1,5 @@
-import { all, fork } from 'redux-saga/effects';
+import { fork } from 'redux-saga/effects';
+import watchUserAuthentication from './watchers';
 
 import loginSaga from './loginSaga';
 import registerSaga from './registerSaga';

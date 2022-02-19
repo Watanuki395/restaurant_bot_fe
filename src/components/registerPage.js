@@ -8,15 +8,15 @@ import { registerUserAction } from "../actions/registerAction";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./styles/register.css";
+import style from "./styles/register.css";
+
+import { registerUserAction } from "../actions/authenticationActions";
 
 toast.configure();
 class RegisterPage extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      success: false,
-    };
+    this.state = {};
   }
 
   componentDidMount() {

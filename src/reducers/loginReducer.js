@@ -1,8 +1,4 @@
-import {
-  LOGIN_USER,
-  LOGIN_USER_SUCCESS, 
-  LOGIN_USER_ERROR
-} from '../actions';
+import * as types from '../actions';
 
 
 const initialState = {

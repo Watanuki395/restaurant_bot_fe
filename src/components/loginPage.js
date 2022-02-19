@@ -4,14 +4,12 @@ import { connect } from 'react-redux';
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 
-import { loginUser } from '../actions/loginActions';
-//import { loginSaga } from '../sagas/loginSaga';
+import { loginUserAction } from '../actions/authenticationActions';
 import { setCookie } from '../utils/cookies';
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import './styles/login.css'
-
 
 class LoginPage extends Component {
   constructor(props) {
@@ -57,17 +55,17 @@ class LoginPage extends Component {
     document.title = 'React Login';
   }
 
-  stateChange(state){
+  render() {
+    let isSuccess, message;
 
     if (this.props.response.login.hasOwnProperty('response')) {
-      this.isSuccess = this.props.response.login.response.user.admin;
-      this.message = this.props.response.login.response.user.business_nm;
+      isSuccess = this.props.response.login.response.user.admin;
+      message = this.props.response.login.response.user.business_nm;
       
-      if (this.isSuccess) {
+      if (isSuccess) {
         setCookie('token', this.props.response.login.response.token, 1);
       }
     }
-  }
 
   formSchema = Yup.object().shape({
     email: Yup.string()
