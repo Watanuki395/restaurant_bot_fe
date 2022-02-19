@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
-class DashboardPage extends Component {
-  render() {
+function DashboardPage(){
+
     return (
       <div>
-        Dashboard
+        Super DashBoard
       </div>
     );
-  }
+
 }
 
 export default DashboardPage;
