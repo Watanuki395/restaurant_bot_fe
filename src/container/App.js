@@ -22,7 +22,7 @@ class App extends Component {
             <Route path='/login' component={LoginPage} />
             <Route path='/register' component={RegisterPage} />
             <Route path='/forgotpass' component={ForgotPassPage} />
-            <PrivateRoute path='/dashboard' component={DashboardPage} />
+            <Route path='/dashboard' component={DashboardPage} />
           </Switch>
         </div>
       </BrowserRouter>
@@ -31,3 +31,6 @@ class App extends Component {
 }
 
 export default App;
+
+
+/// <PrivateRoute path='/dashboard' component={DashboardPage} />
