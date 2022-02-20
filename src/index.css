@@ -12,3 +12,36 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+
+
+.bg{
+  background: linear-gradient(to bottom, rgba(68, 73, 78, 0.63), rgba(62, 63, 90, 0.596)), url('./imgs/bar.jpg') no-repeat;
+  width: 100%;
+  height: 100vh;
+  background-size: 100%;
+}
+
+.form-container{
+  background: rgba(204, 198, 198, 0.884);
+  padding: 30px;
+  margin-top: 200px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 0px #0000;
+}
+
+span.littleSpan {
+  font-size: 12px;
+  margin-bottom: 20px;
+  color: #6c757d;
+}
+
+span.haveAccount,
+span.haveAccount a {
+  color: #353131;
+  font-size: 14px;
+}
+
+.btn:hover{
+  background-color: rgba(172, 106, 20, 0.76);
+}

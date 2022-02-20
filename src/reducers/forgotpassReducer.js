@@ -10,7 +10,7 @@ import {
     success: false,
   }
 
-  export default function (state = [initialState], action) {
+  export default function (state = [], action) {
     const response = action.response;
   
     switch(action.type) {

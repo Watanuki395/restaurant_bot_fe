@@ -7,8 +7,11 @@ import {
 //import bootstrap from 'bootstrap'
 
 import PrivateRoute from './privateRoute';
-import LoginPage from '../components/loginPage';
-import RegisterPage from '../components/registerPage';
+
+//import Navbar from '../components/common/Layout/Navbar';
+
+import LoginPage from '../components/auth/loginPage';
+import RegisterPage from '../components/auth/registerPage';
 import DashboardPage from '../components/dashboard/dashboardPage';
 import ForgotPassPage from '../components/forgotpass/ForgotpassPage';
 
@@ -17,6 +20,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div>
+        
           <Switch>
             <Route path='/' exact={true} component={LoginPage} />
             <Route path='/login' component={LoginPage} />
