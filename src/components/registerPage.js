@@ -1,6 +1,6 @@
-import React, { Component, Fragment } from "react";
-import { Link } from "react-router-dom";
-import { connect } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { connect, useDispatch } from "react-redux";
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 
@@ -11,90 +11,85 @@ import "react-toastify/dist/ReactToastify.css";
 import "./styles/register.css";
 
 toast.configure();
-class RegisterPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      success: false,
-    };
-  }
+function RegisterPage(props) {
+  const dispatch = useDispatch();
+  const history = useHistory();
 
-  componentDidMount() {
-    document.title = "React Login";
-  }
+  const [isReseted, setReseted] = useState(false);
+  const [count, setCount] = useState(0);
 
-  componentDidUpdate() {
-    let isSuccess;
-    let response = this.props.response.entries.register;
-
-    if (response.success !== null) {
-      isSuccess = response.success;
-      if (isSuccess === true && !response.response.error) {
-        isSuccess = null;
-        response.success = null;
-        toast.success("Registrado!!", { position: toast.POSITION.TOP_RIGHT });
-        this.props.history.push("/login");
-      } else if (isSuccess === false || response.response.error !== "") {
-        response.success = null;
-        if (isSuccess === true && response.response.error) {
-          toast.error("Ese correo electrónico ya está registrado!!", {
-            position: toast.POSITION.TOP_RIGHT,
-          });
-        } else {
-          toast.error("No se pudo registrar!!", {
-            position: toast.POSITION.TOP_RIGHT,
-          });
-        }
-        this.props.history.push("/register");
-      }
-    }
-  }
-
-  formSchema = Yup.object().shape({
+  const formSchema = Yup.object().shape({
     email: Yup.string()
       .required("Campo Requerido")
       .email("Correo Electrónico Inválido")
       .max(255, `Máximo 255 caracteres`),
-      name: Yup.string()
+    name: Yup.string()
       .min(5, `Mínimo 5 caracteres`)
       .max(25, `Máximo 25 caracteres`)
       .required("Campo Requerido"),
-      business_nm: Yup.string()
+    business_nm: Yup.string()
       .min(5, `Mínimo 5 caracteres`)
       .max(25, `Máximo 25 caracteres`)
       .required("Campo Requerido"),
-      password: Yup.string()
+    password: Yup.string()
       .required("Campo Requerido")
       .min(8, `Mínimo 8 caracteres`),
-      password2: Yup.string()
+    password2: Yup.string()
       .required("Campo Requerido")
       .min(8, `Mínimo  8 caracteres`)
-     .oneOf([Yup.ref('password'), null], 'Las contraseñas deben ser iguales'),
+      .oneOf([Yup.ref("password"), null], "Las contraseñas deben ser iguales"),
   });
 
-  render() {
-    return (
-      <>
-        <Formik
-          initialValues={{
-            name: "",
-            business_nm: "",
-            email: "",
-            password: "",
-            password2: "",
-          }}
-          validationSchema={this.formSchema}
-          //onSubmit={(values) => console.log(values)}
-          onSubmit={(values) => this.props.dispatch(registerUserAction(values))}
-        >
-          <Form >
+  async function onHandleSubmit(data) {
+    await sleep(1000);
+    setReseted(true);
+    let resp = dispatch(registerUserAction(data));
+    return resp;
+  }
+
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  useEffect(() => {
+    let isSuccess = props.response.entries.register.response;
+    if (isReseted && isSuccess) {
+      const error = isSuccess.error ? isSuccess.error : false;
+      setReseted(false);
+      setCount(count + 1);
+      if (!error) {
+        toast.success("Registrado!!", { position: toast.POSITION.TOP_RIGHT });
+        setTimeout(() => {
+          history.push("/login");
+        }, 1000);
+      } else {
+        toast.error(error, { position: toast.POSITION.TOP_RIGHT });
+        setCount(count - 1);
+      }
+    }
+  }, [props.response.entries.register]);
+
+  return (
+    <>
+      <Formik
+        initialValues={{
+          name: "",
+          business_nm: "",
+          email: "",
+          password: "",
+          password2: "",
+        }}
+        validationSchema={formSchema}
+        //onSubmit={(values) => console.log(values)}
+        onSubmit={(values) => onHandleSubmit(values)}
+      >
+        {({ errors, touched, isSubmitting }) => (
+          <Form>
             <div className="bg-register">
               <div className="container ">
                 <div className="row justify-content-center">
                   <div className="col-12 col-sm-6 col-md-5">
                     <div className="form-container-register">
                       <h3 className="text-center mb-5">Registro</h3>
-                      <  >
+                      <>
                         <div className="mb-3">
                           <label htmlFor="name" className="form-label">
                             Nombre completo
@@ -200,7 +195,11 @@ class RegisterPage extends Component {
                           <button
                             type="submit"
                             className="btn btn-dark btn-block mb-2"
+                            disabled={count > 0 ? true : false || isSubmitting}
                           >
+                            {isSubmitting && (
+                              <span className="spinner-border spinner-border-sm mr-1"></span>
+                            )}
                             Registrarse
                           </button>
                         </div>
@@ -215,10 +214,10 @@ class RegisterPage extends Component {
               </div>
             </div>
           </Form>
-        </Formik>
-      </>
-    );
-  }
+        )}
+      </Formik>
+    </>
+  );
 }
 
 const mapStateToProps = (response) => ({
