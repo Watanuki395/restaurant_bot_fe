@@ -4,11 +4,13 @@ import {
   Route,
   Switch
 } from 'react-router-dom';
-//import bootstrap from 'bootstrap'
 
 import PrivateRoute from './privateRoute';
-import LoginPage from '../components/loginPage';
-import RegisterPage from '../components/registerPage';
+
+import Footer from '../components/common/Layout/Footer';
+
+import loginPage from '../components/loginPage';
+import registerPage from '../components/registerPage';
 import DashboardPage from '../components/dashboard/dashboardPage';
 import ForgotPassPage from '../components/forgotpass/ForgotpassPage';
 
@@ -18,12 +20,13 @@ class App extends Component {
       <BrowserRouter>
         <div>
           <Switch>
-            <Route path='/' exact={true} component={LoginPage} />
-            <Route path='/login' component={LoginPage} />
-            <Route path='/register' component={RegisterPage} />
+            <Route path='/' exact={true} component={loginPage} />
+            <Route path='/login' component={loginPage} />
+            <Route path='/register' component={registerPage} />
             <Route path='/forgotpass' component={ForgotPassPage} />
             <Route path='/dashboard' component={DashboardPage} />
           </Switch>
+          <Footer/>
         </div>
       </BrowserRouter>
     );

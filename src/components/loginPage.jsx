@@ -64,7 +64,6 @@ function LoginPage(props) {
           password: "",
         }}
         validationSchema={formSchema}
-        //onSubmit={(values) => dispatch(loginUser(values))}
         onSubmit={(values) => onHandleSubmit(values)}
       >{({ errors, touched, isSubmitting }) => (
         <Form>
