@@ -78,7 +78,6 @@ function RegisterPage(props) {
           password2: "",
         }}
         validationSchema={formSchema}
-        //onSubmit={(values) => console.log(values)}
         onSubmit={(values) => onHandleSubmit(values)}
       >
         {({ errors, touched, isSubmitting }) => (
