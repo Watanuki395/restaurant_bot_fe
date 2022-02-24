@@ -9,6 +9,7 @@ import {
 import PrivateRoute from './privateRoute';
 
 import Navbar from '../components/common/Layout/Navbar';
+import Footer from '../components/common/Layout/Footer';
 import Sidebar from '../components/common/SideBar';
 
 import LoginPage from '../components/auth/loginPage';
@@ -36,6 +37,7 @@ const App = () =>{
             <Route path='/forgotpass' component={ForgotPassPage} />
             <Route path='/dashboard' component={DashboardPage} />
           </Switch>
+        <Footer></Footer>
         </div>
       </BrowserRouter>
     );

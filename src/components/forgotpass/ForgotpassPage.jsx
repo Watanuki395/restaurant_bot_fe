@@ -69,7 +69,7 @@ function ForgotPassPage (props){
         onSubmit={(values) => onHandleSubmit(values)}
       >{({ errors, touched, isSubmitting }) => (
         <Form >
-          <div className="container-fluid bg">
+          <div className="container-fluid bg vh100">
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-12 col-sm-6 col-md-5">

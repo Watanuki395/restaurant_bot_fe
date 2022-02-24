@@ -68,7 +68,7 @@ function LoginPage(props) {
       >
         {({ errors, touched, isSuccess, message }) => (
           <Form>
-            <section className="container-fluid bg">
+            <section className="container-fluid bg vh100">
               <section className="row justify-content-center">
                 <section className="col-12 col-sm-6 col-md-3">
                   <div>
