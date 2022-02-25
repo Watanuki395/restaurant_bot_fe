@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, Redirect, useHistory } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
+import Footer from "../common/Layout/footer/Footer"
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 
@@ -149,6 +150,7 @@ function LoginPage(props) {
           </Form>
         )}
       </Formik>
+      <Footer></Footer>
     </>
   );
 }

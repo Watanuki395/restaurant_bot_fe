@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Footer from "../common/Layout/footer/Footer";
 
 
 
@@ -119,6 +120,7 @@ function ForgotPassPage (props){
         </Form>
         )}
       </Formik>
+      <Footer></Footer>
     </>
     );
   }

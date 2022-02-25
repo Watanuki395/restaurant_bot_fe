@@ -34,7 +34,7 @@ const Navbar = ({toggle}) => {
       <>
         <Nav>
           <NavLink to="/" >
-            <img src={require('../../../imgs/logo2.png')}/>
+            <img src={require('../../../imgs/logo2.png')} alt=""/>
           </NavLink>
           <Bars onClick={toggle}/>
           <NavMenu>
