@@ -26,10 +26,18 @@ export const FooterAbout = styled.section`
 
 export const FooterAboutUs = styled.p`
   font-size: 20px;
+  margin: 0 15px;
+  @media (min-width: 768px) {
+    margin: 0;
+  }
 `;
 
 export const FooterInfoAbout = styled.p`
   color: white;
+  margin: 10px 15px;
+  @media (min-width: 768px) {
+    margin: 0;
+  }
 `;
 
 export const FooterSocialMedias = styled.section`

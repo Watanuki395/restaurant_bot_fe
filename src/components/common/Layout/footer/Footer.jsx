@@ -1,6 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { connect, useDispatch } from 'react-redux';
+import { FaFacebookF, FaInstagram, FaYoutube, FaWhatsapp } from 'react-icons/fa';
 
 import { FooterAbout, 
     FooterContainer, 
@@ -26,10 +25,10 @@ const Footer = (props) => {
                     </FooterInfoAbout>
                 </FooterAbout>
                 <FooterSocialMedias>
-                    <FooterLinks>F</FooterLinks>
-                    <FooterLinks>I</FooterLinks>
-                    <FooterLinks>Y</FooterLinks>
-                    <FooterLinks>T</FooterLinks>
+                    <FooterLinks><FaFacebookF /></FooterLinks>
+                    <FooterLinks><FaInstagram /></FooterLinks>
+                    <FooterLinks><FaYoutube /></FooterLinks>
+                    <FooterLinks><FaWhatsapp /></FooterLinks>
                 </FooterSocialMedias>
             </FooterContainer>
             <FooterCopyRight>Derechos Reservados</FooterCopyRight>
