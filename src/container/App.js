@@ -9,7 +9,7 @@ import {
 import PrivateRoute from './privateRoute';
 
 import Navbar from '../components/common/Layout/Navbar';
-import Sidebar from '../components/common/SideBar';
+import Sidebar from '../components/common/SideBar/SideBar';
 
 import LoginPage from '../components/auth/loginPage';
 import RegisterPage from '../components/auth/registerPage';

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 //import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
@@ -9,35 +9,31 @@ import {
   NavMenu,
   NavBtn,
   NavBtnLink,
-  Bars
+  Bars,
+  NavIcon
 }from './style'
 
-const Navbar = ({toggle}) => {
+const Navbar = (props) => {
+  
+ // const isLogged = useSelector(state => state.entries.auth.logged)
   
   const dispatch = useDispatch();
   const history = useHistory();
 
-  function onLogoutClick(e) {
-    //e.preventDefault();
-    //this.props.clearCurrentProfile();
-    //this.props.logoutUser();
+  function onLogoutClick() {
+    dispatch(logoutUser());
+    history.push("/login");
   }
 
-
-    const logged = true
-    const response  = true //props.response.entries.auth;
-
-    //this.isAuthenticated = true
-
- 
+  if(!props.logged){
     return (
       <>
         <Nav>
           <NavLink to="/" >
-            <img src={require('../../../imgs/logo2.png')} alt=""/>
+            <NavIcon/>QR Bot
           </NavLink>
-          <Bars onClick={toggle}/>
-          <NavMenu>
+          <Bars onClick={props.toggle}/>
+            <NavMenu>
             <NavLink to="/info">
               Información
             </NavLink>
@@ -51,22 +47,53 @@ const Navbar = ({toggle}) => {
               Iniciar Sesion
             </NavBtnLink>
           </NavMenu>
-          {/*<NavBtn>
-            <NavBtnLink to="/login"> Iniciar Sesion</NavBtnLink>
-          </NavBtn>*/}
         </Nav>
       </>
     );
+  }
+  if(props.logged){
+    return (
+      <>
+        <Nav>
+          <NavLink to="/" >
+            <NavIcon/>QR Bot
+          </NavLink>
+          <Bars onClick={props.toggle}/>
+            <NavMenu>
+            <NavLink to="/user">
+              Usurio
+            </NavLink>
+            <NavLink to="/product">
+              Producto
+            </NavLink>
+            <NavLink to="/reports">
+              Reportes
+            </NavLink>
+            <NavLink to="/support"> 
+              Soporte
+            </NavLink>
+            <button className='nav-link active' onClick={onLogoutClick}>
+                      Salir
+            </button>
+          </NavMenu>
+        </Nav>
+      </>
+    );
+  }
+    
 }
 
-// Navbar.propTypes = {
-//   logoutUser: PropTypes.func.isRequired,
-//   auth: PropTypes.object.isRequired
-// };
+const mapStateToProps = (state,ownProps) => { 
+  const IsLogged = state.entries.auth
+  ? state.entries.auth.logged
+  : false;
+  const isToggle = ownProps.toggle ? ownProps.toggle : false
+  return {
+    logged: IsLogged,
+    toggle: isToggle
+  }
+};
 
-const mapStateToProps = state => ({
-  auth: state.auth
-});
 
 export default connect(mapStateToProps, { logoutUser })(
   Navbar

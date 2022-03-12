@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { NavLink as Link } from "react-router-dom";
 import {FaBars} from 'react-icons/fa'
+import {BiRestaurant} from 'react-icons/bi';
 
 export const Nav = styled.nav`
     background:#000;
@@ -9,6 +10,8 @@ export const Nav = styled.nav`
     justify-content:space-between;
     padding: 0.5rem calc((100vw - 1000px) / 2);
     z-index:10;
+    position:sticky;
+    top:0;
 `;
 
 export const NavLink = styled(Link)`
@@ -44,7 +47,6 @@ export const NavMenu = styled.div`
     display: flex;
     align-items: center;
     //margin-right: -24px;
-
     margin-right: 24px;
 
     @media screen and (max-width: 768px){
@@ -80,5 +82,16 @@ export const NavBtnLink = styled(Link)`
         background: #fff;
         color: #010606;
     }
+`;
+
+export const NavIcon = styled(BiRestaurant)`
+margin-right: .8rem;
+transition: all .5s ease;
+font-weight: bold;
+font-size:25px;
+
+&:hover {
+    transform: scale(2);
+}
 `;
 

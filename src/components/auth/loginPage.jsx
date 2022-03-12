@@ -43,7 +43,7 @@ function LoginPage(props) {
       : null;
 
     if (isSuccess) {
-      setCookie("token", props.response.entries.auth.tokenSession, 1);
+      setCookie("tokenSession", props.response.entries.auth.tokenSession, 1);
       setLogged(true);
       toast.success(
         "Bienvenido: " + props.response.entries.auth.response.user.name,

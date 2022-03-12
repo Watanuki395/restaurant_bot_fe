@@ -17,14 +17,9 @@ function* loginSaga(payload) {
     yield put({type: LOGIN_USER_ERROR})
   }
 }
-function* logOutSaga(payload) {
+function* logOutSaga() {
   try {
-    const response = yield call(loginUserService, payload);
-    if(response.user){
-      yield [put({type: LOGIN_USER_SUCCESS, response})];
-    }else{
-      yield [put({type: LOGIN_USER_ERROR, response})]
-    }
+    localStorage.removeItem("tokenSession")
   } catch(error) {
     yield put({type: LOGIN_USER_ERROR})
   }
