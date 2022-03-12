@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, Redirect, useHistory } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
+import Footer from "../common/Layout/footer/Footer"
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 
@@ -68,7 +69,7 @@ function LoginPage(props) {
       >
         {({ errors, touched, isSuccess, message }) => (
           <Form>
-            <section className="container-fluid bg">
+            <section className="container-fluid bg vh100">
               <section className="row justify-content-center">
                 <section className="col-12 col-sm-6 col-md-3">
                   <div>
@@ -149,6 +150,7 @@ function LoginPage(props) {
           </Form>
         )}
       </Formik>
+      <Footer></Footer>
     </>
   );
 }

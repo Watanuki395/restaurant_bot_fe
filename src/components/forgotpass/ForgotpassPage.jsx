@@ -9,6 +9,7 @@ import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Footer from "../common/Layout/footer/Footer";
 
 
 
@@ -69,7 +70,7 @@ function ForgotPassPage (props){
         onSubmit={(values) => onHandleSubmit(values)}
       >{({ errors, touched, isSubmitting }) => (
         <Form >
-          <div className="container-fluid bg">
+          <div className="container-fluid bg vh100">
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-12 col-sm-6 col-md-5">
@@ -119,6 +120,7 @@ function ForgotPassPage (props){
         </Form>
         )}
       </Formik>
+      <Footer></Footer>
     </>
     );
   }

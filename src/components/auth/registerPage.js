@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import Footer from "../common/Layout/footer/Footer";
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 
@@ -216,6 +217,7 @@ class RegisterPage extends Component {
             </div>
           </Form>
         </Formik>
+        <Footer></Footer>
       </>
     );
   }
