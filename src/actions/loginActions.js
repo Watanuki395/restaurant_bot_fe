@@ -1,7 +1,8 @@
 import {
- LOGIN_USER,
- LOGIN_USER_SUCCESS, 
- LOGIN_USER_ERROR
+  LOGIN_USER,
+  LOGIN_USER_SUCCESS, 
+  LOGIN_USER_ERROR,
+  LOGOUT_USER_SUCCESS
 } from './index';
 
 export const loginUser = (user) => {
@@ -27,5 +28,15 @@ export const loginUserSuccess = () => {
     isFetching: false,
     error: false,
     success:true
+  }
+};
+
+// Log user out
+export const logoutUser = () => {
+  return {
+    type: LOGOUT_USER_SUCCESS,
+    isFetching: false,
+    error: false,
+    isLogged:false
   }
 };

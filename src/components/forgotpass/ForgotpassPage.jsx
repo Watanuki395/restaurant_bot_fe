@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
 
 import { forgotPassRequest } from "../../actions/forgotpassAction";
-//import './forgotpass.css'
+import '../../index.css';
 
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -69,11 +69,11 @@ function ForgotPassPage (props){
         onSubmit={(values) => onHandleSubmit(values)}
       >{({ errors, touched, isSubmitting }) => (
         <Form >
-          <div className="bg-register">
+          <div className="container-fluid bg">
             <div className="container ">
               <div className="row justify-content-center">
                 <div className="col-12 col-sm-6 col-md-5">
-                  <div className="form-container-register">
+                  <div className="form-container">
                     <h3 className="text-center mb-5">Recuperar Contraseña</h3>
                     <  >
                       <div className="mb-3">

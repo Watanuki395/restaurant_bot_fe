@@ -4,11 +4,11 @@ import { connect } from "react-redux";
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 
-import { registerUserAction } from "../actions/registerAction";
+import { registerUserAction } from "../../actions/registerAction";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./styles/register.css";
+import '../../index.css';
 
 toast.configure();
 class RegisterPage extends Component {
@@ -60,7 +60,7 @@ class RegisterPage extends Component {
       .max(25, `Máximo 25 caracteres`)
       .required("Campo Requerido"),
       business_nm: Yup.string()
-      .min(5, `Mínimo 5 caracteres`)
+      .min(2, `Mínimo 2 caracteres`)
       .max(25, `Máximo 25 caracteres`)
       .required("Campo Requerido"),
       password: Yup.string()
@@ -88,11 +88,11 @@ class RegisterPage extends Component {
           onSubmit={(values) => this.props.dispatch(registerUserAction(values))}
         >
           <Form >
-            <div className="bg-register">
+            <div className="container-fluid bg">
               <div className="container ">
                 <div className="row justify-content-center">
                   <div className="col-12 col-sm-6 col-md-5">
-                    <div className="form-container-register">
+                    <div className="form-container">
                       <h3 className="text-center mb-5">Registro</h3>
                       <  >
                         <div className="mb-3">
