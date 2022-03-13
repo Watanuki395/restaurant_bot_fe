@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaFacebookF, FaInstagram, FaYoutube, FaWhatsapp } from 'react-icons/fa';
+import { FaFacebookF, FaInstagram, FaYoutube, FaWhatsapp, FaCopyright } from 'react-icons/fa';
 
 import { FooterAbout, 
     FooterContainer, 
@@ -25,13 +25,13 @@ const Footer = (props) => {
                     </FooterInfoAbout>
                 </FooterAbout>
                 <FooterSocialMedias>
-                    <FooterLinks><FaFacebookF /></FooterLinks>
-                    <FooterLinks><FaInstagram /></FooterLinks>
-                    <FooterLinks><FaYoutube /></FooterLinks>
-                    <FooterLinks><FaWhatsapp /></FooterLinks>
+                    <FooterLinks href='https://www.facebook.com/galer.ia.the.company'><FaFacebookF /></FooterLinks>
+                    <FooterLinks href='#'><FaInstagram /></FooterLinks>
+                    <FooterLinks href='#'><FaYoutube /></FooterLinks>
+                    <FooterLinks href='#'><FaWhatsapp /></FooterLinks>
                 </FooterSocialMedias>
             </FooterContainer>
-            <FooterCopyRight>Derechos Reservados</FooterCopyRight>
+            <FooterCopyRight> Copyrights &copy; {new Date().getFullYear()} galerIA The Company</FooterCopyRight>
         </FooterSite>
         </>
     )
