@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaFacebookF, FaInstagram, FaYoutube, FaWhatsapp, FaCopyright } from 'react-icons/fa';
+import { FaFacebookF, FaInstagram, FaYoutube, FaWhatsapp } from 'react-icons/fa';
 
 import { FooterAbout, 
     FooterContainer, 
@@ -37,10 +37,6 @@ const Footer = (props) => {
     )
 } 
 
-const mapStateToProps = state => ({
-    auth: state.auth
-  });
-  
-  export default(
-    Footer
-  );
+    export default(
+        Footer
+    );
