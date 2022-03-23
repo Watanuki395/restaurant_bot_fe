@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 
 import {Container,
 Col4,
@@ -42,5 +42,8 @@ const data = [
     amount: 32
   },
 ]
+const mapStateToProps = (response) => ({
+  response,
+});
 
-export default DashboardPage;
+export default connect(mapStateToProps)(DashboardPage);

@@ -1,5 +1,5 @@
 import React from 'react';  
-import { Redirect, Route } from 'react-router-dom';
+import { Navigate, Route } from 'react-router-dom';
 import { checkCookie } from '../utils/cookies';
 
 const PrivateRoute = ({ component: Component, ...rest }) => (  
@@ -7,7 +7,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
     checkCookie() !== null ? (
       <Component { ...props } />
     ) : (
-      <Redirect to={{
+      <Navigate to={{
           pathname: '/',
           state: { from: props.location }
         }}

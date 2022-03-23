@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   BrowserRouter,
   Route,
-  Switch
+  Routes
 } from 'react-router-dom';
 //import bootstrap from 'bootstrap'
 
@@ -29,13 +29,13 @@ const App = () =>{
         <div>
         <Sidebar isOpen={isOpen} toggle={toggle}/>
         <Navbar toggle={toggle}/>
-          <Switch>
-            <Route path='/' exact={true} component={LoginPage} />
-            <Route path='/login' component={LoginPage} />
-            <Route path='/register' component={RegisterPage} />
-            <Route path='/forgotpass' component={ForgotPassPage} />
-            <Route path='/dashboard' component={DashboardPage} />
-          </Switch>
+          <Routes>
+            <Route path='/' element={<LoginPage/>} />
+            <Route path='/login' element={<LoginPage/>} />
+            <Route path='/register' element={<RegisterPage/>} />
+            <Route path='/forgotpass' element={<ForgotPassPage/>} />
+            <Route path='/dashboard' element={<DashboardPage/>} />
+          </Routes>
         </div>
       </BrowserRouter>
     );

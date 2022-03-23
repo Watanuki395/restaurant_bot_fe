@@ -1,5 +1,5 @@
 export default function apiCall(method, url, data){
-    return fetch('http://localhost:8081'+ url, // TODO: tenemos que cambiar el URL
+    return fetch('https://restaurant-bot-dev.herokuapp.com'+ url, // TODO: tenemos que cambiar el URL
     { 
         method,
         headers: {

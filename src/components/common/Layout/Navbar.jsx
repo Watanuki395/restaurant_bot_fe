@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 //import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { logoutUser } from '../../../actions/loginActions';
@@ -7,7 +7,6 @@ import {
   Nav,
   NavLink,
   NavMenu,
-  NavBtn,
   NavBtnLink,
   Bars,
   NavIcon
@@ -18,11 +17,11 @@ const Navbar = (props) => {
  // const isLogged = useSelector(state => state.entries.auth.logged)
   
   const dispatch = useDispatch();
-  const history = useHistory();
+  const history = useNavigate();
 
   function onLogoutClick() {
     dispatch(logoutUser());
-    history.push("/login");
+    history("/login");
   }
 
   if(!props.logged){

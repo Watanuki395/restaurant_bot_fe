@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, Redirect, useHistory } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
 import Footer from "../common/Layout/footer/Footer"
 import * as Yup from "yup";
@@ -15,7 +15,7 @@ import "../../index.css";
 
 function LoginPage(props) {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const history = useNavigate();
 
   const [isLogged, setLogged] = useState(null);
 
@@ -43,7 +43,7 @@ function LoginPage(props) {
       : null;
 
     if (isSuccess) {
-      setCookie("tokenSession", props.response.entries.auth.tokenSession, 1);
+      setCookie("tokenSession", props.response.entries.auth.response.tokenSession, 1);
       setLogged(true);
       toast.success(
         "Bienvenido: " + props.response.entries.auth.response.user.name,
@@ -51,8 +51,8 @@ function LoginPage(props) {
           position: toast.POSITION.TOP_RIGHT,
         }
       );
-      history.push("/dashboard");
-    }else if(isSuccess == false){
+      history("/dashboard")
+    }else if(isSuccess === false){
       setLogged(false);
       toast.error("Error: Usuario o Contrasenna invalida." , {
         position: toast.POSITION.TOP_RIGHT,
@@ -76,14 +76,14 @@ function LoginPage(props) {
                     {!isSuccess ? (
                       <div>{message}</div>
                     ) : (
-                      <Redirect to="dashboard" />
+                      <Navigate to="dashboard" />
                     )}
                     <div className="form-container">
                       <div>
                         {!isSuccess ? (
                           <div>{message}</div>
                         ) : (
-                          <Redirect to="dashboard" />
+                          <Navigate to="dashboard" />
                         )}
                         <div className="mb-3">
                           <label htmlFor="email" className="form-label">
