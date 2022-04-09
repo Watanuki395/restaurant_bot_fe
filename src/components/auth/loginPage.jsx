@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import React, { useRef, useState, useEffect } from "react";
+import { Link, Navigate, useNavigate, useLocation } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
 import Footer from "../common/Layout/footer/Footer"
 import * as Yup from "yup";
@@ -13,11 +13,25 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../index.css";
 
+import useAuth from '../../hooks/useAuth';
+
 function LoginPage(props) {
+  const { setAuth } = useAuth();
   const dispatch = useDispatch();
   const history = useNavigate();
 
   const [isLogged, setLogged] = useState(null);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
+  const userRef = useRef();
+  const errRef = useRef();
+
+  const [user, setUser] = useState('');
+  const [pwd, setPwd] = useState('');
+  const [errMsg, setErrMsg] = useState('');
 
   const validationSchema = Yup.object().shape({
     email: Yup.string()
@@ -32,33 +46,35 @@ function LoginPage(props) {
     password: "",
   };
 
-  function onHandleSubmit(data) {
-    let resp = dispatch(loginUser(data));
+  useEffect(() => {
+    setErrMsg('');
+}, [user, pwd])
+
+const onHandleSubmit = (e) => {
+  try {
+    let resp = dispatch(loginUser(e));
+    console.log(JSON.stringify(resp?.data));
+    const accessToken = resp?.data?.accessToken;
+    const roles = resp?.data?.roles;
+    setAuth({ user, pwd, roles, accessToken });
+    setUser('');
+    setPwd('');
+    navigate(from, { replace: true });
     return resp;
+  } catch (err) {
+      if (!err?.response) {
+        setErrMsg('No Server Response');
+    } else if (err.response?.status === 400) {
+        setErrMsg('Missing Username or Password');
+    } else if (err.response?.status === 401) {
+        setErrMsg('Unauthorized');
+    } else {
+        setErrMsg('Login Failed');
+    }
+      errRef.current.focus();
+    }
   }
 
-  useEffect(() => {
-    let isSuccess = props.response.entries.auth
-      ? props.response.entries.auth.success
-      : null;
-
-    if (isSuccess) {
-      setCookie("tokenSession", props.response.entries.auth.response.tokenSession, 1);
-      setLogged(true);
-      toast.success(
-        "Bienvenido: " + props.response.entries.auth.response.user.name,
-        {
-          position: toast.POSITION.TOP_RIGHT,
-        }
-      );
-      history("/dashboard")
-    }else if(isSuccess === false){
-      setLogged(false);
-      toast.error("Error: Usuario o Contrasenna invalida." , {
-        position: toast.POSITION.TOP_RIGHT,
-      });
-    }
-  }, [props.response.entries.auth.success]);
 
   return (
     <>
@@ -67,7 +83,7 @@ function LoginPage(props) {
         validationSchema={validationSchema}
         onSubmit={(values) => onHandleSubmit(values)}
       >
-        {({ errors, touched, isSuccess, message }) => (
+        {({ isSuccess, message }) => (
           <Form>
             <section className="container-fluid bg vh100">
               <section className="row justify-content-center">
@@ -94,6 +110,9 @@ function LoginPage(props) {
                             className="form-text form-control"
                             name="email"
                             id="email"
+                            value={user}
+                            ref={userRef}
+                            onChange={(e) => setUser(e.target.value)}
                             placeholder=""
                           />
                           <ErrorMessage
@@ -114,6 +133,9 @@ function LoginPage(props) {
                             className="form-text form-control"
                             name="password"
                             id="password"
+                            value={pwd}
+                            ref={userRef}
+                            onChange={(e) => setPwd(e.target.value)}
                             placeholder=""
                           />
                           <ErrorMessage

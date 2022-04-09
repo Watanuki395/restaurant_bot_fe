@@ -5,7 +5,7 @@ export default function apiCall(method, url, data){
         headers: {
             'Content-Type': 'application/json'
         },
-        body: data ? JSON.stringify(data) : {}
+        body: method = 'POST' && data ? JSON.stringify(data) : null
     }).then(response => {
         return response.json();
     }).then(json => {

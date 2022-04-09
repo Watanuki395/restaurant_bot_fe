@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom';
 //import bootstrap from 'bootstrap'
 
-import PrivateRoute from './privateRoute';
+//import PrivateRoute from './privateRoute';
 
 import Navbar from '../components/common/Layout/Navbar';
 import Sidebar from '../components/common/SideBar/SideBar';
@@ -15,6 +15,8 @@ import LoginPage from '../components/auth/loginPage';
 import RegisterPage from '../components/auth/registerPage';
 import DashboardPage from '../components/dashboard/dashboardPage';
 import ForgotPassPage from '../components/forgotpass/ForgotpassPage';
+
+import RequireAuth from '../components/requireAuth/RequireAuth';
 
 const App = () =>{
 
@@ -34,7 +36,9 @@ const App = () =>{
             <Route path='/login' element={<LoginPage/>} />
             <Route path='/register' element={<RegisterPage/>} />
             <Route path='/forgotpass' element={<ForgotPassPage/>} />
-            <Route path='/dashboard' element={<DashboardPage/>} />
+            <Route element={<RequireAuth />}>
+              <Route path='/dashboard' element={<DashboardPage/>} />
+            </Route>
           </Routes>
         </div>
       </BrowserRouter>
