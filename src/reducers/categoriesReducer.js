@@ -6,37 +6,42 @@ import {
   
   
   const initialState = {
+    categories: [],
     isFetching: false,
-    success: false,
-    error: false
+    success: null,
+    error: null
   }
   
-  export default function(state = [initialState], action) {
+   // eslint-disable-next-line import/no-anonymous-default-export
+   export default function(state = initialState, action) {
   
     const response = action.response;
   
     switch(action.type) {
-      case CATEGORIES_REQUESTED:
+      case CATEGORIES_REQUESTED:{
         return { 
           ...state,
-          isFetching: true,
-          success: false,
-          response}
-      case CATEGORIES_SUCCESS:
+          isFetching: action.payload
+        }
+      }
+      case CATEGORIES_SUCCESS:{
         return { 
           ...state,
           isFetching: false,
           success: true, 
           error: false,
-          response };
-      case CATEGORIES_ERROR:
+          categories: response
+        }
+      }
+      case CATEGORIES_ERROR:{
         return { 
           ...state,
-          isFetching: false,
-          success: false, 
           error: true,
-          message: action.response.msg };
-      default:
+          message: action.response.msg
+        }
+      }
+      default: {
         return state;
+      }
     }
   }

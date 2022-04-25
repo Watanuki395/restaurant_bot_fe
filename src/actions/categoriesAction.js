@@ -4,28 +4,27 @@ import {
     CATEGORIES_ERROR
 } from './index';
 
-export const categoriesRequested = () => {
+ export const categoriesRequested = () => {
     return {
         type: CATEGORIES_REQUESTED,
         isFetching: true
     }
 };
 
-export const categoriesSuccess = ({categories}) => {
-    return {
+export const categoriesSuccess = (categories) => ({
+
         type: CATEGORIES_SUCCESS,
-        isFetching: false,
-        error: false,
+        payload: categories,
         success: true,
-        payload: {categories}
-    }
-};
+        error: false,
+        isFetching: false
+
+});
 
 export const categoriesError = () => {
     return {
         type: CATEGORIES_ERROR,
-        isFetching: false,
         error: true,
-        success: false
+        isFetching: false
     }
-};
+}; 

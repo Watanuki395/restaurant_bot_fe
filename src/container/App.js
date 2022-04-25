@@ -37,7 +37,7 @@ const App = () =>{
             <Route path='/register' component={RegisterPage} />
             <Route path='/forgotpass' component={ForgotPassPage} />
             <Route path='/dashboard' component={DashboardPage} />
-            {/* <Route path='/categories' component={CategoriesPage} /> */}
+            <Route path='/dashboard/:id_cat' component={CategoriesPage} />
           </Switch>
         </div>
       </BrowserRouter>

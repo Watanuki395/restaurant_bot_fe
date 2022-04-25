@@ -1,4 +1,4 @@
-import { put, call, takeLatest, take,takeEvery } from 'redux-saga/effects';
+import { put, call, takeLatest } from 'redux-saga/effects';
 
 import { 
     CATEGORIES_REQUESTED, 
@@ -9,13 +9,14 @@ import apiCall from '../api';
 
 function* categoriesSaga() {
     try {
-        const response = yield call(apiCall, 'GET', '/api/product/categories', {});
-        console.log(response);
-        yield [
-            put({type: CATEGORIES_SUCCESS, categories: response})
-        ];
+
+        const response = yield call(apiCall, 'GET', '/api/product/categories');
+        yield put({type: CATEGORIES_SUCCESS, response})
+        
     } catch(error) {
+
         yield put({type: CATEGORIES_ERROR, error})
+
     }
 }
 
