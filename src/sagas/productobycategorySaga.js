@@ -11,7 +11,6 @@ function* productByCategorySaga(payload) {
 
         //const response = yield call(apiCallGET, 'GET', '/api/product/productsbycategory', payload.data);
         const response = yield call(apiCall, 'GET', `/api/product/productsbycategory?id_user=${payload.data.id_user}&id_cat=${payload.data.id_cat}`);
-        console.log(response);
         yield put({type: PRODUCT_BY_CATEGORY_SUCCESS, response})
         
     } catch(error) {

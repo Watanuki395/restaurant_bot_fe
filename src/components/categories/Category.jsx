@@ -2,6 +2,7 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom'
 import { productoByCategoryRequested } from '../../actions/productbycategoryAction'
+import { selectComponentRequested } from '../../actions/selectcomponentAction';
 import {
     Tables, TableTh, TableTd,
     IconDelete, IconEdit, LinkIcon
@@ -16,13 +17,9 @@ const Category = ({categoria}) => {
     
     const selectCategory = id_cat => {
         dispatch( productoByCategoryRequested({id_user:68, id_cat}) );
-        history.push(`/dashboard/${categoria.id_cat}`)
-        console.log(categoria.id_cat);
+        dispatch(selectComponentRequested("productByCategory"));
+        history.push(`/dashboard/${categoria.id_cat}`);
     }
-
-    /* function selectCategory(id_cat){
-        dispatch( productoByCategoryRequested({id_user:68, id_cat}) );
-    }; */
 
     return ( 
             <tr >

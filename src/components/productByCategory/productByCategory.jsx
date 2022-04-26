@@ -1,20 +1,24 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { useSelector, useDispatch, connect } from 'react-redux';
 
 import { productoByCategoryRequested } from '../../actions/productbycategoryAction';
+//import { selectComponentRequested } from '../../actions/selectcomponentAction';
 import ProductByOneCategory from './productByOneCategory';
 
 const ProductByCategory = () => {
 
     const dispatch = useDispatch();
 
-    useEffect( ()=> {
+    /* useEffect( ()=> {
         const cargarProductosCategoria = () => dispatch( productoByCategoryRequested() );
+        //dispatch(selectComponentRequested("productByCategory"));
         cargarProductosCategoria();
-    }, []);
+    }, [productsByCategories]); */
 
 
-    const productsByCategories = useSelector(state => state.entries.response);
+
+
+    const productsByCategories = useSelector(state => state.entries.productbycategory.productByCategory);
     console.log(productsByCategories);
     return ( 
         <Fragment>
@@ -28,7 +32,7 @@ const ProductByCategory = () => {
                 </thead>
                 <tbody>
 
-                    { productsByCategories.length === 0 ? 'No hay productos!' : (
+                    { productsByCategories === 'undefined' ? 'No hay productos!' : (
                         productsByCategories.map(productByCategory => (
                             <ProductByOneCategory
                                 key={productByCategory.id_prd}

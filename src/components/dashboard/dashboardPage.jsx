@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, connect, useSelector } from 'react-redux';
 
 import Categories from '../categories/CategoriesPage'
@@ -11,22 +11,48 @@ Col8}
 from "./style";
 
 
-function DashboardPage(){
+function DashboardPage(props){
 
-  useEffect(()=>{
-    //jugar con el useState para cambiarlo, pasarlo por props o alguna manera
-  });
-  
   const categorias = useSelector(state => state.entries.categories.categories);
-  const productosPorCategorias = useSelector(state => state.entries.ProductByCategory);
+  const productosPorCategorias = useSelector(state => state.entries.productbycategory.productByCategory);
+  const componentSelected = useSelector(state => state.entries.selectcomponent.component.payload);
+  
+/* renderSwitch(componentSelected){
+  switch(componentSelected) {
+    case 'Categories':
+      return <Categories />;
+    case 'ProductByCategory':
+      return <ProductByCategory />;
+    default:
+      return null; //Componente error
+  }
+} */
 
+const renderContent = React.useCallback(() => {
+  switch(componentSelected) {
+    case 'Categories': 
+      return <Categories />;
+    
+    case 'productByCategory': 
+      return <ProductByCategory />;
+
+    default: 
+      return <Categories />;
+    
+  }
+}, [componentSelected]);
+
+      
+  console.log(componentSelected);
     return (
       <>
         <Container>
           <Col4></Col4>
           <Col8>
-            {categorias ? <Categories/>  : <ProductByCategory/>}    
-               
+
+          {/* {this.renderSwitch(componentSelected)} */}
+          {renderContent()}
+
           </Col8>
         </Container>
       </>

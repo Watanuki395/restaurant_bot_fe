@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { useSelector, useDispatch, connect } from 'react-redux';
 
 import { categoriesRequested } from '../../actions/categoriesAction';
+import { selectComponentRequested } from '../../actions/selectcomponentAction';
 
 import Category from './Category';
 import {
@@ -13,9 +14,10 @@ const Categories = (props) => {
 
     const dispatch = useDispatch();
 
-     useEffect( ()=> {
-            const cargarProductos = () => dispatch( categoriesRequested() );
-            cargarProductos();
+    useEffect( ()=> {
+        const cargarProductos = () => dispatch( categoriesRequested() );
+        dispatch(selectComponentRequested("Categories"));
+        cargarProductos();
     }, []);
 
     const categorias = useSelector(state => state.entries.categories.categories);
@@ -39,7 +41,6 @@ const Categories = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-
                     { categorias.length === 0 ? 'No hay productos!' : (
                         categorias.map(categoria => (
                             <Category
