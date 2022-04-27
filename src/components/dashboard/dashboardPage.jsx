@@ -3,7 +3,7 @@ import { useDispatch, connect, useSelector } from 'react-redux';
 
 import Categories from '../categories/CategoriesPage'
 import ProductByCategory from '../productByCategory/productByCategory';
-
+import Products from '../product/Products';
 
 import {Container,
 Col4,
@@ -13,20 +13,7 @@ from "./style";
 
 function DashboardPage(props){
 
-  const categorias = useSelector(state => state.entries.categories.categories);
-  const productosPorCategorias = useSelector(state => state.entries.productbycategory.productByCategory);
   const componentSelected = useSelector(state => state.entries.selectcomponent.component.payload);
-  
-/* renderSwitch(componentSelected){
-  switch(componentSelected) {
-    case 'Categories':
-      return <Categories />;
-    case 'ProductByCategory':
-      return <ProductByCategory />;
-    default:
-      return null; //Componente error
-  }
-} */
 
 const renderContent = React.useCallback(() => {
   switch(componentSelected) {
@@ -36,6 +23,9 @@ const renderContent = React.useCallback(() => {
     case 'productByCategory': 
       return <ProductByCategory />;
 
+      case 'products': 
+      return <Products />;
+
     default: 
       return <Categories />;
     
@@ -43,14 +33,12 @@ const renderContent = React.useCallback(() => {
 }, [componentSelected]);
 
       
-  console.log(componentSelected);
     return (
       <>
         <Container>
           <Col4></Col4>
           <Col8>
 
-          {/* {this.renderSwitch(componentSelected)} */}
           {renderContent()}
 
           </Col8>

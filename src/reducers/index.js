@@ -5,6 +5,7 @@ import forgotpass from './forgotpassReducer';
 import categories from './categoriesReducer';
 import productbycategory from './productbycategoryReducer';
 import selectcomponent from './selectcomponentReducer';
+import products from './productsReducer';
 
 const rootReducer = combineReducers({
   register, 
@@ -12,7 +13,8 @@ const rootReducer = combineReducers({
   forgotpass,
   categories,
   productbycategory,
-  selectcomponent
+  selectcomponent,
+  products
 });
 
 export default rootReducer;

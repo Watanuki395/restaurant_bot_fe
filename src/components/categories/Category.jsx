@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom'
 import { productoByCategoryRequested } from '../../actions/productbycategoryAction'
 import { selectComponentRequested } from '../../actions/selectcomponentAction';
 import {
@@ -11,14 +10,12 @@ import {
 const Category = ({categoria}) => {
 
     const dispatch = useDispatch();
-    const history = useHistory();
 
     const {description_cat, id_cat, name_cat} = categoria;
     
     const selectCategory = id_cat => {
         dispatch( productoByCategoryRequested({id_user:68, id_cat}) );
         dispatch(selectComponentRequested("productByCategory"));
-        history.push(`/dashboard/${categoria.id_cat}`);
     }
 
     return ( 

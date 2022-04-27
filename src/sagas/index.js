@@ -6,6 +6,7 @@ import forgotpassSaga from './forgotpassSaga';
 import categoriesSaga from './categoriesSaga';
 import productByCategorySaga from './productobycategorySaga';
 import selectComponentSaga from './selectcomponentSagas';
+import products from './productsSaga';
 
 export default function* rootSaga() {
   yield all([
@@ -14,6 +15,7 @@ export default function* rootSaga() {
     fork(forgotpassSaga),
     fork(categoriesSaga),
     fork(productByCategorySaga),
-    fork(selectComponentSaga)
+    fork(selectComponentSaga),
+    fork(products)
   ]);
 }
