@@ -1,46 +1,56 @@
-import React from 'react';
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, connect, useSelector } from 'react-redux';
+
+import Categories from '../categories/CategoriesPage'
+import ProductByCategory from '../productByCategory/productByCategory';
+import Products from '../product/Products';
 
 import {Container,
 Col4,
 Col8}
 from "./style";
-import Table from '../common/Table/Table';
 
-function DashboardPage(){
+
+function DashboardPage(props){
+
+  const componentSelected = useSelector(state => state.entries.selectcomponent.component.payload);
+
+const renderContent = React.useCallback(() => {
+  switch(componentSelected) {
+    case 'Categories': 
+      return <Categories />;
+    
+    case 'productByCategory': 
+      return <ProductByCategory />;
+
+      case 'products': 
+      return <Products />;
+
+    default: 
+      return <Categories />;
+    
+  }
+}, [componentSelected]);
+
+      
     return (
       <>
         <Container>
           <Col4></Col4>
           <Col8>
-            <Table data={data}/>
+
+          {renderContent()}
+
           </Col8>
         </Container>
       </>
     );
 }
 
-const data = [
-  {
-    name: "Pan",
-    amount: 1
-  },
-  {
-    name: "Carne",
-    amount: 3
-  },
-  {
-    name: "Leche",
-    amount: 6
-  },
-  {
-    name: "Huevos",
-    amount: 15
-  },
-  {
-    name: "Fruta",
-    amount: 32
-  },
-]
 
-export default DashboardPage;
+
+const mapStateToProps = (response) => ({
+  response,
+});
+
+export default connect(mapStateToProps)(DashboardPage)

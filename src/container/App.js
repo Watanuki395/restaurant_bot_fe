@@ -16,6 +16,8 @@ import RegisterPage from '../components/auth/registerPage';
 import DashboardPage from '../components/dashboard/dashboardPage';
 import ForgotPassPage from '../components/forgotpass/ForgotpassPage';
 
+import CategoriesPage from '../components/categories/CategoriesPage';
+
 const App = () =>{
 
   const[isOpen, setIsOpen] = useState(false)
@@ -35,6 +37,7 @@ const App = () =>{
             <Route path='/register' component={RegisterPage} />
             <Route path='/forgotpass' component={ForgotPassPage} />
             <Route path='/dashboard' component={DashboardPage} />
+            <Route path='/dashboard/:id_cat' component={CategoriesPage} />
           </Switch>
         </div>
       </BrowserRouter>
