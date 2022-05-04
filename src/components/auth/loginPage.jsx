@@ -7,8 +7,6 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 
 import { loginUser } from "../../actions/loginActions";
 
-import { setCookie } from "../../utils/cookies";
-
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../index.css";
@@ -16,11 +14,8 @@ import "../../index.css";
 import useAuth from '../../hooks/useAuth';
 
 function LoginPage(props) {
-  const { setAuth } = useAuth();
+  const { setAuth, persist, setPersist } = useAuth();
   const dispatch = useDispatch();
-  const history = useNavigate();
-
-  const [isLogged, setLogged] = useState(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -29,8 +24,8 @@ function LoginPage(props) {
   const userRef = useRef();
   const errRef = useRef();
 
-  const [user, setUser] = useState('');
-  const [pwd, setPwd] = useState('');
+  const [email, setUser] = useState('');
+  const [password, setPwd] = useState('');
   const [errMsg, setErrMsg] = useState('');
 
   const validationSchema = Yup.object().shape({
@@ -48,19 +43,20 @@ function LoginPage(props) {
 
   useEffect(() => {
     setErrMsg('');
-}, [user, pwd])
+}, [email, password])
 
 const onHandleSubmit = (e) => {
   try {
     let resp = dispatch(loginUser(e));
-    console.log(JSON.stringify(resp?.data));
-    const accessToken = resp?.data?.accessToken;
-    const roles = resp?.data?.roles;
-    setAuth({ user, pwd, roles, accessToken });
+    //console.log(JSON.stringify(resp?.data));
+    const accessToken = resp?.data?.tokenSession;
+    const roles = 2001;
+    //setAuth({ email, password, roles, accessToken });
     setUser('');
     setPwd('');
     navigate(from, { replace: true });
     return resp;
+
   } catch (err) {
       if (!err?.response) {
         setErrMsg('No Server Response');
@@ -71,10 +67,17 @@ const onHandleSubmit = (e) => {
     } else {
         setErrMsg('Login Failed');
     }
-      errRef.current.focus();
+      //errRef.current.focus();
     }
   }
 
+  const togglePersist = () => {
+    setPersist(prev => !prev);
+}
+
+useEffect(() => {
+    localStorage.setItem("persist", persist);
+}, [persist])
 
   return (
     <>
@@ -89,18 +92,8 @@ const onHandleSubmit = (e) => {
               <section className="row justify-content-center">
                 <section className="col-12 col-sm-6 col-md-3">
                   <div>
-                    {!isSuccess ? (
-                      <div>{message}</div>
-                    ) : (
-                      <Navigate to="dashboard" />
-                    )}
                     <div className="form-container">
                       <div>
-                        {!isSuccess ? (
-                          <div>{message}</div>
-                        ) : (
-                          <Navigate to="dashboard" />
-                        )}
                         <div className="mb-3">
                           <label htmlFor="email" className="form-label">
                             Email
@@ -110,9 +103,9 @@ const onHandleSubmit = (e) => {
                             className="form-text form-control"
                             name="email"
                             id="email"
-                            value={user}
-                            ref={userRef}
-                            onChange={(e) => setUser(e.target.value)}
+                            //value={email}
+                            //ref={userRef.current}
+                            //onChange={(e) => setUser(e.target.value)}
                             placeholder=""
                           />
                           <ErrorMessage
@@ -133,9 +126,9 @@ const onHandleSubmit = (e) => {
                             className="form-text form-control"
                             name="password"
                             id="password"
-                            value={pwd}
-                            ref={userRef}
-                            onChange={(e) => setPwd(e.target.value)}
+                            //value={password}
+                            //ref={userRef}
+                            //onChange={(e) => setPwd(e.target.value)}
                             placeholder=""
                           />
                           <ErrorMessage
