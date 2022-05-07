@@ -7,6 +7,7 @@ import productbycategory from './productbycategoryReducer';
 import selectcomponent from './selectcomponentReducer';
 import products from './productsReducer';
 import createcategory from './createcategoryReducer';
+import createproduct from './createproductReducer';
 
 const rootReducer = combineReducers({
   register, 
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
   productbycategory,
   selectcomponent,
   products,
-  createcategory
+  createcategory,
+  createproduct
 });
 
 export default rootReducer;
