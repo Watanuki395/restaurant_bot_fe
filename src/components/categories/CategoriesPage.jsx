@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState, useMemo } from 'react'
 import { useSelector, useDispatch, connect } from 'react-redux';
-import { Redirect, useHistory, useNavigate } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import { useTable, usePagination } from 'react-table';
 import { COLUMNS } from './Columns';
 import {Modal, Button} from 'react-bootstrap'
@@ -9,7 +9,7 @@ import { createCategoryAction } from '../../actions/createcategoryAction';
 import { categoriesRequested } from '../../actions/categoriesAction';
 import { selectComponentRequested } from '../../actions/selectcomponentAction';
 import { deleteProductAction } from '../../actions/deletecategoryAction';
-import { editCategoryAction } from '../../actions/editcategoryAction';
+import { productoByCategoryRequested } from '../../actions/productbycategoryAction'
 
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -71,8 +71,14 @@ const Categories = (props) => {
     const data = useMemo(() => categorias, []);
 
     const redirectEdit = category => {
-      /* dispatch( editCategoryAction(category) ); */
       history.push(`/categoryEdit/${category.id_cat}`);
+    }
+
+    const redirectProductByCategory = idCategory => {
+      let id_cat = idCategory.id_cat;
+      console.log(id_cat);
+      dispatch( productoByCategoryRequested({id_user:68, id_cat}) );
+      history.push(`/CategoryByProduct/${idCategory.id_cat}`);
     }
 
     const tableHooks = (hooks) => {
@@ -83,10 +89,10 @@ const Categories = (props) => {
           Header: "Edit",
           Cell: ({row}) => (
             <>
-            {/* <button className="btn btn-dark" onClick={handleShowEdit console.log(row.original.id_cat)  }>
-              Edit
-            </button> */}
-            <button className="btn btn-dark" onClick={ () => redirectEdit(row.original)}>
+            <button className="btn btn-dark mb-1" onClick={ () => redirectProductByCategory(row.original) }>
+              Ver Productos
+            </button>
+            <button className="btn btn-dark mr-3" onClick={ () => redirectEdit(row.original)}>
               Edit
             </button>
             <button className="btn btn-danger" onClick={()=> dispatch(deleteProductAction(row.original.id_cat))}>
@@ -124,12 +130,6 @@ const Categories = (props) => {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
-    const [showEdit, setShowEdit] = useState(false);
-    const [category, setCategory] = useState(false);
-    const handleCloseEdit = () => setShowEdit(false);
-    const handleShowEdit = () => setShowEdit(true);
-    const handelCategory = () => setCategory({});
   
     const initialValues = {
         name_cat: "",
@@ -269,106 +269,6 @@ const Categories = (props) => {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
-              Cerrar
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
-        <Modal show={showEdit} onHide={handleCloseEdit}>
-          <Modal.Header closeButton>
-            <Modal.Title>Editar una categoría nueva</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              //onSubmit={(values) => onHandleSubmit(values)}
-              onSubmit={(values) => console.log(values)}
-            >
-              {({ errors, touched, isSuccess, message, isSubmitting }) => (
-                <Form>
-                    <section className="">
-                      <section className="">
-                        <section className="">
-                          <div>
-                            {!isSuccess ? (
-                              <div>{message}</div>
-                            ) : (
-                              <Redirect to="dashboard" />
-                            )}
-                            <div className="form-container">
-                              <div>
-                                {!isSuccess ? (
-                                  <div>{message}</div>
-                                ) : (
-                                  <Redirect to="dashboard" />
-                                )}
-                                <div className="mb-3">
-                                  <label
-                                    htmlFor="name_cat"
-                                    className="form-label"
-                                  >
-                                    Nombre la categoría
-                                  </label>
-                                  <Field
-                                    type="text"
-                                    className="form-text form-control"
-                                    name="name_cat"
-                                    id="name_cat"
-                                    placeholder="Categoría"
-                                  />
-                                  <ErrorMessage
-                                    name="name_cat"
-                                    component="div"
-                                    className="field-error text-danger"
-                                  />
-                                </div>
-                                <div className="mb-3">
-                                  <label
-                                    htmlFor="description_cat"
-                                    className="form-label"
-                                  >
-                                    Descripción
-                                  </label>
-                                  <Field
-                                    type="description_cat"
-                                    className="form-text form-control"
-                                    name="description_cat"
-                                    id="description_cat"
-                                    placeholder="Descripción de la categoría"
-                                  />
-                                  <ErrorMessage
-                                    name="description_cat"
-                                    component="div"
-                                    className="field-error text-danger"
-                                  />
-                                </div>
-                                <div className="d-grid gap-2 py-3">
-                                  <button
-                                    type="submit"
-                                    disabled={
-                                      count > 0 ? true : false || isSubmitting
-                                    }
-                                    className="btn btn-dark btn-block mb-2"
-                                  >
-                                    {isSubmitting && (
-                                      <span className="spinner-border spinner-border-sm mr-1"></span>
-                                    )}
-                                    Editar
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </section>
-                      </section>
-                    </section>
-                </Form>
-              )}
-            </Formik>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseEdit}>
               Cerrar
             </Button>
           </Modal.Footer>
