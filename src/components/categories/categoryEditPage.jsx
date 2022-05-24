@@ -10,6 +10,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../index.css";
+import { createGlobalStyle } from 'styled-components';
 
 
 const initialState ={
@@ -27,6 +28,7 @@ const categoryEdit = () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const data = useSelector( (state) => state.entries.categories.categories );
     //const {data} = useSelector( (state) => state.entries.editCategory.categoryEdit );
+    console.log(data);
 
     console.log(data);
     // eslint-disable-next-line react-hooks/rules-of-hooks

@@ -76,7 +76,6 @@ const Categories = (props) => {
 
     const redirectProductByCategory = idCategory => {
       let id_cat = idCategory.id_cat;
-      console.log(id_cat);
       dispatch( productoByCategoryRequested({id_user:68, id_cat}) );
       history.push(`/CategoryByProduct/${idCategory.id_cat}`);
     }

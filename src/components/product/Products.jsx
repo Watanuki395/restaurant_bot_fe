@@ -1,14 +1,20 @@
-import React, { Fragment } from 'react'
-import { useSelector} from 'react-redux';
+import React, { Fragment,useState } from 'react'
+import { useSelector, useDispatch} from 'react-redux';
+import { Redirect, useHistory } from "react-router-dom";
+
+
+
 
 
 const Products = () => {
+  const dispatch = useDispatch();
 
     const products = useSelector(state => state.entries.products.products);
-    console.log(products);
 
-    return ( 
+        return ( 
     <Fragment>
+      
+
         <table className='table mt-5'>
                 <thead className='table-dark'>
                     <tr>

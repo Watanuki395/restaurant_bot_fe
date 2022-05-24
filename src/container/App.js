@@ -22,6 +22,7 @@ import createProductPage from '../components/createProduct/createproductPage';
 import categoryEditPage from '../components/categories/categoryEditPage';
 import CategoryByProductPage from '../components/categories/categoryByProductPage';
 import Products from '../components/product/Products';
+import editProductPage from '../components/product/editProductPage';
 
 const App = () =>{
 
@@ -48,6 +49,7 @@ const App = () =>{
             <Route path='/categoryEdit/:id_cat' component={categoryEditPage} />
             <Route path='/CategoryByProduct/:id_cat' component={CategoryByProductPage} />
             <Route path='/Products' component={Products} />
+            <Route path='/editProduct/:id_prd' component={editProductPage} />
           </Switch>
         </div>
       </BrowserRouter>
