@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
 
 import ProductByOneCategory from './productByOneCategory';
@@ -9,6 +10,11 @@ const ProductByCategory = () => {
 
     return ( 
         <Fragment>
+            <div>
+            <Link to="createProduct"
+                className='btn btn-primary'
+            >Nuevo Producto</Link>
+            </div>
             <table className='table mt-5'>
                 <thead className='table-dark'>
                     <tr>

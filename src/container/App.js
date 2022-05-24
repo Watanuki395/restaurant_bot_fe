@@ -17,7 +17,9 @@ import DashboardPage from '../components/dashboard/dashboardPage';
 import ForgotPassPage from '../components/forgotpass/ForgotpassPage';
 
 import CategoriesPage from '../components/categories/CategoriesPage';
-import createCategoryPage from '../components/createCategory/createcategoryPage'
+import createCategoryPage from '../components/createCategory/createcategoryPage';
+import createProductPage from '../components/createProduct/createproductPage';
+import categoryEditPage from '../components/categories/categoryEditPage';
 
 const App = () =>{
 
@@ -40,6 +42,8 @@ const App = () =>{
             <Route path='/dashboard' component={DashboardPage} />
             <Route path='/dashboard/:id_cat' component={CategoriesPage} />
             <Route path='/createCategory' component={createCategoryPage} />
+            <Route path='/createProduct' component={createProductPage} />
+            <Route path='/categoryEdit/:id_cat' component={categoryEditPage} />
           </Switch>
         </div>
       </BrowserRouter>
