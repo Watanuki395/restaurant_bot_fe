@@ -36,26 +36,26 @@ const App = () => {
     <>
       <Sidebar isOpen={isOpen} toggle={toggle} />
       <Navbar toggle={toggle} />
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        {/* public routes */}
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/forgotpass" element={<ForgotPassPage />} />
-        <Route path="unauthorized" element={<Unauthorized />} />
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          {/* public routes */}
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgotpass" element={<ForgotPassPage />} />
+          <Route path="unauthorized" element={<Unauthorized />} />
 
-        {/* we want to protect these routes */}
-        <Route element={<PersistLogin />}>
-          <Route element={<RequireAuth allowedRoles={[ROLES.Editor, ROLES.Admin]}/>}>
-            <Route path="/dashboard" element={<DashboardPage />} />
+          {/* we want to protect these routes */}
+          <Route element={<PersistLogin />}>
+            <Route element={<RequireAuth allowedRoles={[ROLES.Editor, ROLES.Admin]}/>}>
+              <Route path="/dashboard" element={<DashboardPage />} />
+            </Route>
           </Route>
-        </Route>
 
-        {/* catch all */}
-        <Route path="*" element={<Missing />} />
-      </Route>
-    </Routes>
+          {/* catch all */}
+          <Route path="*" element={<Missing />} />
+        </Route>
+      </Routes>
     </>
   );
 };

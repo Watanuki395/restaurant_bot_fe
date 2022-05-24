@@ -1,13 +1,22 @@
-import { createContext, useState } from "react";
+import { createContext, useReducer, useEffect } from "react";
+import AuthReducer from '../reducers/loginReducer';
 
-const AuthContext = createContext({});
+
+const INITIAL_STATE = {
+    currentUser: JSON.parse(localStorage.getItem("user")) || null,
+};
+
+const AuthContext = createContext(INITIAL_STATE);
 
 export const AuthProvider = ({ children }) => {
-    const [auth, setAuth] = useState({});
-    //const [persist, setPersist] = useState(JSON.parse(localStorage.getItem("persist")) || false);
+    const [state, dispatch] = useReducer(AuthReducer, INITIAL_STATE);
+
+    useEffect(() => {
+        localStorage.setItem("user", JSON.stringify(state.currentUser));
+    }, [state.currentUser]);
 
     return (
-        <AuthContext.Provider value={{ auth, setAuth}}>
+        <AuthContext.Provider value={{ currentUser: state.currentUser, dispatch }}>
             {children}
         </AuthContext.Provider>
     )

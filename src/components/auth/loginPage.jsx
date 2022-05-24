@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Link, Navigate, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
 import Footer from "../common/Layout/footer/Footer"
 import * as Yup from "yup";
@@ -48,7 +48,7 @@ function LoginPage(props) {
 const onHandleSubmit = (e) => {
   try {
     let resp = dispatch(loginUser(e));
-    //console.log(JSON.stringify(resp?.data));
+    console.log(JSON.stringify(resp?.data));
     const accessToken = resp?.data?.tokenSession;
     const roles = 2001;
     //setAuth({ email, password, roles, accessToken });
