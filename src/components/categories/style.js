@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { FaTrash, FaEdit } from "react-icons/fa";
+import { FaTrash, FaEdit, FaEye } from "react-icons/fa";
+
 
 export const Tables = styled.table`
   border-collapse: collapse;
@@ -24,16 +25,27 @@ export const TableTd = styled.td`
   color: #000;
 `;
 
+export const SButton = styled.button`
+  border: none;
+  background-color: rgba(212, 255, 241, 0.76);
+`;
+
 export const IconDelete = styled(FaTrash)`
-  color: red;
+  color: #BA1C1C;
   font-size: 20px;
   margin-right: 10px;
   cursor: pointer;
-
-`;
+  `;
 
 export const IconEdit = styled(FaEdit)`
-  color: blue;
+  color: #5BC1F5;
+  font-size: 20px;
+  cursor: pointer;
+  `;
+
+export const IconSee = styled(FaEye)`
+  color: gray;
   font-size: 20px;
   cursor: pointer;
 `;
+

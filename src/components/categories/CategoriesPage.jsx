@@ -3,7 +3,8 @@ import { useSelector, useDispatch, connect } from 'react-redux';
 import { Redirect, useHistory } from "react-router-dom";
 import { useTable, usePagination } from 'react-table';
 import { COLUMNS } from './Columns';
-import {Modal, Button} from 'react-bootstrap'
+import {Modal, Button} from 'react-bootstrap';
+import { GrAdd } from "react-icons/gr";
 
 import { createCategoryAction } from '../../actions/createcategoryAction';
 import { categoriesRequested } from '../../actions/categoriesAction';
@@ -15,6 +16,7 @@ import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {IconDelete, IconEdit, IconSee, IconPlus, SButton}from "./style";
 import "../../index.css";
 
 const Categories = (props) => {
@@ -23,52 +25,25 @@ const Categories = (props) => {
     const history = useHistory();
     const [isReseted, setReseted] = useState(false);
     const [count, setCount] = useState(0);
-
+    
     useEffect( ()=> {
-        
-
-        let isSuccess = response ? response.success : false;
-        //Revisar toda esta sección, la redirección cuando trae o no mensaje.
-        if (isSuccess && isReseted) {
-          let msg = response.response.msg ? response.response.msg : null;
-          const error = response.error ? response.error : null;
-          setReseted(false);
-          setCount(count + 1);
-          console.log(msg);
-          if (msg === null) {
-            toast.success("Categoría creada.", {
-              position: toast.POSITION.TOP_RIGHT,
-            });
-            setTimeout(() => {
-              history.push("/dashboard");
-            }, 2000);
-            msg = null;
-          } else {
-            setReseted(false);
-            if (msg !== "") {
-              toast.error(msg, { position: toast.POSITION.TOP_RIGHT });
-            } else {
-              toast.error("Error al crear la categoría.", {
-                position: toast.POSITION.TOP_RIGHT,
-              });
-            }
-            msg = null;
-            setCount(count - 1);
-          }
-        }
-        
-        const cargarProductos = () => dispatch( categoriesRequested() );
-        dispatch(selectComponentRequested("Categories"));
-        cargarProductos();
-
-    }, [response]);
-
-    const categorias = useSelector(state => state.entries.categories.categories);
+      
+      const cargarProductos = () => dispatch( categoriesRequested() );
+      cargarProductos();
+      
+    }, []);
+    
+    //#region  UseSelector
+    
+    let categorias = useSelector(state => state.entries.categories.categories);
     const error = useSelector( state => state.entries.categories.error );
     const loading = useSelector( state => state.entries.categories.isFetching );
 
+    //#endregion
+
+    //#region React-Table
     const columns = useMemo(() => COLUMNS, []);
-    const data = useMemo(() => categorias, []);
+    const data = useMemo(() => [...categorias], [categorias]);
 
     const redirectEdit = category => {
       history.push(`/categoryEdit/${category.id_cat}`);
@@ -88,15 +63,17 @@ const Categories = (props) => {
           Header: "Edit",
           Cell: ({row}) => (
             <>
-            <button className="btn btn-dark mb-1" onClick={ () => redirectProductByCategory(row.original) }>
-              Ver Productos
-            </button>
-            <button className="btn btn-dark mr-3" onClick={ () => redirectEdit(row.original)}>
-              Edit
-            </button>
-            <button className="btn btn-danger" onClick={()=> dispatch(deleteProductAction(row.original.id_cat))}>
-              Delete
-            </button>
+            <SButton className="mb-1" onClick={ () => redirectProductByCategory(row.original) }>
+              <IconSee></IconSee>
+            </SButton>
+            
+            <SButton className={isEvent(row.id) ? "bg-green-400" : ""} onClick={ () => redirectEdit(row.original)}>
+              <IconEdit></IconEdit>
+            </SButton>
+
+            <SButton className="" onClick={()=> dispatch(deleteProductAction(row.original.id_cat))}>
+              <IconDelete></IconDelete>
+            </SButton>
           </>
           )
         }
@@ -124,8 +101,12 @@ const Categories = (props) => {
         tableHooks
     );
 
-    const {pageIndex} = state;
+    const isEvent = id => id % 2 ===0;
 
+    const {pageIndex} = state;
+    //#endregion
+    
+    //#region  Modal Agregar
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -149,16 +130,28 @@ const Categories = (props) => {
     async function onHandleSubmit(data) {
     await sleep(1000);
     setReseted(true);
-    let resp = dispatch(createCategoryAction(data));
-    return resp;
+    if(data){
+      //let resp = dispatch(createCategoryAction(data));
+      dispatch(createCategoryAction(data));
+      toast.success("Categoría creada!");
+      setTimeout(() => dispatch( categoriesRequested() ), 500);
+      setShow(false);
+      setTimeout(() => history.push("/dashboard"), 500);
+      //return resp;
+    }
+    
   }
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
   const response = useSelector((state) => state.entries.createcategory);
+      //#endregion
+
+    
 
     return (
       <Fragment>
+        <div className='container'>
         {error ? (
           <p className="font-weight-bold alert alert-danger text-center mt-4">
             Hubo un error...
@@ -166,12 +159,13 @@ const Categories = (props) => {
         ) : null}
 
         {loading ? <p className="text-center">Cargando...</p> : null}
+        
         <button
-          className="btn btn-dark mt-3 float-right"
+          className="btn btn-warning btn-plus mt-3"
           variant="primary"
           onClick={handleShow}
         >
-          Agregar
+          <GrAdd/>
         </button>
 
         <Modal show={show} onHide={handleClose}>
@@ -274,7 +268,7 @@ const Categories = (props) => {
         </Modal>
 
         <table {...getTableProps()} className="table">
-          <thead>
+          <thead className='thead-dark'>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
@@ -290,7 +284,7 @@ const Categories = (props) => {
             {page.map((row, idx) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
+                <tr {...row.getRowProps()} className={isEvent(idx) ? "bg-green-400 bg-opacity-10" : ""}>
                   {row.cells.map(cell => {
                     return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
                   })}
@@ -299,7 +293,14 @@ const Categories = (props) => {
             })}
           </tbody>
         </table>
-        <div>
+        <div className='text-center mt-2'>
+          <button
+            className="btn btn-dark m-1"
+            onClick={() => previousPage()}
+            disabled={!canPreviousPage}
+          >
+            Anterior
+          </button>
           <span>
             Page{" "}
             <strong>
@@ -308,18 +309,12 @@ const Categories = (props) => {
           </span>
           <button
             className="btn btn-dark"
-            onClick={() => previousPage()}
-            disabled={!canPreviousPage}
-          >
-            Anterior
-          </button>
-          <button
-            className="btn btn-dark"
             onClick={() => nextPage()}
             disabled={!canNextPage}
           >
             Siguiente
           </button>
+        </div>
         </div>
       </Fragment>
     );

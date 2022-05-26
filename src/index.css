@@ -48,6 +48,14 @@ span.haveAccount a {
   font-size: 14px;
 }
 
+.btn-plus{
+  float: right;
+}
+
 .btn:hover{
   background-color: rgba(172, 106, 20, 0.76);
+}
+
+.bg-green-400{
+  background-color: rgba(212, 255, 241, 0.76);
 }
