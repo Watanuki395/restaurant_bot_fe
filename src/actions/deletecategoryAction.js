@@ -2,9 +2,9 @@ import {
     DELETE_CATEGORY_REQUESTED
 } from './index';
 
-export const deleteProductAction = (id) => {
+export const deleteCategoryAction = (id_cat) => {
     return {
         type: DELETE_CATEGORY_REQUESTED,
-        payload: id
+        payload: id_cat
     }
 }

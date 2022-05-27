@@ -6,9 +6,9 @@ import {
 } from '../actions/index';
 import apiCall from '../api';
 
-function* deleteProductSaga(id){
+function* deleteProductSaga(payload){
     try{
-        const response = yield call(apiCall, 'DELETE', `/api/product/${id}`);
+        const response = yield call(apiCall, 'DELETE', `/api/product/${payload.payload.id_prd}`);
         yield put({type: DELETE_PRODUCT_SUCCESS, response})
         
     }catch(error){
@@ -19,8 +19,9 @@ function* deleteProductSaga(id){
 function* sagas()
 {
     while(true){
-        const {payload: id_prd} = yield take(DELETE_PRODUCT_REQUESTED);
-        yield call(deleteProductSaga, id_prd)
+        yield takeLatest(DELETE_PRODUCT_REQUESTED, deleteProductSaga);
+        /* const {payload: id_prd} = yield take(DELETE_PRODUCT_REQUESTED);
+        yield call(deleteProductSaga, id_prd) */
     }
 }
 

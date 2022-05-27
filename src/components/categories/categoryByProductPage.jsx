@@ -1,16 +1,18 @@
-import React, { Fragment, useEffect, useState, useMemo } from 'react'
-import { useSelector, useDispatch, connect } from 'react-redux';
+import React, { Fragment, useEffect, useState, useMemo } from "react";
+import { useSelector, useDispatch, connect } from "react-redux";
 import { Redirect, useHistory, useParams } from "react-router-dom";
-import { useTable, usePagination } from 'react-table';
+import { useTable, usePagination } from "react-table";
+import { GrAdd } from "react-icons/gr";
+import { IconDelete, IconEdit, IconSee, IconPlus, SButton } from "./style";
 
-import { createProductAction } from '../../actions/createproductAction';
-import { productsRequested } from '../../actions/productsAction';
-import { Products } from '../product/Products';
-import { deleteProductAction } from '../../actions/deleteproductAction'
-import { productoByCategoryRequested } from '../../actions/productbycategoryAction';
-import { editProductAction } from '../../actions/editproductAction';
+import { createProductAction } from "../../actions/createproductAction";
+import { productsRequested } from "../../actions/productsAction";
+import { Products } from "../product/Products";
+import { deleteProductAction } from "../../actions/deleteproductAction";
+import { productoByCategoryRequested } from "../../actions/productbycategoryAction";
+import { editProductAction } from "../../actions/editproductAction";
 
-import {Modal, Button} from 'react-bootstrap'
+import { Modal, Button } from "react-bootstrap";
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
@@ -19,124 +21,173 @@ import "../../index.css";
 
 const CategoryByProduct = () => {
 
-    const COLUMNS = [
-        {
-            Header: '#',
-            accessor: 'id_cat'
-        },
-        {
-            Header: 'Producto',
-            accessor: 'producto',
-        },
-        {
-            Header: 'Descripción',
-            accessor: 'descripcion',
-        }
-        ,
-        {
-            Header: 'Categoría',
-            accessor: 'categoria',
-        }
-    ]
 
-    const dispatch = useDispatch();
-    const history = useHistory();
-
-    const [ refresh, setRefresh ] = useState(false);
-
-    const categoryByProduct = useSelector(state => state.entries.productbycategory.productByCategory);
-
-    const columns = useMemo(() => COLUMNS, []);
-    const data = useMemo(() => categoryByProduct, []);
-
-    const RedirectProduct = (id_cat, id_prd) => {
-      dispatch( productsRequested({id_user:68, id_cat, id_prd}) );
-      history.push(`/Products/`);
-    }
-
-    const RedirectEditProduct = id_prd => {
-      //dispatch( productoByCategoryRequested({id_user:68, id_cat}) );
-      history.push(`/editProduct/${id_prd}`);
-    }
-
-    const RedirectDeleteProduct = id_prd => {
-      if(window.confirm("¿Estás seguro?")){
-        setRefresh(true);
-        dispatch(deleteProductAction(id_prd));
-        toast.success("Producto eliminado.");
-      }
-    }
-    
-    useEffect( () => {
-      if(refresh){
-        dispatch(productoByCategoryRequested()); 
-        setRefresh(false); 
-      }
-    }, [refresh]);
-
-    const tableHooks = (hooks) => {
-        hooks.visibleColumns.push((columns) => [
-         ...columns,
-         {
-           id: "Product",
-           Header: "Product",
-           Cell: ({row}) => (
-             <>
-                <button className="btn btn-dark mb-1" onClick={ () => RedirectProduct(row.original.id_cat, row.original.id_prd) }>
-                    Producto
-                </button>
-                <button className="btn btn-primary mb-1" onClick={ () => RedirectEditProduct(row.original.id_prd) }>
-                    Editar
-                </button>
-                <button className="btn btn-danger mb-1" onClick={ () => RedirectDeleteProduct(row.original.id_prd) }>
-                    Borrar
-                </button>
-             </>
-           )
-         }
-       ]) 
-     }
-
-      const {
-        getTableProps,
-        getTableBodyProps,
-        headerGroups,
-        page,
-        nextPage,
-        previousPage,
-        canNextPage,
-        canPreviousPage,
-        pageOptions,
-        state,
-        prepareRow
-    } = useTable(
-        {
-            columns,
-            data
-        },
-        usePagination,
-        tableHooks
-    ); 
-
-    const {pageIndex} = state;
-
-    const [isReseted, setReseted] = useState(false);
-    const [count, setCount] = useState(0);
-
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
   
-    const {id_cat} = useParams();
+  const dispatch = useDispatch();
+  const history = useHistory();
 
-    const initialValues = {
-        name_prd: "",
-        description_prd: "",
-        id_cat: Number(id_cat),
-        id_user: 68,
+  useEffect(() => {
+
+    const cargarProductoCat = () => dispatch(productoByCategoryRequested({id_user: 68, id_cat}));
+    cargarProductoCat();
+
+}, []);
+
+  //#region UseSelector and states
+
+const [isReseted, setReseted] = useState(false);
+const [count, setCount] = useState(0);
+
+const categoryByProduct = useSelector(
+  (state) => state.entries.productbycategory.productByCategory
+);
+
+//#endregion
+
+  //#region UseTable
+
+const COLUMNS = [
+    {
+      Header: "#",
+      accessor: "id_cat",
+    },
+    {
+      Header: "Producto",
+      accessor: "producto",
+    },
+    {
+      Header: "Descripción",
+      accessor: "descripcion",
+    },
+    {
+      Header: "Categoría",
+      accessor: "categoria",
+    },
+  ];
+
+  const columns = useMemo(() => COLUMNS, []);
+  const data = useMemo(() => [...categoryByProduct], [categoryByProduct]);
+
+  const RedirectProduct = (id_cat, id_prd) => {
+    dispatch(productsRequested({ id_user: 68, id_cat, id_prd }));
+    history.push(`/Products/`);
+  };
+
+  const RedirectEditProduct = (id_prd) => {
+    //dispatch( productoByCategoryRequested({id_user:68, id_cat}) );
+    history.push(`/editProduct/${id_prd}`);
+  };
+
+  const tableHooks = (hooks) => {
+    hooks.visibleColumns.push((columns) => [
+      ...columns,
+      {
+        id: "Product",
+        Header: "Product",
+        Cell: ({ row }) => (
+          <>
+            <SButton
+              className="mb-1"
+              onClick={() =>
+                RedirectProduct(row.original.id_cat, row.original.id_prd)
+              }
+            >
+              <IconSee></IconSee>
+            </SButton>
+            <SButton
+              className="mb-1"
+              onClick={() => RedirectEditProduct(row.original.id_prd)}
+            >
+              <IconEdit></IconEdit>
+            </SButton>
+            <SButton
+              className="mb-1"
+              onClick={() => ConfirmDelete(row.original.id_prd)}
+            >
+              <IconDelete></IconDelete>
+            </SButton>
+          </>
+        ),
+      },
+    ]);
+  };
+
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    page,
+    nextPage,
+    previousPage,
+    canNextPage,
+    canPreviousPage,
+    pageOptions,
+    state,
+    prepareRow,
+  } = useTable(
+    {
+      columns,
+      data,
+    },
+    usePagination,
+    tableHooks
+  );
+
+  const { pageIndex } = state;
+
+  //#endregion
+
+  const { id_cat } = useParams();
+
+  //#region Eliminar
+    let initialValuesDelete = {
+      id_cat: null
     };
+  
+    const ConfirmDelete = (id_prd) => {
+      setFormValue({ id_prd })
+      handleShowDelete();
+    };
+    const [formValue, setFormValue] = useState(initialValuesDelete);
+    const { id_prd } = formValue;
+  
+    const onChangeForm = (e) => {
+      let { name, value } = e.target;
+      setFormValue({
+        ...formValue,
+        [name]: value,
+      });
+    };
+    const [showDelete, setShowDelete] = useState(false);
+    const handleCloseDelete = () => setShowDelete(false);
+    const handleShowDelete = () => setShowDelete(true);
+  
+    const onHandleSubmitDelete = (e) => {
+      e.preventDefault();
+  
+        dispatch(deleteProductAction(formValue));
+        toast.success("Producto elimnado!");
+        setTimeout(() => dispatch(productoByCategoryRequested({id_user: 68, id_cat})), 1000);
+        setTimeout(() => setShowDelete(false), 1100);
+  
+    };
+  
+    //#endregion
 
-    const validationSchema = Yup.object().shape({
+  //#region Agregar
+
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const initialValues = {
+    name_prd: "",
+    description_prd: "",
+    id_cat: Number(id_cat),
+    id_user: 68,
+  };
+
+  const validationSchema = Yup.object().shape({
     name_prd: Yup.string()
       .required("Campo Requerido")
       .min(2, `Mínimo 5 caracteres`)
@@ -145,30 +196,42 @@ const CategoryByProduct = () => {
       .required("Campo Requerido")
       .min(2, `Mínimo 5 caracteres`)
       .max(255, `Máximo 255 caracteres`),
-    });
+  });
 
-    async function onHandleSubmit(data) {
+  async function onHandleSubmit(data) {
     await sleep(1000);
     setReseted(true);
-    let resp = dispatch(dispatch(createProductAction(data)));
-    toast.success("Producto agregado.");
-    setTimeout(()=> history.push(`/CategoryByProduct/${Number(id_cat)}`), 1000);
-    setShow(false);
-    return resp;
+    console.log(data);
+    if(data){
+      //let resp = dispatch(dispatch(createProductAction(data)));
+      dispatch(createProductAction(data));
+      toast.success("Producto agregado.");
+      setTimeout(() => dispatch(productoByCategoryRequested({id_user: 68, id_cat})), 1000);
+      setTimeout(() => setShow(false), 1100);
+      setTimeout(
+        () => history.push(`/CategoryByProduct/${Number(id_cat)}`),
+        1000
+      );
+      setShow(false);
+      //return resp;
+    }
   }
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-    return ( <>
-
-<button
-          className="btn btn-dark mt-3 float-right"
+  //#endregion
+  
+  return (
+    <>
+      <div className="container">
+        <button
+          className="btn btn-warning btn-plus mt-3"
           variant="primary"
           onClick={handleShow}
         >
-          Agregar
+          <GrAdd />
         </button>
-      <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Agregar una producto</Modal.Title>
           </Modal.Header>
@@ -180,63 +243,63 @@ const CategoryByProduct = () => {
             >
               {({ errors, touched, isSuccess, message, isSubmitting }) => (
                 <Form>
+                  <section className="">
                     <section className="">
                       <section className="">
-                        <section className="">
-                          <div>
-                            {!isSuccess ? (
-                              <div>{message}</div>
-                            ) : (
-                              <Redirect to="dashboard" />
-                            )}
-                            <div className="form-container">
-                              <div>
-                                {!isSuccess ? (
-                                  <div>{message}</div>
-                                ) : (
-                                  <Redirect to="dashboard" />
-                                )}
-                                <div className="mb-3">
-                                  <label
-                                    htmlFor="name_prd"
-                                    className="form-label"
-                                  >
-                                    Nombre del producto
-                                  </label>
-                                  <Field
-                                    type="text"
-                                    className="form-text form-control"
-                                    name="name_prd"
-                                    id="name_prd"
-                                    placeholder="Producto"
-                                  />
-                                  <ErrorMessage
-                                    name="name_prd"
-                                    component="div"
-                                    className="field-error text-danger"
-                                  />
-                                </div>
-                                <div className="mb-3">
-                                  <label
-                                    htmlFor="description_prd"
-                                    className="form-label"
-                                  >
-                                    Descripción
-                                  </label>
-                                  <Field
-                                    type="description_prd"
-                                    className="form-text form-control"
-                                    name="description_prd"
-                                    id="description_prd"
-                                    placeholder="Descripción del producto"
-                                  />
-                                  <ErrorMessage
-                                    name="description_prd"
-                                    component="div"
-                                    className="field-error text-danger"
-                                  />
-                                </div>
-                                {/* <div className="mb-3">
+                        <div>
+                          {!isSuccess ? (
+                            <div>{message}</div>
+                          ) : (
+                            <Redirect to="dashboard" />
+                          )}
+                          <div className="form-container">
+                            <div>
+                              {!isSuccess ? (
+                                <div>{message}</div>
+                              ) : (
+                                <Redirect to="dashboard" />
+                              )}
+                              <div className="mb-3">
+                                <label
+                                  htmlFor="name_prd"
+                                  className="form-label"
+                                >
+                                  Nombre del producto
+                                </label>
+                                <Field
+                                  type="text"
+                                  className="form-text form-control"
+                                  name="name_prd"
+                                  id="name_prd"
+                                  placeholder="Producto"
+                                />
+                                <ErrorMessage
+                                  name="name_prd"
+                                  component="div"
+                                  className="field-error text-danger"
+                                />
+                              </div>
+                              <div className="mb-3">
+                                <label
+                                  htmlFor="description_prd"
+                                  className="form-label"
+                                >
+                                  Descripción
+                                </label>
+                                <Field
+                                  type="description_prd"
+                                  className="form-text form-control"
+                                  name="description_prd"
+                                  id="description_prd"
+                                  placeholder="Descripción del producto"
+                                />
+                                <ErrorMessage
+                                  name="description_prd"
+                                  component="div"
+                                  className="field-error text-danger"
+                                />
+                              </div>
+                              {/* <div className="mb-3">
                                   <label
                                     htmlFor="imgURL_prd"
                                     className="form-label"
@@ -256,26 +319,26 @@ const CategoryByProduct = () => {
                                     className="field-error text-danger"
                                   />
                                 </div> */}
-                                <div className="d-grid gap-2 py-3">
-                                  <button
-                                    type="submit"
-                                    disabled={
-                                      count > 0 ? true : false || isSubmitting
-                                    }
-                                    className="btn btn-dark btn-block mb-2"
-                                  >
-                                    {isSubmitting && (
-                                      <span className="spinner-border spinner-border-sm mr-1"></span>
-                                    )}
-                                    Crear
-                                  </button>
-                                </div>
+                              <div className="d-grid gap-2 py-3">
+                                <button
+                                  type="submit"
+                                  disabled={
+                                    count > 0 ? true : false || isSubmitting
+                                  }
+                                  className="btn btn-dark btn-block mb-2"
+                                >
+                                  {isSubmitting && (
+                                    <span className="spinner-border spinner-border-sm mr-1"></span>
+                                  )}
+                                  Crear
+                                </button>
                               </div>
                             </div>
                           </div>
-                        </section>
+                        </div>
                       </section>
                     </section>
+                  </section>
                 </Form>
               )}
             </Formik>
@@ -286,8 +349,8 @@ const CategoryByProduct = () => {
             </Button>
           </Modal.Footer>
         </Modal>
-    
-         <table {...getTableProps()} className="table">
+
+        <table {...getTableProps()} className="table">
           <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
@@ -305,15 +368,25 @@ const CategoryByProduct = () => {
               prepareRow(row);
               return (
                 <tr {...row.getRowProps()}>
-                  {row.cells.map(cell => {
-                    return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                  {row.cells.map((cell) => {
+                    return (
+                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                    );
                   })}
                 </tr>
-              )
+              );
             })}
           </tbody>
         </table>
-        <div>
+
+        <div className="text-center mt-2">
+          <button
+            className="btn btn-dark m-1"
+            onClick={() => previousPage()}
+            disabled={!canPreviousPage}
+          >
+            Anterior
+          </button>
           <span>
             Page{" "}
             <strong>
@@ -322,20 +395,49 @@ const CategoryByProduct = () => {
           </span>
           <button
             className="btn btn-dark"
-            onClick={() => previousPage()}
-            disabled={!canPreviousPage}
-          >
-            Anterior
-          </button>
-          <button
-            className="btn btn-dark"
             onClick={() => nextPage()}
             disabled={!canNextPage}
           >
             Siguiente
           </button>
-        </div> 
-    </> );
-}
- 
+        </div>
+      </div>
+
+      <Modal show={showDelete} onHide={handleCloseDelete}>
+        <Modal.Header closeButton>
+          <Modal.Title>Eliminar producto</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={onHandleSubmitDelete}>
+            <div className="form-container">
+              <div>
+                <input type="number" id="id_prd" name="id_prd" value={id_prd} 
+                  onChange={onChangeForm}
+                  hidden
+                />
+                <h4>¿Está seguro que quiere eliminar ese producto?</h4>
+                <div className="  py-3">
+                  <button type="submit" className="btn btn-dark m-3">
+                    Eliminar
+                  </button>
+                  <button 
+                    type="button"
+                    className="btn btn-primary mr-3"
+                    onClick={handleCloseDelete}
+                  >Cancelar</button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseDelete}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
+};
+
 export default CategoryByProduct;

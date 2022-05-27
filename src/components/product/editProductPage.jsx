@@ -27,7 +27,7 @@ const editProduct = () => {
     const {id_prd} = useParams();
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const data = useSelector( (state) => state.entries.productbycategory.productByCategory );
-    console.log(data);
+
     
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
@@ -57,44 +57,54 @@ const editProduct = () => {
       })
     };
 
-    return(
-        <>
-            <form onSubmit={onHandleSubmit}>
-                    <div className='form-group'>
-                        <label> Nombre del producto</label>
-                        <input
-                        type="text"
-                        className='form-control'
-                        placeholder='Nombre del producto'
-                        name='producto'
-                        value={producto || ''}
-                        onChange={onChangeForm}
-                        />
-                    </div>
-                    <div className='form-group'>
-                        <label> Descripción del producto</label>
-                        <input
-                        type="text"
-                        className='form-control'
-                        placeholder='Descripción del producto'
-                        name='descripcion'
-                        value={descripcion || ''}
-                        onChange={onChangeForm}
-                        />
-                    </div>
-                    <button
-                        type='button'
-                        className='btn btn-primary font-weight-bold text-uppercase d-block '
-                        onClick={()=>history.push("/dashboard")}
-                    >Volver
-                    </button>
-                    <button
-                        type='submit'
-                        className='btn btn-dark font-weight-bold text-uppercase d-block mt-5'
-                    >Guardar Cambios
-                    </button>
-                </form>
-        </>
+    return (
+      <>
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-4"></div>
+            <div className="col-lg-4 form-container mt-5">
+              <form onSubmit={onHandleSubmit}>
+                <div className="form-group">
+                  <label> Nombre del producto</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Nombre del producto"
+                    name="producto"
+                    value={producto || ""}
+                    onChange={onChangeForm}
+                  />
+                </div>
+                <div className="form-group">
+                  <label> Descripción del producto</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Descripción del producto"
+                    name="descripcion"
+                    value={descripcion || ""}
+                    onChange={onChangeForm}
+                  />
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-primary font-weight-bold text-uppercase m-3"
+                  onClick={() => history.push("/dashboard")}
+                >
+                  Volver
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-dark font-weight-bold text-uppercase m-3"
+                >
+                  Guardar Cambios
+                </button>
+              </form>
+            </div>
+            <div className="col-lg-4"></div>
+          </div>
+        </div>
+      </>
     );
 }
  

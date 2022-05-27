@@ -28,7 +28,7 @@ function deleteCategory(state = initialState, action){
             isFetching: false,
             error: false,
             success:true,
-            categories:state.categories.filter( category => category.id !== state.productoeliminar),
+            categories:state.categories.filter( category => category.id_cat !== state.productoeliminar),
             categoryDelete: null,
             response
         }
