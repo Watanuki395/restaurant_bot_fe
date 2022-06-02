@@ -4,6 +4,7 @@ import { useHistory, useParams } from "react-router-dom";
 
 import { selectComponentRequested } from "../../actions/selectcomponentAction";
 import { editCategoryAction } from "../../actions/editcategoryAction";
+import { categoriesRequested } from "../../actions/categoriesAction";
 
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -34,6 +35,7 @@ const categoryEdit = () => {
       const category = data.find((item) => item.id_cat === Number(id_cat));
       setFormValue({ ...category });
     }
+    
   }, [id_cat]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -44,6 +46,7 @@ const categoryEdit = () => {
     if (name_cat && description_cat) {
       dispatch(editCategoryAction({ formValue }));
       toast.success("Categoría actualizada satisfactoriamente.");
+      setTimeout(() => dispatch(categoriesRequested()), 1000);
       setTimeout(() => history.push("/dashboard"), 1000);
     } else {
       toast.error("ERROR");
@@ -77,7 +80,7 @@ const categoryEdit = () => {
               </div>
               <div className="form-group">
                 <label> Descripción de la categoría</label>
-                <input
+                <textarea
                   type="text"
                   className="form-control"
                   placeholder="Descripción de la categoría"

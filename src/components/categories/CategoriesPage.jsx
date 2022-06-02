@@ -321,7 +321,7 @@ const Categories = (props) => {
           </Modal.Footer>
         </Modal>
 
-        <table {...getTableProps()} className="table">
+        <table {...getTableProps()} className="table striped bordered hover">
           <thead className="thead-dark">
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>

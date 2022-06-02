@@ -36,6 +36,31 @@ code {
   position: relative;
 }
 
+.modal-title{
+  font-family: 'Lato', sans-serif;
+  text-align: center;
+  font-size: 35px!important;
+  font-weight: bold!important;
+}
+
+.form-product{
+  background: rgba(204, 198, 198, 0.884);
+  font-family: 'Lato', sans-serif;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 0px #0000;
+  position: relative;
+}
+
+.form-product p span {
+  color: gray;
+  margin-bottom: 0px!important;
+}
+.description {
+  font-size: 25px;
+  border-bottom: 1px solid gray;
+}
+
 span.littleSpan {
   font-size: 12px;
   margin-bottom: 20px;

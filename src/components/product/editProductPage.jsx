@@ -4,6 +4,7 @@ import { useHistory, useParams } from "react-router-dom";
 
 import { selectComponentRequested } from '../../actions/selectcomponentAction';
 import { editProductAction} from '../../actions/editproductAction';
+import { productoByCategoryRequested } from "../../actions/productbycategoryAction";
 
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -27,8 +28,7 @@ const editProduct = () => {
     const {id_prd} = useParams();
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const data = useSelector( (state) => state.entries.productbycategory.productByCategory );
-
-    
+    let id_cat = data[0].id_cat;
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
         if(id_prd){
@@ -46,7 +46,8 @@ const editProduct = () => {
       //if(name_cat && description_cat){
         dispatch(editProductAction({ formValue}));
         toast.success("Producto actualizada satisfactoriamente.");
-        setTimeout(()=> history.push("/dashboard"), 1000);
+        dispatch(productoByCategoryRequested({ id_user: 68,  id_cat}));
+        setTimeout(()=> history.push("/CategoryByProduct/"+id_cat), 1000);
       //}
     };
     const onChangeForm = (e) => {

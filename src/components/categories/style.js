@@ -30,6 +30,11 @@ export const SButton = styled.button`
   background-color: rgba(212, 255, 241, 0.76);
 `;
 
+export const PButton = styled.button`
+  border: none;
+  background-color: #fff;
+`;
+
 export const IconDelete = styled(FaTrash)`
   color: #BA1C1C;
   font-size: 20px;
