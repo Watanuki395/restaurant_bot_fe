@@ -14,7 +14,10 @@ import "../../index.css";
 
 const initialState ={
     producto: "",
-    descripcion: ""
+    descripcion: "",
+    imgURL_prd: "",
+    price_prd: 0,
+    isOnMenu: false
 }
 
 
@@ -39,7 +42,7 @@ const editProduct = () => {
 
       // eslint-disable-next-line react-hooks/rules-of-hooks
     const [formValue, setFormValue] = useState(initialState)
-    const {producto, descripcion} = formValue;
+    const {producto, descripcion, imgURL_prd, price_prd, isOnMenu} = formValue;
     //const {name_prd, description_prd, imgURL_prd} = formValue;
     const onHandleSubmit = (e) => {
       e.preventDefault();
@@ -87,6 +90,64 @@ const editProduct = () => {
                     onChange={onChangeForm}
                   />
                 </div>
+
+                <div className="form-group">
+                  <label> Imagen del producto</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Imagen del producto"
+                    name="imgURL_prd"
+                    value={imgURL_prd || ""}
+                    onChange={onChangeForm}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label> Precio del producto</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Precio del producto"
+                    name="price_prd"
+                    value={price_prd || ""}
+                    onChange={onChangeForm}
+                  />
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-check-label">Menú</label>
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="isOnMenu"
+                      id="isOnMenu"
+                      value="true"
+                      //checked={select.checked === "true" ? true : false}
+                      //onChange={changeRadioButton}
+                    />
+                    <label className="form-check-label" htmlFor="isOnMenu">
+                      Sí
+                    </label>
+                  </div>
+
+                  <div className="form-check">
+                    <input
+                      className="form-check-input"
+                      type="radio"
+                      name="isOnMenu"
+                      id="isOnMenu"
+                      value="false"
+                      //checked={select.checked === "false" ? true : false}
+                      //onChange={changeRadioButton}
+                    />
+                    <label className="form-check-label" htmlFor="isOnMenu">
+                      No
+                    </label>
+                  </div>
+                </div>
+
                 <button
                   type="button"
                   className="btn btn-primary font-weight-bold text-uppercase m-3"
@@ -97,6 +158,7 @@ const editProduct = () => {
                 <button
                   type="submit"
                   className="btn btn-dark font-weight-bold text-uppercase m-3"
+                  disabled={producto === "" || descripcion === "" || imgURL_prd === ""}
                 >
                   Guardar Cambios
                 </button>

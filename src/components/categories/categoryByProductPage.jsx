@@ -173,22 +173,44 @@ const CategoryByProduct = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const [ select, setSelect ] = useState({
+    checked: null
+  });
+
   const initialValues = {
     name_prd: "",
     description_prd: "",
     id_cat: Number(id_cat),
     id_user: 68,
+    imgURL_prd: "",
+    price_prd: 0,
+    isOnMenu: select.checked
   };
+
+  const changeRadioButton = e => {
+    e.preventDefault();
+    setSelect({
+      checked: e.target.value
+    })
+  }
+
+
 
   const validationSchema = Yup.object().shape({
     name_prd: Yup.string()
       .required("Campo Requerido")
-      .min(2, `Mínimo 5 caracteres`)
+      .min(2, `Mínimo 2 caracteres`)
       .max(255, `Máximo 255 caracteres`),
     description_prd: Yup.string()
       .required("Campo Requerido")
       .min(2, `Mínimo 5 caracteres`)
       .max(255, `Máximo 255 caracteres`),
+    imgURL_prd: Yup.string()
+      .required("Campo Requerido")
+      .min(2, `Mínimo 2 caracteres`)
+      .max(255, `Máximo 255 caracteres`),
+    price_prd: Yup.number()
+      .required("Campo Requerido")
   });
 
   async function onHandleSubmit(data) {
@@ -196,7 +218,6 @@ const CategoryByProduct = () => {
     setReseted(true);
     console.log(data);
     if (data) {
-
       dispatch(createProductAction(data));
       toast.success("Producto agregado.");
       setTimeout(
@@ -209,7 +230,6 @@ const CategoryByProduct = () => {
         1000
       );
       setShow(false);
-
     }
   }
 
@@ -248,7 +268,7 @@ const CategoryByProduct = () => {
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
-              onSubmit={(values) => onHandleSubmit(values)}
+              onSubmit={(values) => console.log(values)}
             >
               {({ errors, touched, isSuccess, message, isSubmitting }) => (
                 <Form>
@@ -296,7 +316,7 @@ const CategoryByProduct = () => {
                                   Descripción
                                 </label>
                                 <Field
-                                  type="description_prd"
+                                  type="text"
                                   className="form-text form-control"
                                   name="description_prd"
                                   id="description_prd"
@@ -308,26 +328,91 @@ const CategoryByProduct = () => {
                                   className="field-error text-danger"
                                 />
                               </div>
-                              {/* <div className="mb-3">
+                              <div className="mb-3">
+                                <label
+                                  htmlFor="imgURL_prd"
+                                  className="form-label"
+                                >
+                                  Imagen
+                                </label>
+                                <Field
+                                  type="text"
+                                  className="form-text form-control"
+                                  name="imgURL_prd"
+                                  id="imgURL_prd"
+                                  placeholder="Imagen del producto"
+                                />
+                                <ErrorMessage
+                                  name="imgURL_prd"
+                                  component="div"
+                                  className="field-error text-danger"
+                                />
+                              </div>
+                              <div className="mb-3">
+                                <label
+                                  htmlFor="price_prd"
+                                  className="form-label"
+                                >
+                                  Precio
+                                </label>
+                                <Field
+                                  type="number"
+                                  className="form-text form-control"
+                                  name="price_prd"
+                                  id="price_prd"
+                                  placeholder="Precio del producto"
+                                />
+                                <ErrorMessage
+                                  name="price_prd"
+                                  component="div"
+                                  className="field-error text-danger"
+                                />
+                              </div>
+
+                              <div className="mb-3">
+                                <label
+                                  className="form-check-label"
+                                >
+                                  Menú
+                                </label>
+                                <div className="form-check">
+                                  <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    name="isOnMenu"
+                                    id="isOnMenu"
+                                    value="true"
+                                    checked={select.checked === "true" ? true : false}
+                                    onChange={changeRadioButton}
+                                  />
                                   <label
-                                    htmlFor="imgURL_prd"
-                                    className="form-label"
+                                    className="form-check-label"
+                                    htmlFor="isOnMenu"
                                   >
-                                    Imagen
+                                    Sí
                                   </label>
-                                  <Field
-                                    type="imgURL_prd"
-                                    className="form-text form-control"
-                                    name="imgURL_prd"
-                                    id="imgURL_prd"
-                                    placeholder="Imagen del producto"
+                                </div>
+                                
+                                <div className="form-check">
+                                  <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    name="isOnMenu"
+                                    id="isOnMenu"
+                                    value="false"
+                                    checked={select.checked === "false" ? true : false}
+                                    onChange={changeRadioButton}
+                                    
                                   />
-                                  <ErrorMessage
-                                    name="imgURL_prd"
-                                    component="div"
-                                    className="field-error text-danger"
-                                  />
-                                </div> */}
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor="isOnMenu"
+                                  >
+                                    No
+                                  </label>
+                                  <p>{select.checked}</p>
+                                </div>
+                              </div>
                               <div className="d-grid gap-2 py-3">
                                 <button
                                   type="submit"
@@ -467,9 +552,15 @@ const CategoryByProduct = () => {
                 />
                 <div className="  py-3">
                   <p className="description">{responseProduct.descripcion}</p>
-                  <p className="gray">Categoría: <span>{responseProduct.categoria}</span></p>
-                  <p>Menú:<span>{responseProduct.isOnMenu}</span></p>
-                  <p>Precio: <span>{responseProduct.price_prd}</span></p>
+                  <p className="gray">
+                    Categoría: <span>{responseProduct.categoria}</span>
+                  </p>
+                  <p>
+                    Menú:<span>{responseProduct.isOnMenu}</span>
+                  </p>
+                  <p>
+                    Precio: <span>{responseProduct.price_prd}</span>
+                  </p>
                 </div>
               </div>
             </div>
