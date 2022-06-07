@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { connect, useDispatch } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import Footer from "../common/Layout/footer/Footer"
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -45,13 +45,16 @@ function LoginPage(props) {
     setErrMsg('');
 }, [email, password])
 
+const authResponse = useSelector(state => state?.entries?.auth?.response);
+
 const onHandleSubmit = (e) => {
   try {
     let resp = dispatch(loginUser(e));
-    console.log(JSON.stringify(resp?.data));
-    const accessToken = resp?.data?.tokenSession;
+ 
+    //console.log(JSON.stringify(resp?.data));
+    const accessToken = authResponse?.accessToken;
     const roles = 2001;
-    //setAuth({ email, password, roles, accessToken });
+    setAuth({ email, password, roles, accessToken });
     setUser('');
     setPwd('');
     navigate(from, { replace: true });

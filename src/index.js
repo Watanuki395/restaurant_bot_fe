@@ -16,15 +16,15 @@ const store = createStore()
 
 
 ReactDOM.render(
+  <Provider store={store}>
     <BrowserRouter>
       <AuthProvider>
-        <Provider store={store}>
-            <Routes>
-              <Route path="/*" element={<App />} />
-            </Routes>
-        </Provider>
+        <Routes>
+          <Route path="/*" element={<App />} />
+        </Routes>
       </AuthProvider>
-    </BrowserRouter>,
+    </BrowserRouter>
+  </Provider>,
   document.getElementById("root")
 );
 //serviceWorker.register();

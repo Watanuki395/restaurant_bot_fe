@@ -8,9 +8,9 @@ function* loginSaga(payload) {
   try {
     const response = yield call(apiCall,'POST', '/api/auth/login', payload.user);
     if(response.user){
-      yield [put({type: LOGIN_USER_SUCCESS, response})];
+      yield put({type: LOGIN_USER_SUCCESS, response});
     }else{
-      yield [put({type: LOGIN_USER_ERROR, response})]
+      yield put({type: LOGIN_USER_ERROR, response})
     }
   } catch(error) {
     yield put({type: LOGIN_USER_ERROR})
