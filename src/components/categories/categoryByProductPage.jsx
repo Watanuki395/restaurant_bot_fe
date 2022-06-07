@@ -173,9 +173,7 @@ const CategoryByProduct = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const [ select, setSelect ] = useState({
-    checked: null
-  });
+  const [ select, setSelect ] = useState();
 
   const initialValues = {
     name_prd: "",
@@ -184,14 +182,11 @@ const CategoryByProduct = () => {
     id_user: 68,
     imgURL_prd: "",
     price_prd: 0,
-    isOnMenu: select.checked
+    isOnMenu: select
   };
 
   const changeRadioButton = e => {
-    e.preventDefault();
-    setSelect({
-      checked: e.target.value
-    })
+    setSelect(e.target.value)
   }
 
 
@@ -380,14 +375,13 @@ const CategoryByProduct = () => {
                                     className="form-check-input"
                                     type="radio"
                                     name="isOnMenu"
-                                    id="isOnMenu"
-                                    value="true"
-                                    checked={select.checked === "true" ? true : false}
-                                    onChange={changeRadioButton}
+                                    id="isOnMenutrue"
+                                    value={true}
+                                    onClick={changeRadioButton}
                                   />
                                   <label
                                     className="form-check-label"
-                                    htmlFor="isOnMenu"
+                                    htmlFor="isOnMenutrue"
                                   >
                                     Sí
                                   </label>
@@ -398,19 +392,17 @@ const CategoryByProduct = () => {
                                     className="form-check-input"
                                     type="radio"
                                     name="isOnMenu"
-                                    id="isOnMenu"
-                                    value="false"
-                                    checked={select.checked === "false" ? true : false}
-                                    onChange={changeRadioButton}
-                                    
+                                    id="isOnMenufalse"
+                                    value={false}
+                                    onClick={changeRadioButton}
                                   />
                                   <label
                                     className="form-check-label"
-                                    htmlFor="isOnMenu"
+                                    htmlFor="isOnMenufalse"
                                   >
                                     No
                                   </label>
-                                  <p>{select.checked}</p>
+                                  <p>{select}</p>
                                 </div>
                               </div>
                               <div className="d-grid gap-2 py-3">
