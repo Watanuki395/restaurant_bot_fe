@@ -54,3 +54,17 @@ export const IconSee = styled(FaEye)`
   cursor: pointer;
 `;
 
+export const IconDeletecon = styled(FaTrash)`
+  color: #BA1C1C;
+  font-size: 20px;
+  margin-right: 10px;
+  `;
+
+  export const ModalDelete = styled.div`
+    background: rgba(204, 198, 198, 0.884)
+    padding: 30px;
+    margin: 50px 0 50px 0;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px #0000
+    position: relative;
+    `;

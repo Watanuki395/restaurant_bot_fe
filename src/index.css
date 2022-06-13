@@ -35,7 +35,14 @@ code {
   box-shadow: 0px 0px 10px 0px #0000;
   position: relative;
 }
-
+.form-containerDelete{
+  background: rgba(241, 148, 138);
+  padding: 30px;
+  margin: 50px 0 50px 0;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 0px #0000;
+  position: relative;
+}
 .modal-title{
   font-family: 'Lato', sans-serif;
   text-align: center;

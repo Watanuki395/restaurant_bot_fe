@@ -16,7 +16,7 @@ import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { IconDelete, IconEdit, IconSee, IconPlus, SButton } from "./style";
+import { IconDelete, IconEdit, IconSee, IconPlus, SButton, ModalDelete } from "./style";
 import "../../index.css";
 
 const Categories = (props) => {
@@ -381,29 +381,30 @@ const Categories = (props) => {
           <Modal.Title>Eliminar categoría</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={onHandleSubmitDelete}>
-            <div className="form-container">
+          
+        </Modal.Body>
+        <div classname="form-containerDelete">
+        <h4>¿Está seguro que quiere eliminar esa categoría?</h4>
+        </div>
+        
+  
+        <Modal.Footer>
+        <form onSubmit={onHandleSubmitDelete}>
+            <div className="">
               <div>
                 <input type="number" id="id_cat" name="id_cat" value={id_cat} 
                   onChange={onChangeForm}
                   hidden
                 />
-                <h4>¿Está seguro que quiere eliminar esa categoría?</h4>
                 <div className="  py-3">
                   <button type="submit" className="btn btn-dark m-3">
                     Eliminar
                   </button>
-                  <button 
-                    type="button"
-                    className="btn btn-primary mr-3"
-                    onClick={handleCloseDelete}
-                  >Cancelar</button>
+                  
                 </div>
               </div>
             </div>
           </form>
-        </Modal.Body>
-        <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseDelete}>
             Cerrar
           </Button>
