@@ -173,7 +173,9 @@ const CategoryByProduct = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const [ select, setSelect ] = useState();
+  //const [ select, setSelect ] = useState();
+  //const changeRadioButton = (e) => setSelect(e.target.value)
+  //Revisar bien
 
   const initialValues = {
     name_prd: "",
@@ -182,14 +184,9 @@ const CategoryByProduct = () => {
     id_user: 68,
     imgURL_prd: "",
     price_prd: 0,
-    isOnMenu: select
+    isOnMenu: ''
+    //isOnMenu: select
   };
-
-  const changeRadioButton = e => {
-    setSelect(e.target.value)
-  }
-
-
 
   const validationSchema = Yup.object().shape({
     name_prd: Yup.string()
@@ -263,7 +260,15 @@ const CategoryByProduct = () => {
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
-              onSubmit={(values) => console.log(values)}
+              //onSubmit={(values) => console.log(values)}
+              onSubmit={async (values) => {
+                if(values.isOnMenu === 'true'){
+                  values.isOnMenu = true
+                }else{
+                  values.isOnMenu = false
+                }
+                await new Promise(onHandleSubmit(values));
+              }}
             >
               {({ errors, touched, isSuccess, message, isSubmitting }) => (
                 <Form>
@@ -371,13 +376,13 @@ const CategoryByProduct = () => {
                                   Menú
                                 </label>
                                 <div className="form-check">
-                                  <input
+                                  <Field
                                     className="form-check-input"
                                     type="radio"
                                     name="isOnMenu"
-                                    id="isOnMenutrue"
-                                    value={true}
-                                    onClick={changeRadioButton}
+                                    //id="isOnMenutrue"
+                                    value={"true"}
+                                    //onClick={changeRadioButton}
                                   />
                                   <label
                                     className="form-check-label"
@@ -388,13 +393,13 @@ const CategoryByProduct = () => {
                                 </div>
                                 
                                 <div className="form-check">
-                                  <input
+                                  <Field
                                     className="form-check-input"
                                     type="radio"
                                     name="isOnMenu"
-                                    id="isOnMenufalse"
-                                    value={false}
-                                    onClick={changeRadioButton}
+                                    //id="isOnMenufalse"
+                                    value={"false"}
+                                    //onClick={changeRadioButton}
                                   />
                                   <label
                                     className="form-check-label"
@@ -402,7 +407,7 @@ const CategoryByProduct = () => {
                                   >
                                     No
                                   </label>
-                                  <p>{select}</p>
+                                  {/* <p>{select}</p> */}
                                 </div>
                               </div>
                               <div className="d-grid gap-2 py-3">
@@ -548,7 +553,7 @@ const CategoryByProduct = () => {
                     Categoría: <span>{responseProduct.categoria}</span>
                   </p>
                   <p>
-                    Menú:<span>{responseProduct.isOnMenu}</span>
+                    Menú: <span>{responseProduct.isOnMenu ? "Sí" : "No"}</span>
                   </p>
                   <p>
                     Precio: <span>{responseProduct.price_prd}</span>

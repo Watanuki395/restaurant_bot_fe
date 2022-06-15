@@ -25,10 +25,76 @@ const Categories = (props) => {
   const [isReseted, setReseted] = useState(false);
   const [count, setCount] = useState(0);
 
+    //#region  Modal Agregar
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+  
+    const initialValues = {
+      name_cat: "",
+      description_cat: "",
+    };
+  
+    const validationSchema = Yup.object().shape({
+      name_cat: Yup.string()
+        .required("Campo Requerido")
+        .min(2, `Mínimo 5 caracteres`)
+        .max(255, `Máximo 255 caracteres`),
+      description_cat: Yup.string()
+        .required("Campo Requerido")
+        .min(2, `Mínimo 5 caracteres`)
+        .max(255, `Máximo 255 caracteres`),
+    });
+  
+    async function onHandleSubmit(data) {
+      await sleep(1000);
+      setReseted(true);
+      try {
+        if (data) {
+          //let resp = dispatch(createCategoryAction(data));
+          setReseted(true);
+          dispatch(createCategoryAction(data));
+          //return resp;
+        }
+      } catch (err){
+        console.log(err);
+      }
+    }
+  
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  
+    const createResponse = useSelector((state) => state.entries.createcategory.success);
+    const msg = useSelector((state) => state.entries.createcategory.msg);
+
+    //#endregion
+
   useEffect(() => {
     const cargarProductos = () => dispatch(categoriesRequested());
     cargarProductos();
-  }, []);
+    try {
+      if(createResponse && !msg){
+        toast.success("Categoría creada!");
+        setTimeout(() => dispatch(categoriesRequested()), 1000);
+        setTimeout(() => setShow(false), 1100);
+        setTimeout(() => history.push("/dashboard"), 500);
+      } else if(msg){
+        console.log(msg);
+        toast.error("Esa categoría ya existe.");
+      }
+    } catch (e){
+      if(!e?.createResponse){
+        toast.error("Servidor no responde.");
+      } else if(!e?.status === 400){
+        toast.error("Servidor no responde.");
+      } else if(!e?.status === 204){
+        toast.error("Esa categoría ya existe.");
+      } else if(msg){
+        console.log(msg);
+        toast.error("Esa categoría ya existe.");
+      }
+    }
+
+  }, [createResponse]);
 
   //#region  UseSelector
 
@@ -41,10 +107,10 @@ const Categories = (props) => {
   //#region  Modal Eliminar
 
   let initialValuesDelete = {
-    id_cat: null
+    id_cat: null,
   };
   const confirmDelete = (id_cat) => {
-    setFormValue({ id_cat })
+    setFormValue({ id_cat });
     handleShowDelete();
   };
   const [formValue, setFormValue] = useState(initialValuesDelete);
@@ -57,7 +123,6 @@ const Categories = (props) => {
       [name]: value,
     });
   };
-
 
   const [showDelete, setShowDelete] = useState(false);
   const handleCloseDelete = () => setShowDelete(false);
@@ -79,11 +144,10 @@ const Categories = (props) => {
   const onHandleSubmitDelete = (e) => {
     e.preventDefault();
 
-      dispatch(deleteCategoryAction(formValue));
-      toast.success("Categoría elimnada!");
-      setTimeout(() => dispatch(categoriesRequested()), 1000);
-      setTimeout(() => setShowDelete(false), 1100);
-
+    dispatch(deleteCategoryAction(formValue));
+    toast.success("Categoría elimnada!");
+    setTimeout(() => dispatch(categoriesRequested()), 1000);
+    setTimeout(() => setShowDelete(false), 1100);
   };
 
   //#endregion
@@ -161,46 +225,6 @@ const Categories = (props) => {
   const isEvent = (id) => id % 2 === 0;
 
   const { pageIndex } = state;
-  //#endregion
-
-  //#region  Modal Agregar
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const initialValues = {
-    name_cat: "",
-    description_cat: "",
-  };
-
-  const validationSchema = Yup.object().shape({
-    name_cat: Yup.string()
-      .required("Campo Requerido")
-      .min(2, `Mínimo 5 caracteres`)
-      .max(255, `Máximo 255 caracteres`),
-    description_cat: Yup.string()
-      .required("Campo Requerido")
-      .min(2, `Mínimo 5 caracteres`)
-      .max(255, `Máximo 255 caracteres`),
-  });
-
-  async function onHandleSubmit(data) {
-    await sleep(1000);
-    setReseted(true);
-    if (data) {
-      //let resp = dispatch(createCategoryAction(data));
-      dispatch(createCategoryAction(data));
-      toast.success("Categoría creada!");
-      setTimeout(() => dispatch(categoriesRequested()), 1000);
-      setTimeout(() => setShow(false), 1100);
-      setTimeout(() => history.push("/dashboard"), 500);
-      //return resp;
-    }
-  }
-
-  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-  const response = useSelector((state) => state.entries.createcategory);
   //#endregion
 
   return (
@@ -384,7 +408,11 @@ const Categories = (props) => {
           <form onSubmit={onHandleSubmitDelete}>
             <div className="form-container">
               <div>
-                <input type="number" id="id_cat" name="id_cat" value={id_cat} 
+                <input
+                  type="number"
+                  id="id_cat"
+                  name="id_cat"
+                  value={id_cat}
                   onChange={onChangeForm}
                   hidden
                 />
@@ -393,11 +421,13 @@ const Categories = (props) => {
                   <button type="submit" className="btn btn-dark m-3">
                     Eliminar
                   </button>
-                  <button 
+                  <button
                     type="button"
                     className="btn btn-primary mr-3"
                     onClick={handleCloseDelete}
-                  >Cancelar</button>
+                  >
+                    Cancelar
+                  </button>
                 </div>
               </div>
             </div>
