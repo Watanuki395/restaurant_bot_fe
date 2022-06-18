@@ -13,7 +13,8 @@ export const editProductAction = ( product ) => {
 
 export const editProductSuccessAction = () => {
     return {
-        type: EDIT_PRODUCT_SUCCESS
+        type: EDIT_PRODUCT_SUCCESS,
+        edit: true
     }
 }
 

@@ -7,7 +7,8 @@ import {
 const initialState = {
     success: null,
     isFetching: false,
-    error: null
+    error: null,
+    edit: null
 }
 
 function editProduct(state = initialState, action){
@@ -23,7 +24,9 @@ function editProduct(state = initialState, action){
         case EDIT_PRODUCT_SUCCESS:
             return{
                 ...state,
-                isFetching: false
+                isFetching: false,
+                edit: true,
+                response
                 //categoryEdit: null,
                 //categories: state.categories.map(category => category.id === action.payload.id ? category = action.payload : category)
             };

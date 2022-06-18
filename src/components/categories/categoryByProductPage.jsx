@@ -43,10 +43,10 @@ const CategoryByProduct = () => {
   //#region UseTable
 
   const COLUMNS = [
-    {
+    /* {
       Header: "#",
-      accessor: "id_cat",
-    },
+      accessor: "id_prd",
+    }, */
     {
       Header: "Producto",
       accessor: "producto",
@@ -64,7 +64,7 @@ const CategoryByProduct = () => {
   const columns = useMemo(() => COLUMNS, []);
   const data = useMemo(() => [...categoryByProduct], [categoryByProduct]);
 
-  const RedirectEditProduct = (id_prd) => {
+  const RedirectEditProduct = (id_prd, id_cat) => {
     //dispatch( productoByCategoryRequested({id_user:68, id_cat}) );
     history.push(`/editProduct/${id_prd}`);
   };
@@ -87,7 +87,7 @@ const CategoryByProduct = () => {
             </PButton>
             <PButton
               className="mb-1"
-              onClick={() => RedirectEditProduct(row.original.id_prd)}
+              onClick={() => RedirectEditProduct(row.original.id_prd, row.original.id_cat)}
             >
               <IconEdit></IconEdit>
             </PButton>
@@ -208,7 +208,6 @@ const CategoryByProduct = () => {
   async function onHandleSubmit(data) {
     await sleep(1000);
     setReseted(true);
-    console.log(data);
     if (data) {
       dispatch(createProductAction(data));
       toast.success("Producto agregado.");
