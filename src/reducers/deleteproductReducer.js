@@ -6,6 +6,7 @@ import {
 
 const initialState = {
     categories: [],
+    products: [],
     success: null,
     isFetching: false,
     error: null

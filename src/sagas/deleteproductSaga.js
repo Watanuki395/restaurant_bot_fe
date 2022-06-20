@@ -18,11 +18,7 @@ function* deleteProductSaga(payload){
 
 function* sagas()
 {
-    while(true){
-        yield takeLatest(DELETE_PRODUCT_REQUESTED, deleteProductSaga);
-        /* const {payload: id_prd} = yield take(DELETE_PRODUCT_REQUESTED);
-        yield call(deleteProductSaga, id_prd) */
-    }
+    yield takeLatest(DELETE_PRODUCT_REQUESTED, deleteProductSaga);
 }
 
 export default sagas;

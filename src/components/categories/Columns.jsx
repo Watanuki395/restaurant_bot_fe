@@ -10,13 +10,5 @@ export const COLUMNS = [
     {
         Header: 'Descripción',
         accessor: 'description_cat',
-    },
-    {
-        Header: 'Creación',
-        accessor: 'createdAt',
-    },
-    {
-        Header: 'Actualización',
-        accessor: 'updatedAt',
     }
 ]

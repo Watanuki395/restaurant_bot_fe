@@ -3,7 +3,7 @@ import { useSelector, useDispatch, connect } from "react-redux";
 import { Redirect, useHistory, useParams } from "react-router-dom";
 import { useTable, usePagination } from "react-table";
 import { GrAdd } from "react-icons/gr";
-import { IconDelete, IconEdit, IconSee, IconPlus, SButton } from "./style";
+import { IconDelete, IconEdit, IconSee, IconPlus, PButton } from "./style";
 
 import { createProductAction } from "../../actions/createproductAction";
 import { productsRequested } from "../../actions/productsAction";
@@ -20,37 +20,33 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../index.css";
 
 const CategoryByProduct = () => {
-
-
-  
   const dispatch = useDispatch();
   const history = useHistory();
 
   useEffect(() => {
-
-    const cargarProductoCat = () => dispatch(productoByCategoryRequested({id_user: 68, id_cat}));
+    const cargarProductoCat = () =>
+      dispatch(productoByCategoryRequested({ id_user: 68, id_cat }));
     cargarProductoCat();
-
-}, []);
+  }, []);
 
   //#region UseSelector and states
 
-const [isReseted, setReseted] = useState(false);
-const [count, setCount] = useState(0);
+  const [isReseted, setReseted] = useState(false);
+  const [count, setCount] = useState(0);
 
-const categoryByProduct = useSelector(
-  (state) => state.entries.productbycategory.productByCategory
-);
+  const categoryByProduct = useSelector(
+    (state) => state.entries.productbycategory.productByCategory
+  );
 
-//#endregion
+  //#endregion
 
   //#region UseTable
 
-const COLUMNS = [
-    {
+  const COLUMNS = [
+    /* {
       Header: "#",
-      accessor: "id_cat",
-    },
+      accessor: "id_prd",
+    }, */
     {
       Header: "Producto",
       accessor: "producto",
@@ -68,12 +64,7 @@ const COLUMNS = [
   const columns = useMemo(() => COLUMNS, []);
   const data = useMemo(() => [...categoryByProduct], [categoryByProduct]);
 
-  const RedirectProduct = (id_cat, id_prd) => {
-    dispatch(productsRequested({ id_user: 68, id_cat, id_prd }));
-    history.push(`/Products/`);
-  };
-
-  const RedirectEditProduct = (id_prd) => {
+  const RedirectEditProduct = (id_prd, id_cat) => {
     //dispatch( productoByCategoryRequested({id_user:68, id_cat}) );
     history.push(`/editProduct/${id_prd}`);
   };
@@ -86,26 +77,26 @@ const COLUMNS = [
         Header: "Product",
         Cell: ({ row }) => (
           <>
-            <SButton
+            <PButton
               className="mb-1"
               onClick={() =>
                 RedirectProduct(row.original.id_cat, row.original.id_prd)
               }
             >
               <IconSee></IconSee>
-            </SButton>
-            <SButton
+            </PButton>
+            <PButton
               className="mb-1"
-              onClick={() => RedirectEditProduct(row.original.id_prd)}
+              onClick={() => RedirectEditProduct(row.original.id_prd, row.original.id_cat)}
             >
               <IconEdit></IconEdit>
-            </SButton>
-            <SButton
+            </PButton>
+            <PButton
               className="mb-1"
               onClick={() => ConfirmDelete(row.original.id_prd)}
             >
               <IconDelete></IconDelete>
-            </SButton>
+            </PButton>
           </>
         ),
       },
@@ -140,39 +131,41 @@ const COLUMNS = [
   const { id_cat } = useParams();
 
   //#region Eliminar
-    let initialValuesDelete = {
-      id_cat: null
-    };
-  
-    const ConfirmDelete = (id_prd) => {
-      setFormValue({ id_prd })
-      handleShowDelete();
-    };
-    const [formValue, setFormValue] = useState(initialValuesDelete);
-    const { id_prd } = formValue;
-  
-    const onChangeForm = (e) => {
-      let { name, value } = e.target;
-      setFormValue({
-        ...formValue,
-        [name]: value,
-      });
-    };
-    const [showDelete, setShowDelete] = useState(false);
-    const handleCloseDelete = () => setShowDelete(false);
-    const handleShowDelete = () => setShowDelete(true);
-  
-    const onHandleSubmitDelete = (e) => {
-      e.preventDefault();
-  
-        dispatch(deleteProductAction(formValue));
-        toast.success("Producto elimnado!");
-        setTimeout(() => dispatch(productoByCategoryRequested({id_user: 68, id_cat})), 1000);
-        setTimeout(() => setShowDelete(false), 1100);
-  
-    };
-  
-    //#endregion
+  let initialValuesDelete = {
+    id_cat: null,
+  };
+
+  const ConfirmDelete = (id_prd) => {
+    setFormValue({ id_prd });
+    handleShowDelete();
+  };
+  const [formValue, setFormValue] = useState(initialValuesDelete);
+  const { id_prd } = formValue;
+
+  const onChangeForm = (e) => {
+    let { name, value } = e.target;
+    setFormValue({
+      ...formValue,
+      [name]: value,
+    });
+  };
+  const [showDelete, setShowDelete] = useState(false);
+  const handleCloseDelete = () => setShowDelete(false);
+  const handleShowDelete = () => setShowDelete(true);
+
+  const onHandleSubmitDelete = (e) => {
+    e.preventDefault();
+
+    dispatch(deleteProductAction(formValue));
+    toast.success("Producto elimnado!");
+    setTimeout(
+      () => dispatch(productoByCategoryRequested({ id_user: 68, id_cat })),
+      1000
+    );
+    setTimeout(() => setShowDelete(false), 1100);
+  };
+
+  //#endregion
 
   //#region Agregar
 
@@ -180,47 +173,74 @@ const COLUMNS = [
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  //const [ select, setSelect ] = useState();
+  //const changeRadioButton = (e) => setSelect(e.target.value)
+  //Revisar bien
+
   const initialValues = {
     name_prd: "",
     description_prd: "",
     id_cat: Number(id_cat),
     id_user: 68,
+    imgURL_prd: "",
+    price_prd: 0,
+    isOnMenu: ''
+    //isOnMenu: select
   };
 
   const validationSchema = Yup.object().shape({
     name_prd: Yup.string()
       .required("Campo Requerido")
-      .min(2, `Mínimo 5 caracteres`)
+      .min(2, `Mínimo 2 caracteres`)
       .max(255, `Máximo 255 caracteres`),
     description_prd: Yup.string()
       .required("Campo Requerido")
       .min(2, `Mínimo 5 caracteres`)
       .max(255, `Máximo 255 caracteres`),
+    imgURL_prd: Yup.string()
+      .required("Campo Requerido")
+      .min(2, `Mínimo 2 caracteres`)
+      .max(255, `Máximo 255 caracteres`),
+    price_prd: Yup.number()
+      .required("Campo Requerido")
   });
 
   async function onHandleSubmit(data) {
     await sleep(1000);
     setReseted(true);
-    console.log(data);
-    if(data){
-      //let resp = dispatch(dispatch(createProductAction(data)));
+    if (data) {
       dispatch(createProductAction(data));
       toast.success("Producto agregado.");
-      setTimeout(() => dispatch(productoByCategoryRequested({id_user: 68, id_cat})), 1000);
+      setTimeout(
+        () => dispatch(productoByCategoryRequested({ id_user: 68, id_cat })),
+        1000
+      );
       setTimeout(() => setShow(false), 1100);
       setTimeout(
         () => history.push(`/CategoryByProduct/${Number(id_cat)}`),
         1000
       );
       setShow(false);
-      //return resp;
     }
   }
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
   //#endregion
-  
+
+  //#region Modal Producto
+  const [showProduct, setShowProduct] = useState(false);
+  const handleCloseProduct = () => setShowProduct(false);
+  const handleShowProduct = () => setShowProduct(true);
+
+  const RedirectProduct = (id_cat, id_prd) => {
+    dispatch(productsRequested({ id_user: 68, id_cat, id_prd }));
+    handleShowProduct();
+  };
+  let responseProduct = useSelector((state) => state.entries.products.products);
+
+  //#endregion
+
   return (
     <>
       <div className="container">
@@ -239,7 +259,15 @@ const COLUMNS = [
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
-              onSubmit={(values) => onHandleSubmit(values)}
+              //onSubmit={(values) => console.log(values)}
+              onSubmit={async (values) => {
+                if(values.isOnMenu === 'true'){
+                  values.isOnMenu = true
+                }else{
+                  values.isOnMenu = false
+                }
+                await new Promise(onHandleSubmit(values));
+              }}
             >
               {({ errors, touched, isSuccess, message, isSubmitting }) => (
                 <Form>
@@ -287,7 +315,7 @@ const COLUMNS = [
                                   Descripción
                                 </label>
                                 <Field
-                                  type="description_prd"
+                                  type="text"
                                   className="form-text form-control"
                                   name="description_prd"
                                   id="description_prd"
@@ -299,26 +327,88 @@ const COLUMNS = [
                                   className="field-error text-danger"
                                 />
                               </div>
-                              {/* <div className="mb-3">
-                                  <label
-                                    htmlFor="imgURL_prd"
-                                    className="form-label"
-                                  >
-                                    Imagen
-                                  </label>
+                              <div className="mb-3">
+                                <label
+                                  htmlFor="imgURL_prd"
+                                  className="form-label"
+                                >
+                                  Imagen
+                                </label>
+                                <Field
+                                  type="text"
+                                  className="form-text form-control"
+                                  name="imgURL_prd"
+                                  id="imgURL_prd"
+                                  placeholder="Imagen del producto"
+                                />
+                                <ErrorMessage
+                                  name="imgURL_prd"
+                                  component="div"
+                                  className="field-error text-danger"
+                                />
+                              </div>
+                              <div className="mb-3">
+                                <label
+                                  htmlFor="price_prd"
+                                  className="form-label"
+                                >
+                                  Precio
+                                </label>
+                                <Field
+                                  type="number"
+                                  className="form-text form-control"
+                                  name="price_prd"
+                                  id="price_prd"
+                                  placeholder="Precio del producto"
+                                />
+                                <ErrorMessage
+                                  name="price_prd"
+                                  component="div"
+                                  className="field-error text-danger"
+                                />
+                              </div>
+
+                              <div className="mb-3">
+                                <label
+                                  className="form-check-label"
+                                >
+                                  Menú
+                                </label>
+                                <div className="form-check">
                                   <Field
-                                    type="imgURL_prd"
-                                    className="form-text form-control"
-                                    name="imgURL_prd"
-                                    id="imgURL_prd"
-                                    placeholder="Imagen del producto"
+                                    className="form-check-input"
+                                    type="radio"
+                                    name="isOnMenu"
+                                    //id="isOnMenutrue"
+                                    value={"true"}
+                                    //onClick={changeRadioButton}
                                   />
-                                  <ErrorMessage
-                                    name="imgURL_prd"
-                                    component="div"
-                                    className="field-error text-danger"
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor="isOnMenutrue"
+                                  >
+                                    Sí
+                                  </label>
+                                </div>
+                                
+                                <div className="form-check">
+                                  <Field
+                                    className="form-check-input"
+                                    type="radio"
+                                    name="isOnMenu"
+                                    //id="isOnMenufalse"
+                                    value={"false"}
+                                    //onClick={changeRadioButton}
                                   />
-                                </div> */}
+                                  <label
+                                    className="form-check-label"
+                                    htmlFor="isOnMenufalse"
+                                  >
+                                    No
+                                  </label>
+                                  {/* <p>{select}</p> */}
+                                </div>
+                              </div>
                               <div className="d-grid gap-2 py-3">
                                 <button
                                   type="submit"
@@ -403,7 +493,7 @@ const COLUMNS = [
         </div>
       </div>
 
-      <Modal show={showDelete} onHide={handleCloseDelete}>
+      <Modal show={showDelete} onHide={handleCloseProduct}>
         <Modal.Header closeButton>
           <Modal.Title>Eliminar producto</Modal.Title>
         </Modal.Header>
@@ -411,7 +501,11 @@ const COLUMNS = [
           <form onSubmit={onHandleSubmitDelete}>
             <div className="form-container">
               <div>
-                <input type="number" id="id_prd" name="id_prd" value={id_prd} 
+                <input
+                  type="number"
+                  id="id_prd"
+                  name="id_prd"
+                  value={id_prd}
                   onChange={onChangeForm}
                   hidden
                 />
@@ -420,11 +514,13 @@ const COLUMNS = [
                   <button type="submit" className="btn btn-dark m-3">
                     Eliminar
                   </button>
-                  <button 
+                  <button
                     type="button"
                     className="btn btn-primary mr-3"
                     onClick={handleCloseDelete}
-                  >Cancelar</button>
+                  >
+                    Cancelar
+                  </button>
                 </div>
               </div>
             </div>
@@ -436,6 +532,42 @@ const COLUMNS = [
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <div className="font-style">
+        <Modal show={showProduct} onHide={handleCloseProduct}>
+          <Modal.Header closeButton>
+            <Modal.Title>{responseProduct.producto}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="form-product">
+              <div>
+                <img
+                  className="w-100"
+                  src="https://enlacocina.b-cdn.net/wp-content/uploads/2018/07/Productos-saludables-2.jpg"
+                  alt="img"
+                />
+                <div className="  py-3">
+                  <p className="description">{responseProduct.descripcion}</p>
+                  <p className="gray">
+                    Categoría: <span>{responseProduct.categoria}</span>
+                  </p>
+                  <p>
+                    Menú: <span>{responseProduct.isOnMenu ? "Sí" : "No"}</span>
+                  </p>
+                  <p>
+                    Precio: <span>{responseProduct.price_prd}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleCloseProduct}>
+              Cerrar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </div>
     </>
   );
 };

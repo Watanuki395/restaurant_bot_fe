@@ -8,7 +8,8 @@ const initialState = {
     category: [],
     success: null,
     isFetching: false,
-    error: null
+    error: null,
+    msg: ''
 }
 
 function createCategory(state = initialState, action){
@@ -25,7 +26,8 @@ function createCategory(state = initialState, action){
                 ...state,
                 response,
                 success: true,
-                isFetching: false
+                isFetching: false,
+                msg: response.msg
             };
         case CREATECATEGORY_ERROR:
             return {
