@@ -2,9 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   min-height: 88vh;
-  background: #bdc3c7;
-  background: -webkit-linear-gradient(to right, #2c3e50, #bdc3c7);
-  background: linear-gradient(to right, #2c3e50, #bdc3c7);
+  background: #ffffff;
   display: flex;
 `;
 

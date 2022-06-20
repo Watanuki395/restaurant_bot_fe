@@ -8,8 +8,8 @@ import apiCall from '../api';
 
 function* deleteCategorySaga(payload){
     try{
-console.log(payload.payload);
-        const response = yield call(apiCall, 'DELETE', `/api/product/categories/${payload.payload}`);
+
+        const response = yield call(apiCall, 'DELETE', `/api/product/categories/${payload.payload.id_cat}`);
         yield put({type: DELETE_CATEGORY_SUCCESS, response})
         
     }catch(error){

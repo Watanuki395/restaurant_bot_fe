@@ -36,12 +36,7 @@ const renderContent = React.useCallback(() => {
     return (
       <>
         <Container>
-          {/* <Col4></Col4> */}
-          <Col8>
-
           {renderContent()}
-
-          </Col8>
         </Container>
       </>
     );

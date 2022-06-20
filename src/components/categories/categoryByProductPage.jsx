@@ -1,134 +1,109 @@
 import React, { Fragment, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch, connect } from "react-redux";
-import { Redirect, useHistory } from "react-router-dom";
+import { Redirect, useHistory, useParams } from "react-router-dom";
 import { useTable, usePagination } from "react-table";
-import { COLUMNS } from "./Columns";
-import { Modal, Button } from "react-bootstrap";
 import { GrAdd } from "react-icons/gr";
+import { IconDelete, IconEdit, IconSee, IconPlus, SButton } from "./style";
 
-import { createCategoryAction } from "../../actions/createcategoryAction";
-import { categoriesRequested } from "../../actions/categoriesAction";
-import { selectComponentRequested } from "../../actions/selectcomponentAction";
-import { deleteCategoryAction } from "../../actions/deletecategoryAction";
+import { createProductAction } from "../../actions/createproductAction";
+import { productsRequested } from "../../actions/productsAction";
+import { Products } from "../product/Products";
+import { deleteProductAction } from "../../actions/deleteproductAction";
 import { productoByCategoryRequested } from "../../actions/productbycategoryAction";
+import { editProductAction } from "../../actions/editproductAction";
 
+import { Modal, Button } from "react-bootstrap";
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { IconDelete, IconEdit, IconSee, IconPlus, SButton } from "./style";
 import "../../index.css";
 
-const Categories = (props) => {
+const CategoryByProduct = () => {
+
+
+  
   const dispatch = useDispatch();
   const history = useHistory();
-  const [isReseted, setReseted] = useState(false);
-  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    const cargarProductos = () => dispatch(categoriesRequested());
-    cargarProductos();
-  }, []);
 
-  //#region  UseSelector
+    const cargarProductoCat = () => dispatch(productoByCategoryRequested({id_user: 68, id_cat}));
+    cargarProductoCat();
 
-  let categorias = useSelector((state) => state.entries.categories.categories);
-  const error = useSelector((state) => state.entries.categories.error);
-  const loading = useSelector((state) => state.entries.categories.isFetching);
+}, []);
 
-  //#endregion
+  //#region UseSelector and states
 
-  //#region  Modal Eliminar
+const [isReseted, setReseted] = useState(false);
+const [count, setCount] = useState(0);
 
-  let initialValuesDelete = {
-    id_cat: null
-  };
-  const confirmDelete = (id_cat) => {
-    setFormValue({ id_cat })
-    handleShowDelete();
-  };
-  const [formValue, setFormValue] = useState(initialValuesDelete);
-  const { id_cat } = formValue;
+const categoryByProduct = useSelector(
+  (state) => state.entries.productbycategory.productByCategory
+);
 
-  const onChangeForm = (e) => {
-    let { name, value } = e.target;
-    setFormValue({
-      ...formValue,
-      [name]: value,
-    });
-  };
+//#endregion
 
+  //#region UseTable
 
-  const [showDelete, setShowDelete] = useState(false);
-  const handleCloseDelete = () => setShowDelete(false);
-  const handleShowDelete = () => setShowDelete(true);
+const COLUMNS = [
+    {
+      Header: "#",
+      accessor: "id_cat",
+    },
+    {
+      Header: "Producto",
+      accessor: "producto",
+    },
+    {
+      Header: "Descripción",
+      accessor: "descripcion",
+    },
+    {
+      Header: "Categoría",
+      accessor: "categoria",
+    },
+  ];
 
-  /* async function onHandleSubmitDelete(data) {
-    console.log(data);
-    await sleep(1000);
-    setReseted(true);
-
-      //let resp = dispatch(createCategoryAction(data));
-      dispatch(deleteCategoryAction(data));
-      toast.success("Categoría elimnada!");
-      setTimeout(() => dispatch(categoriesRequested()), 1000);
-      setTimeout(() => setShowDelete(false), 1100);
-      //return resp;
-
-  } */
-  const onHandleSubmitDelete = (e) => {
-    e.preventDefault();
-
-      dispatch(deleteCategoryAction(formValue));
-      toast.success("Categoría elimnada!");
-      setTimeout(() => dispatch(categoriesRequested()), 1000);
-      setTimeout(() => setShowDelete(false), 1100);
-
-  };
-
-  //#endregion
-
-  //#region React-Table
   const columns = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => [...categorias], [categorias]);
+  const data = useMemo(() => [...categoryByProduct], [categoryByProduct]);
 
-  const redirectEdit = (category) => {
-    history.push(`/categoryEdit/${category.id_cat}`);
+  const RedirectProduct = (id_cat, id_prd) => {
+    dispatch(productsRequested({ id_user: 68, id_cat, id_prd }));
+    history.push(`/Products/`);
   };
 
-  const redirectProductByCategory = (idCategory) => {
-    let id_cat = idCategory.id_cat;
-    dispatch(productoByCategoryRequested({ id_user: 68, id_cat }));
-    history.push(`/CategoryByProduct/${idCategory.id_cat}`);
+  const RedirectEditProduct = (id_prd) => {
+    //dispatch( productoByCategoryRequested({id_user:68, id_cat}) );
+    history.push(`/editProduct/${id_prd}`);
   };
 
   const tableHooks = (hooks) => {
     hooks.visibleColumns.push((columns) => [
       ...columns,
       {
-        id: "Edit",
-        Header: "Edit",
+        id: "Product",
+        Header: "Product",
         Cell: ({ row }) => (
           <>
             <SButton
               className="mb-1"
-              onClick={() => redirectProductByCategory(row.original)}
+              onClick={() =>
+                RedirectProduct(row.original.id_cat, row.original.id_prd)
+              }
             >
               <IconSee></IconSee>
             </SButton>
-
             <SButton
-              className={isEvent(row.id) ? "bg-green-400" : ""}
-              onClick={() => redirectEdit(row.original)}
+              className="mb-1"
+              onClick={() => RedirectEditProduct(row.original.id_prd)}
             >
               <IconEdit></IconEdit>
             </SButton>
-
             <SButton
-              className=""
-              onClick={() => confirmDelete(row.original.id_cat)}
+              className="mb-1"
+              onClick={() => ConfirmDelete(row.original.id_prd)}
             >
-              {/* <SButton className="" onClick={()=> dispatch(deleteProductAction(row.original.id_cat))}> */}
               <IconDelete></IconDelete>
             </SButton>
           </>
@@ -158,27 +133,66 @@ const Categories = (props) => {
     tableHooks
   );
 
-  const isEvent = (id) => id % 2 === 0;
-
   const { pageIndex } = state;
+
   //#endregion
 
-  //#region  Modal Agregar
+  const { id_cat } = useParams();
+
+  //#region Eliminar
+    let initialValuesDelete = {
+      id_cat: null
+    };
+  
+    const ConfirmDelete = (id_prd) => {
+      setFormValue({ id_prd })
+      handleShowDelete();
+    };
+    const [formValue, setFormValue] = useState(initialValuesDelete);
+    const { id_prd } = formValue;
+  
+    const onChangeForm = (e) => {
+      let { name, value } = e.target;
+      setFormValue({
+        ...formValue,
+        [name]: value,
+      });
+    };
+    const [showDelete, setShowDelete] = useState(false);
+    const handleCloseDelete = () => setShowDelete(false);
+    const handleShowDelete = () => setShowDelete(true);
+  
+    const onHandleSubmitDelete = (e) => {
+      e.preventDefault();
+  
+        dispatch(deleteProductAction(formValue));
+        toast.success("Producto elimnado!");
+        setTimeout(() => dispatch(productoByCategoryRequested({id_user: 68, id_cat})), 1000);
+        setTimeout(() => setShowDelete(false), 1100);
+  
+    };
+  
+    //#endregion
+
+  //#region Agregar
+
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
   const initialValues = {
-    name_cat: "",
-    description_cat: "",
+    name_prd: "",
+    description_prd: "",
+    id_cat: Number(id_cat),
+    id_user: 68,
   };
 
   const validationSchema = Yup.object().shape({
-    name_cat: Yup.string()
+    name_prd: Yup.string()
       .required("Campo Requerido")
       .min(2, `Mínimo 5 caracteres`)
       .max(255, `Máximo 255 caracteres`),
-    description_cat: Yup.string()
+    description_prd: Yup.string()
       .required("Campo Requerido")
       .min(2, `Mínimo 5 caracteres`)
       .max(255, `Máximo 255 caracteres`),
@@ -187,33 +201,29 @@ const Categories = (props) => {
   async function onHandleSubmit(data) {
     await sleep(1000);
     setReseted(true);
-    if (data) {
-      //let resp = dispatch(createCategoryAction(data));
-      dispatch(createCategoryAction(data));
-      toast.success("Categoría creada!");
-      setTimeout(() => dispatch(categoriesRequested()), 1000);
+    console.log(data);
+    if(data){
+      //let resp = dispatch(dispatch(createProductAction(data)));
+      dispatch(createProductAction(data));
+      toast.success("Producto agregado.");
+      setTimeout(() => dispatch(productoByCategoryRequested({id_user: 68, id_cat})), 1000);
       setTimeout(() => setShow(false), 1100);
-      setTimeout(() => history.push("/dashboard"), 500);
+      setTimeout(
+        () => history.push(`/CategoryByProduct/${Number(id_cat)}`),
+        1000
+      );
+      setShow(false);
       //return resp;
     }
   }
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-  const response = useSelector((state) => state.entries.createcategory);
   //#endregion
-
+  
   return (
-    <Fragment>
+    <>
       <div className="container">
-        {error ? (
-          <p className="font-weight-bold alert alert-danger text-center mt-4">
-            Hubo un error...
-          </p>
-        ) : null}
-
-        {loading ? <p className="text-center">Cargando...</p> : null}
-
         <button
           className="btn btn-warning btn-plus mt-3"
           variant="primary"
@@ -221,10 +231,9 @@ const Categories = (props) => {
         >
           <GrAdd />
         </button>
-
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Agregar una categoría nueva</Modal.Title>
+            <Modal.Title>Agregar una producto</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Formik
@@ -252,44 +261,64 @@ const Categories = (props) => {
                               )}
                               <div className="mb-3">
                                 <label
-                                  htmlFor="name_cat"
+                                  htmlFor="name_prd"
                                   className="form-label"
                                 >
-                                  Nombre la categoría
+                                  Nombre del producto
                                 </label>
                                 <Field
                                   type="text"
                                   className="form-text form-control"
-                                  name="name_cat"
-                                  id="name_cat"
-                                  placeholder="Categoría"
+                                  name="name_prd"
+                                  id="name_prd"
+                                  placeholder="Producto"
                                 />
                                 <ErrorMessage
-                                  name="name_cat"
+                                  name="name_prd"
                                   component="div"
                                   className="field-error text-danger"
                                 />
                               </div>
                               <div className="mb-3">
                                 <label
-                                  htmlFor="description_cat"
+                                  htmlFor="description_prd"
                                   className="form-label"
                                 >
                                   Descripción
                                 </label>
                                 <Field
-                                  type="description_cat"
+                                  type="description_prd"
                                   className="form-text form-control"
-                                  name="description_cat"
-                                  id="description_cat"
-                                  placeholder="Descripción de la categoría"
+                                  name="description_prd"
+                                  id="description_prd"
+                                  placeholder="Descripción del producto"
                                 />
                                 <ErrorMessage
-                                  name="description_cat"
+                                  name="description_prd"
                                   component="div"
                                   className="field-error text-danger"
                                 />
                               </div>
+                              {/* <div className="mb-3">
+                                  <label
+                                    htmlFor="imgURL_prd"
+                                    className="form-label"
+                                  >
+                                    Imagen
+                                  </label>
+                                  <Field
+                                    type="imgURL_prd"
+                                    className="form-text form-control"
+                                    name="imgURL_prd"
+                                    id="imgURL_prd"
+                                    placeholder="Imagen del producto"
+                                  />
+                                  <ErrorMessage
+                                    name="imgURL_prd"
+                                    component="div"
+                                    className="field-error text-danger"
+                                  />
+                                </div> */}
                               <div className="d-grid gap-2 py-3">
                                 <button
                                   type="submit"
@@ -322,7 +351,7 @@ const Categories = (props) => {
         </Modal>
 
         <table {...getTableProps()} className="table">
-          <thead className="thead-dark">
+          <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
@@ -338,10 +367,7 @@ const Categories = (props) => {
             {page.map((row, idx) => {
               prepareRow(row);
               return (
-                <tr
-                  {...row.getRowProps()}
-                  className={isEvent(idx) ? "bg-green-400 bg-opacity-10" : ""}
-                >
+                <tr {...row.getRowProps()}>
                   {row.cells.map((cell) => {
                     return (
                       <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
@@ -352,6 +378,7 @@ const Categories = (props) => {
             })}
           </tbody>
         </table>
+
         <div className="text-center mt-2">
           <button
             className="btn btn-dark m-1"
@@ -378,17 +405,17 @@ const Categories = (props) => {
 
       <Modal show={showDelete} onHide={handleCloseDelete}>
         <Modal.Header closeButton>
-          <Modal.Title>Eliminar categoría</Modal.Title>
+          <Modal.Title>Eliminar producto</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={onHandleSubmitDelete}>
             <div className="form-container">
               <div>
-                <input type="number" id="id_cat" name="id_cat" value={id_cat} 
+                <input type="number" id="id_prd" name="id_prd" value={id_prd} 
                   onChange={onChangeForm}
                   hidden
                 />
-                <h4>¿Está seguro que quiere eliminar esa categoría?</h4>
+                <h4>¿Está seguro que quiere eliminar ese producto?</h4>
                 <div className="  py-3">
                   <button type="submit" className="btn btn-dark m-3">
                     Eliminar
@@ -409,11 +436,8 @@ const Categories = (props) => {
           </Button>
         </Modal.Footer>
       </Modal>
-    </Fragment>
+    </>
   );
 };
 
-const mapStateToProps = (response) => ({
-  response,
-});
-export default connect(mapStateToProps)(Categories);
+export default CategoryByProduct;

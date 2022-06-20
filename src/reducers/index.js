@@ -10,6 +10,8 @@ import createcategory from './createcategoryReducer';
 import createproduct from './createproductReducer';
 import deleteCategory from './deletecategoryReducer';
 import editCategory from './editcategoryReducer';
+import deleteProduct from './deleteproductReducer';
+import editProduct from './editproductReducer';
 
 const rootReducer = combineReducers({
   register, 
@@ -22,7 +24,9 @@ const rootReducer = combineReducers({
   createcategory,
   createproduct,
   deleteCategory,
-  editCategory
+  editCategory,
+  deleteProduct,
+  editProduct
 });
 
 export default rootReducer;

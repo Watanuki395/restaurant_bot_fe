@@ -1,38 +1,36 @@
 import {
-    DELETE_CATEGORY_REQUESTED,
-    DELETE_CATEGORY_SUCCESS,
-    DELETE_CATEGORY_ERROR
+    DELETE_PRODUCT_REQUESTED,
+    DELETE_PRODUCT_SUCCESS,
+    DELETE_PRODUCT_ERROR
 } from '../actions/index';
 
 const initialState = {
     categories: [],
     success: null,
     isFetching: false,
-    error: null,
-    categoryDelete: null
+    error: null
 }
 
-function deleteCategory(state = initialState, action){
+function deleteProduct(state = initialState, action){
     let response = action.response;
 
     switch(action.type){
-        case DELETE_CATEGORY_REQUESTED:
+        case DELETE_PRODUCT_REQUESTED:
             return {
                 ...state,
-                isFetching: true,
-                response
+                isFetching: true
             };
-        case DELETE_CATEGORY_SUCCESS:
+        case DELETE_PRODUCT_SUCCESS:
             return {
             ...state,
             isFetching: false,
             error: false,
             success:true,
-            categories:state.categories.filter( category => category.id_cat !== state.productoeliminar),
+            products:state.products.filter( item => item.id_prd !== state.payload),
             categoryDelete: null,
             response
         }
-        case DELETE_CATEGORY_ERROR:
+        case DELETE_PRODUCT_ERROR:
             return {
             ...state, 
             isFetching: false,
@@ -45,4 +43,4 @@ function deleteCategory(state = initialState, action){
     }
 }
 
-export default deleteCategory;
+export default deleteProduct;
