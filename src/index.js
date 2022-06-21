@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { disableReactDevTools } from '@fvilers/disable-react-devtools';
 
 import './index.css';
 import App from './container/App';
@@ -13,7 +14,9 @@ import createStore from '../src/store/configureStore'
 
 const store = createStore()
 
-
+if (process.env.NODE_ENV === 'production') {
+  disableReactDevTools();
+}
 
 ReactDOM.render(
   <Provider store={store}>

@@ -28,8 +28,7 @@ const App = () => {
 
   const ROLES = {
     User: 2001,
-    Editor: 1984,
-    Admin: 5150,
+    admin: true,
   };
 
   return (
@@ -47,7 +46,7 @@ const App = () => {
 
           {/* we want to protect these routes */}
           <Route element={<PersistLogin />}>
-            <Route element={<RequireAuth allowedRoles={[ROLES.Editor, ROLES.Admin]}/>}>
+            <Route element={<RequireAuth allowedRoles={[ROLES.admin]}/>}>
               <Route path="/dashboard" element={<DashboardPage />} />
             </Route>
           </Route>

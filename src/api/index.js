@@ -6,7 +6,8 @@ export default async function apiCall(method, url, data){
                 method,
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                withCredentials: true
             }).then(response => {
                 return response.json();
             }).then(json => {
@@ -24,6 +25,7 @@ export default async function apiCall(method, url, data){
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                withCredentials: true,
                 body: data ? JSON.stringify(data) : {}
             }).then(response => {
                 return response.json();

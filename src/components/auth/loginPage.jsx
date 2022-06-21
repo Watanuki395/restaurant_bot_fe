@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { connect, useDispatch, useSelector } from "react-redux";
-import Footer from "../common/Layout/footer/Footer"
+import Footer from "../common/Layout/footer/Footer";
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 
@@ -11,7 +11,9 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../index.css";
 
-import useAuth from '../../hooks/useAuth';
+import useAuth from "../../hooks/useAuth";
+import useToggle from "../../hooks/useToggle";
+//import useInput from '../../hooks/useInput';
 
 function LoginPage(props) {
   const { setAuth, persist, setPersist } = useAuth();
@@ -19,14 +21,19 @@ function LoginPage(props) {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+  const from = location.state?.from?.pathname || "/dashboard";
 
-  const userRef = useRef();
-  const errRef = useRef();
+  //const userRef = useRef();
+  //const errRef = useRef();
 
-  const [email, setUser] = useState('');
-  const [password, setPwd] = useState('');
-  const [errMsg, setErrMsg] = useState('');
+  const [email, setUser] = useState("");
+  const [password, setPwd] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+  const [check, toggleCheck] = useToggle("persist", false);
+
+  useEffect(() => {
+    setErrMsg("");
+  }, [email, password]);
 
   const validationSchema = Yup.object().shape({
     email: Yup.string()
@@ -37,50 +44,56 @@ function LoginPage(props) {
   });
 
   const initialValues = {
-    email: "",
-    password: "",
+    email,
+    password
+  };
+
+  const authResponse = useSelector((state) => state.entries.auth.response);
+
+  useEffect(()=>{
+    try {
+      if(authResponse){
+        const accessToken = authResponse?.accessToken;
+        const roles = true;
+        setAuth({ email, password, roles, accessToken });
+        setUser("");
+        setPwd("");
+        navigate(from, { replace: true });
+        return authResponse;
+      }
+
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg("No Server Response");
+      } else if (err.response?.status === 400) {
+        setErrMsg("Missing Username or Password");
+      } else if (err.response?.status === 401) {
+        setErrMsg("Unauthorized");
+      } else {
+        setErrMsg("Login Failed");
+      }
+    }
+  },[authResponse]);
+
+
+
+  const onHandleSubmit = (userData) => {
+    try {
+      dispatch(loginUser(userData))
+      setUser(userData.email)
+      setPwd(userData.password)
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const togglePersist = () => {
+    setPersist((prev) => !prev);
   };
 
   useEffect(() => {
-    setErrMsg('');
-}, [email, password])
-
-const authResponse = useSelector(state => state?.entries?.auth?.response);
-
-const onHandleSubmit = (e) => {
-  try {
-    let resp = dispatch(loginUser(e));
- 
-    //console.log(JSON.stringify(resp?.data));
-    const accessToken = authResponse?.accessToken;
-    const roles = 2001;
-    setAuth({ email, password, roles, accessToken });
-    setUser('');
-    setPwd('');
-    navigate(from, { replace: true });
-    return resp;
-
-  } catch (err) {
-      if (!err?.response) {
-        setErrMsg('No Server Response');
-    } else if (err.response?.status === 400) {
-        setErrMsg('Missing Username or Password');
-    } else if (err.response?.status === 401) {
-        setErrMsg('Unauthorized');
-    } else {
-        setErrMsg('Login Failed');
-    }
-      //errRef.current.focus();
-    }
-  }
-
-  const togglePersist = () => {
-    setPersist(prev => !prev);
-}
-
-useEffect(() => {
     localStorage.setItem("persist", persist);
-}, [persist])
+  }, [persist]);
 
   return (
     <>
@@ -152,6 +165,15 @@ useEffect(() => {
                           >
                             Entrar
                           </button>
+                          <div className="persistCheck">
+                            <input
+                              type="checkbox"
+                              id="persist"
+                              onChange={togglePersist}
+                              checked={persist}
+                            />
+                            <label htmlFor="persist">Confiar en este dispositivo</label>
+                          </div>
                         </div>
                         <div>
                           <span className="haveAccount">
@@ -173,6 +195,8 @@ useEffect(() => {
   );
 }
 
-const mapStateToProps = (response) => ({ response });
+const mapStateToProps = (state) => ({ 
+  auth: state.auth
+ });
 
 export default connect(mapStateToProps)(LoginPage);
