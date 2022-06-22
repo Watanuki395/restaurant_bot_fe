@@ -37,7 +37,15 @@ const CategoryByProduct = () => {
   const categoryByProduct = useSelector(
     (state) => state.entries.productbycategory.productByCategory
   );
-
+  const Categoria = useSelector(
+    (state) => state.entries.productbycategory.productByCategory[0]
+  );
+  let categorias = '';
+  if(Categoria){
+    console.log(Categoria);
+    const { categoria } = Categoria;
+    categorias = categoria;
+  }
   //#endregion
 
   //#region UseTable
@@ -56,8 +64,8 @@ const CategoryByProduct = () => {
       accessor: "descripcion",
     },
     {
-      Header: "Categoría",
-      accessor: "categoria",
+      Header: "Precio",
+      accessor: "price_prd",
     },
   ];
 
@@ -244,6 +252,7 @@ const CategoryByProduct = () => {
   return (
     <>
       <div className="container">
+        <h3>Está en: {categorias || 'Agrega un producto para descubrir la categoría'}</h3>
         <button
           className="btn btn-warning btn-plus mt-3"
           variant="primary"
@@ -491,6 +500,10 @@ const CategoryByProduct = () => {
             Siguiente
           </button>
         </div>
+        <button className="btn btn-primary"
+        onClick={() => history.push("/dashboard")}
+        >Regresar..</button>
+        
       </div>
 
       <Modal show={showDelete} onHide={handleCloseProduct}>
@@ -539,26 +552,26 @@ const CategoryByProduct = () => {
             <Modal.Title>{responseProduct.producto}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <div className="form-product">
-              <div>
+              <div className="img-100">
                 <img
-                  className="w-100"
+                  className="img-fluid"
                   src="https://enlacocina.b-cdn.net/wp-content/uploads/2018/07/Productos-saludables-2.jpg"
                   alt="img"
                 />
+              </div>
+            <div className="form-product product">
                 <div className="  py-3">
                   <p className="description">{responseProduct.descripcion}</p>
                   <p className="gray">
-                    Categoría: <span>{responseProduct.categoria}</span>
+                    <strong>Categoría: </strong><span>{responseProduct.categoria}</span>
                   </p>
                   <p>
-                    Menú: <span>{responseProduct.isOnMenu ? "Sí" : "No"}</span>
+                    <strong>Menú: </strong><span>{responseProduct.isOnMenu ? "Sí" : "No"}</span>
                   </p>
                   <p>
-                    Precio: <span>{responseProduct.price_prd}</span>
+                    <strong>Precio: </strong><span>{responseProduct.price_prd}</span>
                   </p>
                 </div>
-              </div>
             </div>
           </Modal.Body>
           <Modal.Footer>
