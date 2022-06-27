@@ -12,10 +12,10 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../index.css";
 
 import useAuth from "../../hooks/useAuth";
-import useToggle from "../../hooks/useToggle";
+//import useToggle from "../../hooks/useToggle";
 //import useInput from '../../hooks/useInput';
 
-function LoginPage(props) {
+function LoginPage() {
   const { setAuth, persist, setPersist } = useAuth();
   const dispatch = useDispatch();
 
@@ -29,7 +29,7 @@ function LoginPage(props) {
   const [email, setUser] = useState("");
   const [password, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
-  const [check, toggleCheck] = useToggle("persist", false);
+  //const [check, toggleCheck] = useToggle("persist", false);
 
   useEffect(() => {
     setErrMsg("");

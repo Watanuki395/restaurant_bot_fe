@@ -4,9 +4,9 @@ import { REFRESH_TOKEN_REQUESTED, REFRESH_TOKEN_SUCCESS, REFRESH_TOKEN_ERROR } f
 import apiCall from '../api';
 
 
-function* refreshTokenSaga(payload) {
+function* refreshTokenSaga() {
     try {
-        const response = yield call(apiCall,'GET', '/api/auth/refresh-token', payload.user);
+        const response = yield call(apiCall,'GET', '/api/auth/refresh-token');
         if(response.user){
         yield put({type: REFRESH_TOKEN_SUCCESS, response});
         }else{

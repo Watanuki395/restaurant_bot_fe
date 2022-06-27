@@ -19,6 +19,7 @@ export default function (state = [], action) {
             ...state,
             isFetching: true, 
             success: false,
+            logged: false,
             response };
         case REFRESH_TOKEN_SUCCESS:
             return { 
@@ -26,6 +27,7 @@ export default function (state = [], action) {
             isFetching: false,
             error: false,
             success:true, 
+            logged: true,
             response };
         case REFRESH_TOKEN_ERROR:
             return { 
@@ -33,6 +35,7 @@ export default function (state = [], action) {
             isFetching: false,
             error: true,
             success: false,
+            logged: false,
             message: action.response };
         default:
         return state;
