@@ -1,76 +1,49 @@
-import React, { useRef, useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { connect, useDispatch, useSelector } from "react-redux";
-import axios from '../../api/axios';
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import React, { useEffect, useState } from 'react';
+import { useDispatch, connect, useSelector } from 'react-redux';
+
+import Categories from '../categories/CategoriesPage'
+import ProductByCategory from '../productByCategory/productByCategory';
+import Products from '../product/Products';
+
 import {Container,
 Col4,
 Col8}
 from "./style";
-import Table from '../common/Table/Table';
 
 
+function DashboardPage(props){
 
-function DashboardPage(){
-  const axiosPrivate = useAxiosPrivate();
-  const controller = new AbortController();
-  let isMounted = true;
-  const [number, setNumber] = useState(0);
+  const componentSelected = useSelector(state => state.entries.selectcomponent.component.payload);
 
-  const handleSubmit = async() =>{
-      //setNumber(number+1)
-      //console.log(number);
-
-      const response = await axiosPrivate.get('http://localhost:8081/api/product/product?id_prd=1&id_user=68&id_cat=1',
-        {
-          signal: controller.signal,
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: false
-        }
-    );
-    console.log(JSON.stringify(response?.data));
-    }
+const renderContent = React.useCallback(() => {
+  switch(componentSelected) {
+    case 'Categories': 
+      return <Categories />;
     
+    case 'productByCategory': 
+      return <ProductByCategory />;
+
+      case 'products': 
+      return <Products />;
+
+    default: 
+      return <Categories />;
+    
+  }
+}, [componentSelected]);
+
+      
     return (
       <>
         <Container>
-          <Col4></Col4>
-          <Col8>
-            <Table data={data}/>
-            <button onClick={() =>handleSubmit()}>
-            refrescar
-          </button>
-          </Col8>
-          
+          {renderContent()}
         </Container>
       </>
     );
 }
 
-const data = [
-  {
-    name: "Pan",
-    amount: 1
-  },
-  {
-    name: "Carne",
-    amount: 3
-  },
-  {
-    name: "Leche",
-    amount: 6
-  },
-  {
-    name: "Huevos",
-    amount: 15
-  },
-  {
-    name: "Fruta",
-    amount: 32
-  },
-]
 const mapStateToProps = (response) => ({
   response,
 });
 
-export default connect(mapStateToProps)(DashboardPage);
+export default connect(mapStateToProps)(DashboardPage)

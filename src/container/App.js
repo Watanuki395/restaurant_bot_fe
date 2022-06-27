@@ -17,6 +17,13 @@ import PersistLogin from "../components/persistlogin/PersistLogin";
 import Layout from "../components/layouts/Layout";
 import Missing from "../components/missing/Missing";
 import Unauthorized from '../components/unauthorized/Unauthorized';
+import CategoriesPage from '../components/categories/CategoriesPage';
+import createCategoryPage from '../components/createCategory/createcategoryPage';
+import createProductPage from '../components/createProduct/createproductPage';
+import categoryEditPage from '../components/categories/categoryEditPage';
+import CategoryByProductPage from '../components/categories/categoryByProductPage';
+import Products from '../components/product/Products';
+import editProductPage from '../components/product/editProductPage';
 
 const App = () => {
 
@@ -48,6 +55,13 @@ const App = () => {
           <Route element={<PersistLogin />}>
             <Route element={<RequireAuth allowedRoles={[ROLES.admin]}/>}>
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path='/dashboard/:id_cat' element={<CategoriesPage/>} />
+              <Route path='/createCategory' element={<createCategoryPage/>} />
+              <Route path='/createProduct' element={<createProductPage/>} />
+              <Route path='/categoryEdit/:id_cat' element={<categoryEditPage/>} />
+              <Route path='/CategoryByProduct/:id_cat' element={<CategoryByProductPage/>} />
+              <Route path='/Products' element={<Products/>} />
+              <Route path='/editProduct/:id_prd' element={<editProductPage/>} />
             </Route>
           </Route>
 

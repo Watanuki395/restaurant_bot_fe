@@ -5,6 +5,7 @@ import { disableReactDevTools } from '@fvilers/disable-react-devtools';
 
 import './index.css';
 import App from './container/App';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { AuthProvider } from './context/AuthProvider';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';

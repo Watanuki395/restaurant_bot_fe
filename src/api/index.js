@@ -1,10 +1,9 @@
 export default async function apiCall(method, url, data){
-    if(method==='GET'){
+    if(method==='GET' || method==='DELETE'){
         try {
             const resp = await fetch('http://localhost:8081'+ url, // TODO: tenemos que cambiar el URL
             { 
                 method,
-                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -22,7 +21,6 @@ export default async function apiCall(method, url, data){
             const resp = await fetch('http://localhost:8081'+ url, // TODO: tenemos que cambiar el URL
             { 
                 method,
-                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
                 },
