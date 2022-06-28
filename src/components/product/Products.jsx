@@ -1,13 +1,8 @@
 import React, { Fragment,useState } from 'react'
-import { useSelector, useDispatch} from 'react-redux';
-import { Redirect, useHistory } from "react-router-dom";
-
-
-
-
+import { useSelector} from 'react-redux';
 
 const Products = () => {
-  const dispatch = useDispatch();
+
 
     const products = useSelector(state => state.entries.products.products);
 

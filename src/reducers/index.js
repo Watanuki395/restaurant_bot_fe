@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux';
 import register from './registerReducer';
 import auth from './loginReducer';
-import forgotpass from './forgotpassReducer';
+import forgotpass from './forgotpassReducer'
+import refreshtoken from './refreshTokenReducer'
 import categories from './categoriesReducer';
 import productbycategory from './productbycategoryReducer';
 import selectcomponent from './selectcomponentReducer';
@@ -16,6 +17,7 @@ import editProduct from './editproductReducer';
 const rootReducer = combineReducers({
   register, 
   auth, 
+  refreshtoken,
   forgotpass,
   categories,
   productbycategory,

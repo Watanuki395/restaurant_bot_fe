@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch, connect } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { Link, useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
 
 import { selectComponentRequested } from "../../actions/selectcomponentAction";
 import { editProductAction } from "../../actions/editproductAction";
@@ -12,11 +12,12 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../index.css";
 
-const editProduct = () => {
+const EditProduct = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const dispatch = useDispatch();
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard";
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { id_prd } = useParams();
 
@@ -59,7 +60,7 @@ const editProduct = () => {
         setResetSuccess(false);
         toast.success("Producto actualizada satisfactoriamente.");
         dispatch(productoByCategoryRequested({ id_user: 68, id_cat }));
-        setTimeout(() => history.push("/CategoryByProduct/" + id_cat), 1000);
+        setTimeout(() => navigate("/CategoryByProduct/" + id_cat, { replace: true }) , 1000);
       }
     } catch (error) {
       if (response) {
@@ -178,7 +179,7 @@ const editProduct = () => {
               <button
                 type="button"
                 className="btn btn-primary font-weight-bold text-uppercase m-3"
-                onClick={() => history.push("/dashboard")}
+                onClick={() => navigate(from, { replace: true })}
               >
                 Volver
               </button>
@@ -200,4 +201,4 @@ const editProduct = () => {
   );
 };
 
-export default editProduct;
+export default EditProduct;

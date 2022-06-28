@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
 
 import { forgotPassRequest } from "../../actions/forgotpassAction";
@@ -16,7 +16,7 @@ import Footer from "../common/Layout/footer/Footer";
 function ForgotPassPage (props){
   
   const dispatch = useDispatch();
-  const history = useHistory();
+  const history = useNavigate();
   
 
   const [isReseted, setReseted] = useState(false);
@@ -50,7 +50,7 @@ function ForgotPassPage (props){
       setCount(count + 1)
       if(msg !== ''){
         toast.success(msg, { position: toast.POSITION.TOP_RIGHT });
-        setTimeout(() => { history.push("/login") }, 2000);
+        setTimeout(() => { history("/login") }, 2000);
       }else{
         toast.error(error, { position: toast.POSITION.TOP_RIGHT });
         setCount(count - 1)

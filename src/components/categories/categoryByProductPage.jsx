@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch, connect } from "react-redux";
-import { Redirect, useHistory, useParams } from "react-router-dom";
+import { Link, useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
 import { useTable, usePagination } from "react-table";
 import { GrAdd } from "react-icons/gr";
 import { IconDelete, IconEdit, IconSee, IconPlus, PButton } from "./style";
@@ -21,7 +21,9 @@ import "../../index.css";
 
 const CategoryByProduct = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard";
 
   useEffect(() => {
     const cargarProductoCat = () =>
@@ -74,7 +76,7 @@ const CategoryByProduct = () => {
 
   const RedirectEditProduct = (id_prd, id_cat) => {
     //dispatch( productoByCategoryRequested({id_user:68, id_cat}) );
-    history.push(`/editProduct/${id_prd}`);
+    navigate(from, { replace: true })
   };
 
   const tableHooks = (hooks) => {
@@ -225,7 +227,7 @@ const CategoryByProduct = () => {
       );
       setTimeout(() => setShow(false), 1100);
       setTimeout(
-        () => history.push(`/CategoryByProduct/${Number(id_cat)}`),
+        () => navigate(`/CategoryByProduct/${Number(id_cat)}`, { replace: true }),
         1000
       );
       setShow(false);
@@ -287,14 +289,14 @@ const CategoryByProduct = () => {
                           {!isSuccess ? (
                             <div>{message}</div>
                           ) : (
-                            <Redirect to="dashboard" />
+                            <Navigate to="dashboard" />
                           )}
                           <div className="form-container">
                             <div>
                               {!isSuccess ? (
                                 <div>{message}</div>
                               ) : (
-                                <Redirect to="dashboard" />
+                                <Navigate to="dashboard" />
                               )}
                               <div className="mb-3">
                                 <label

@@ -1,5 +1,4 @@
 import { put, call, takeLatest } from 'redux-saga/effects';
-import { loginUserService } from '../services/authenticationService';
 
 import {
     FORGOT_PASS_REQUESTED,

@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Redirect, useHistory } from "react-router-dom";
+import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import { createCategoryAction } from '../../actions/createcategoryAction';
 
 import * as Yup from "yup";
@@ -10,19 +10,15 @@ import "react-toastify/dist/ReactToastify.css";
 import "../../index.css";
 
 
-const createCategoryPage = () => {
+const CreateCategoryPage = () => {
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const dispatch = useDispatch();
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard";
   
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [isReseted, setReseted] = useState(false);
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const [count, setCount] = useState(0);
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const [isSucceed, setIsSucceed] = useState(false);
 
   const initialValues = {
     name_cat: "",
@@ -49,10 +45,8 @@ const createCategoryPage = () => {
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const response = useSelector((state) => state.entries.createcategory);
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
     let isSuccess = response ? response.success : false;
     //Revisar toda esta sección, la redirección cuando trae o no mensaje.
@@ -64,7 +58,7 @@ const createCategoryPage = () => {
       console.log(msg);    
       if(msg === null){
         toast.success('Categoría creada.', { position: toast.POSITION.TOP_RIGHT });
-        setTimeout(() => { history.push("/dashboard") }, 2000);
+        navigate(from, { replace: true })
         msg = null;
       }else{
         setReseted(false);
@@ -95,14 +89,14 @@ const createCategoryPage = () => {
                     {!isSuccess ? (
                       <div>{message}</div>
                     ) : (
-                      <Redirect to="dashboard" />
+                      <Navigate to="dashboard" />
                     )}
                     <div className="form-container">
                       <div>
                         {!isSuccess ? (
                           <div>{message}</div>
                         ) : (
-                          <Redirect to="dashboard" />
+                          <Navigate to="dashboard" />
                         )}
                         <div className="mb-3">
                           <label htmlFor="name_cat" className="form-label">
@@ -164,4 +158,4 @@ const createCategoryPage = () => {
   );
 }
  
-export default createCategoryPage;
+export default CreateCategoryPage;

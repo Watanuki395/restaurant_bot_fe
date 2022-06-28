@@ -42,8 +42,6 @@ const renderContent = React.useCallback(() => {
     );
 }
 
-
-
 const mapStateToProps = (response) => ({
   response,
 });
