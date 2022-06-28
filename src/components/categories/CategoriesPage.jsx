@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch, connect } from "react-redux";
-import { Redirect, useHistory } from "react-router-dom";
+import { Link, useNavigate, useLocation, Navigate } from "react-router-dom";
 import { useTable, usePagination } from "react-table";
 import { COLUMNS } from "./Columns";
 import { Modal, Button } from "react-bootstrap";
@@ -21,7 +21,11 @@ import "../../index.css";
 
 const Categories = (props) => {
   const dispatch = useDispatch();
-  const history = useHistory();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard";
+
   const [isReseted, setReseted] = useState(false);
   const [count, setCount] = useState(0);
 
@@ -76,7 +80,7 @@ const Categories = (props) => {
         toast.success("Categoría creada!");
         setTimeout(() => dispatch(categoriesRequested()), 1000);
         setTimeout(() => setShow(false), 1100);
-        setTimeout(() => history.push("/dashboard"), 500);
+        navigate(from, { replace: true })
       } else if(msg){
         console.log(msg);
         toast.error("Esa categoría ya existe.");
@@ -157,13 +161,13 @@ const Categories = (props) => {
   const data = useMemo(() => [...categorias], [categorias]);
 
   const redirectEdit = (category) => {
-    history.push(`/categoryEdit/${category.id_cat}`);
+    navigate(`/categoryEdit/${category.id_cat}`, { replace: true });
   };
 
   const redirectProductByCategory = (idCategory) => {
     let id_cat = idCategory.id_cat;
     dispatch(productoByCategoryRequested({ id_user: 68, id_cat }));
-    history.push(`/CategoryByProduct/${idCategory.id_cat}`);
+    navigate(`/CategoryByProduct/${idCategory.id_cat}`, { replace: true });
   };
 
   const tableHooks = (hooks) => {
@@ -265,14 +269,14 @@ const Categories = (props) => {
                           {!isSuccess ? (
                             <div>{message}</div>
                           ) : (
-                            <Redirect to="dashboard" />
+                            <Navigate to="dashboard" />
                           )}
                           <div className="form-container">
                             <div>
                               {!isSuccess ? (
                                 <div>{message}</div>
                               ) : (
-                                <Redirect to="dashboard" />
+                                <Navigate to="dashboard" />
                               )}
                               <div className="mb-3">
                                 <label

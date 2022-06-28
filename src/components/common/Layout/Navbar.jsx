@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 //import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { logoutUser } from '../../../actions/loginActions';
@@ -7,7 +7,6 @@ import {
   Nav,
   NavLink,
   NavMenu,
-  NavBtn,
   NavBtnLink,
   Bars,
   NavIcon
@@ -18,11 +17,11 @@ const Navbar = (props) => {
  // const isLogged = useSelector(state => state.entries.auth.logged)
   
   const dispatch = useDispatch();
-  const history = useHistory();
+  const history = useNavigate();
 
   function onLogoutClick() {
     dispatch(logoutUser());
-    history.push("/login");
+    history("/login");
   }
 
   if(!props.logged){
@@ -61,7 +60,7 @@ const Navbar = (props) => {
           <Bars onClick={props.toggle}/>
             <NavMenu>
             <NavLink to="/user">
-              Usurio
+              Usuario
             </NavLink>
             <NavLink to="/product">
               Producto
@@ -84,9 +83,7 @@ const Navbar = (props) => {
 }
 
 const mapStateToProps = (state,ownProps) => { 
-  const IsLogged = state.entries.auth
-  ? state.entries.auth.logged
-  : false;
+  const IsLogged = state.entries.auth ? state.entries.auth.logged ? state.entries.refreshtoken : state.entries.refreshtoken.logged : false
   const isToggle = ownProps.toggle ? ownProps.toggle : false
   return {
     logged: IsLogged,

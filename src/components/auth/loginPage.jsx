@@ -1,23 +1,39 @@
-import React, { useState, useEffect } from "react";
-import { Link, Redirect, useHistory } from "react-router-dom";
-import { connect, useDispatch } from "react-redux";
-import Footer from "../common/Layout/footer/Footer"
+import React, { useRef, useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { connect, useDispatch, useSelector } from "react-redux";
+import Footer from "../common/Layout/footer/Footer";
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 
 import { loginUser } from "../../actions/loginActions";
 
-import { setCookie } from "../../utils/cookies";
-
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../index.css";
 
-function LoginPage(props) {
-  const dispatch = useDispatch();
-  const history = useHistory();
+import useAuth from "../../hooks/useAuth";
+//import useToggle from "../../hooks/useToggle";
+//import useInput from '../../hooks/useInput';
 
-  const [isLogged, setLogged] = useState(null);
+function LoginPage() {
+  const { setAuth, persist, setPersist } = useAuth();
+  const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard";
+
+  //const userRef = useRef();
+  //const errRef = useRef();
+
+  const [email, setUser] = useState("");
+  const [password, setPwd] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+  //const [check, toggleCheck] = useToggle("persist", false);
+
+  useEffect(() => {
+    setErrMsg("");
+  }, [email, password]);
 
   const validationSchema = Yup.object().shape({
     email: Yup.string()
@@ -28,37 +44,56 @@ function LoginPage(props) {
   });
 
   const initialValues = {
-    email: "",
-    password: "",
+    email,
+    password
   };
 
-  function onHandleSubmit(data) {
-    let resp = dispatch(loginUser(data));
-    return resp;
-  }
+  const authResponse = useSelector((state) => state.entries.auth.response);
+
+  useEffect(()=>{
+    try {
+      if(authResponse){
+        const accessToken = authResponse?.accessToken;
+        const roles = true;
+        setAuth({ email, password, roles, accessToken });
+        setUser("");
+        setPwd("");
+        navigate(from, { replace: true });
+        return authResponse;
+      }
+
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg("No Server Response");
+      } else if (err.response?.status === 400) {
+        setErrMsg("Missing Username or Password");
+      } else if (err.response?.status === 401) {
+        setErrMsg("Unauthorized");
+      } else {
+        setErrMsg("Login Failed");
+      }
+    }
+  },[authResponse]);
+
+
+
+  const onHandleSubmit = (userData) => {
+    try {
+      dispatch(loginUser(userData))
+      setUser(userData.email)
+      setPwd(userData.password)
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const togglePersist = () => {
+    setPersist((prev) => !prev);
+  };
 
   useEffect(() => {
-    let isSuccess = props.response.entries.auth
-      ? props.response.entries.auth.success
-      : null;
-
-    if (isSuccess) {
-      setCookie("tokenSession", props.response.entries.auth.tokenSession, 1);
-      setLogged(true);
-      toast.success(
-        "Bienvenido: " + props.response.entries.auth.response.user.name,
-        {
-          position: toast.POSITION.TOP_RIGHT,
-        }
-      );
-      history.push("/dashboard");
-    }else if(isSuccess == false){
-      setLogged(false);
-      toast.error("Error: Usuario o Contrasenna invalida." , {
-        position: toast.POSITION.TOP_RIGHT,
-      });
-    }
-  }, [props.response.entries.auth.success]);
+    localStorage.setItem("persist", persist);
+  }, [persist]);
 
   return (
     <>
@@ -67,24 +102,14 @@ function LoginPage(props) {
         validationSchema={validationSchema}
         onSubmit={(values) => onHandleSubmit(values)}
       >
-        {({ errors, touched, isSuccess, message }) => (
+        {({ isSuccess, message }) => (
           <Form>
             <section className="container-fluid bg vh100">
               <section className="row justify-content-center">
                 <section className="col-12 col-sm-6 col-md-3">
                   <div>
-                    {!isSuccess ? (
-                      <div>{message}</div>
-                    ) : (
-                      <Redirect to="dashboard" />
-                    )}
                     <div className="form-container">
                       <div>
-                        {!isSuccess ? (
-                          <div>{message}</div>
-                        ) : (
-                          <Redirect to="dashboard" />
-                        )}
                         <div className="mb-3">
                           <label htmlFor="email" className="form-label">
                             Email
@@ -94,6 +119,9 @@ function LoginPage(props) {
                             className="form-text form-control"
                             name="email"
                             id="email"
+                            //value={email}
+                            //ref={userRef.current}
+                            //onChange={(e) => setUser(e.target.value)}
                             placeholder=""
                           />
                           <ErrorMessage
@@ -114,6 +142,9 @@ function LoginPage(props) {
                             className="form-text form-control"
                             name="password"
                             id="password"
+                            //value={password}
+                            //ref={userRef}
+                            //onChange={(e) => setPwd(e.target.value)}
                             placeholder=""
                           />
                           <ErrorMessage
@@ -134,6 +165,15 @@ function LoginPage(props) {
                           >
                             Entrar
                           </button>
+                          <div className="persistCheck">
+                            <input
+                              type="checkbox"
+                              id="persist"
+                              onChange={togglePersist}
+                              checked={persist}
+                            />
+                            <label htmlFor="persist">Confiar en este dispositivo</label>
+                          </div>
                         </div>
                         <div>
                           <span className="haveAccount">
@@ -155,6 +195,8 @@ function LoginPage(props) {
   );
 }
 
-const mapStateToProps = (response) => ({ response });
+const mapStateToProps = (state) => ({ 
+  auth: state.auth
+ });
 
 export default connect(mapStateToProps)(LoginPage);

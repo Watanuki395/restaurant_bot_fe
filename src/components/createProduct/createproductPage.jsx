@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Redirect, useHistory } from "react-router-dom";
+import { Link, useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
 import { createProductAction } from '../../actions/createproductAction';
 
 import * as Yup from "yup";
@@ -13,8 +13,6 @@ const createProductPage = () => {
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const dispatch = useDispatch();
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const history = useHistory();
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const [isReseted, setReseted] = useState(false);
@@ -70,14 +68,14 @@ const createProductPage = () => {
                     {!isSuccess ? (
                       <div>{message}</div>
                     ) : (
-                      <Redirect to="dashboard" />
+                      <Navigate to="dashboard" />
                     )}
                     <div className="form-container">
                       <div>
                         {!isSuccess ? (
                           <div>{message}</div>
                         ) : (
-                          <Redirect to="dashboard" />
+                          <Navigate to="dashboard" />
                         )}
                         <div className="mb-3">
                           <label htmlFor="name_prd" className="form-label">
