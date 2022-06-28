@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch, connect } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { Link, useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
 
 import { selectComponentRequested } from "../../actions/selectcomponentAction";
 import { editCategoryAction } from "../../actions/editcategoryAction";
@@ -17,11 +17,12 @@ const initialState = {
   description_cat: "",
 };
 
-const categoryEdit = () => {
+const CategoryEdit = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const dispatch = useDispatch();
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/dashboard";
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { id_cat } = useParams();
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -45,7 +46,7 @@ const categoryEdit = () => {
       dispatch(editCategoryAction({ formValue }));
       toast.success("Categoría actualizada satisfactoriamente.");
       setTimeout(() => dispatch(categoriesRequested()), 1000);
-      setTimeout(() => history.push("/dashboard"), 1000);
+      setTimeout(() => navigate(from, { replace: true }), 1000);
     } else {
       toast.error("ERROR");
     }
@@ -123,7 +124,7 @@ const categoryEdit = () => {
                   <button
                     type="button"
                     className="btn btn-primary font-weight-bold text-uppercase m-3"
-                    onClick={() => history.push("/dashboard")}
+                    onClick={() => navigate(from, { replace: true })}
                   >
                     Volver
                   </button>
@@ -138,4 +139,4 @@ const categoryEdit = () => {
   );
 };
 
-export default categoryEdit;
+export default CategoryEdit;

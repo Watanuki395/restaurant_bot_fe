@@ -7,9 +7,9 @@ import { Route, Routes } from "react-router-dom";
 import Navbar from '../components/common/Layout/Navbar';
 import Sidebar from '../components/common/SideBar/SideBar';
 
-import LoginPage from "../components/auth/loginPage";
-import RegisterPage from "../components/auth/registerPage";
-import DashboardPage from "../components/dashboard/dashboardPage";
+import LoginPage from "../components/auth/LoginPage";
+import RegisterPage from "../components/auth/RegisterPage";
+import DashboardPage from "../components/dashboard/DashboardPage";
 import ForgotPassPage from "../components/forgotpass/ForgotpassPage";
 
 import RequireAuth from "../components/requireAuth/RequireAuth";
@@ -18,12 +18,12 @@ import Layout from "../components/layouts/Layout";
 import Missing from "../components/missing/Missing";
 import Unauthorized from '../components/unauthorized/Unauthorized';
 import CategoriesPage from '../components/categories/CategoriesPage';
-import createCategoryPage from '../components/createCategory/createcategoryPage';
-import createProductPage from '../components/createProduct/createproductPage';
-import categoryEditPage from '../components/categories/categoryEditPage';
-import CategoryByProductPage from '../components/categories/categoryByProductPage';
+import CreateCategoryPage from '../components/createCategory/CreateCategoryPage';
+import CreateProductPage from '../components/createProduct/CreateproductPage';
+import CategoryEditPage from '../components/categories/CategoryEditPage';
+import CategoryByProductPage from '../components/categories/CategoryByProductPage';
 import Products from '../components/product/Products';
-import editProductPage from '../components/product/editProductPage';
+import EditProductPage from '../components/product/EditProductPage';
 
 const App = () => {
 
@@ -56,12 +56,12 @@ const App = () => {
             <Route element={<RequireAuth allowedRoles={[ROLES.admin]}/>}>
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path='/dashboard/:id_cat' element={<CategoriesPage/>} />
-              <Route path='/createCategory' element={<createCategoryPage/>} />
-              <Route path='/createProduct' element={<createProductPage/>} />
-              <Route path='/categoryEdit/:id_cat' element={<categoryEditPage/>} />
+              <Route path='/createCategory' element={<CreateCategoryPage/>} />
+              <Route path='/createProduct' element={<CreateProductPage/>} />
+              <Route path='/categoryEdit/:id_cat' element={<CategoryEditPage/>} />
               <Route path='/CategoryByProduct/:id_cat' element={<CategoryByProductPage/>} />
               <Route path='/Products' element={<Products/>} />
-              <Route path='/editProduct/:id_prd' element={<editProductPage/>} />
+              <Route path='/editProduct/:id_prd' element={<EditProductPage/>} />
             </Route>
           </Route>
 

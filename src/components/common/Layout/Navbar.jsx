@@ -60,7 +60,7 @@ const Navbar = (props) => {
           <Bars onClick={props.toggle}/>
             <NavMenu>
             <NavLink to="/user">
-              Usurio
+              Usuario
             </NavLink>
             <NavLink to="/product">
               Producto
@@ -83,9 +83,7 @@ const Navbar = (props) => {
 }
 
 const mapStateToProps = (state,ownProps) => { 
-  const IsLogged = state.entries.auth
-  ? state.entries.auth.logged
-  : false;
+  const IsLogged = state.entries.auth ? state.entries.auth.logged ? state.entries.refreshtoken : state.entries.refreshtoken.logged : false
   const isToggle = ownProps.toggle ? ownProps.toggle : false
   return {
     logged: IsLogged,
