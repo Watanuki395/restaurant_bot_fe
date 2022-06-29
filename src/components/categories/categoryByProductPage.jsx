@@ -503,7 +503,7 @@ const CategoryByProduct = () => {
           </button>
         </div>
         <button className="btn btn-primary"
-        onClick={() => history.push("/dashboard")}
+        //onClick={() => history.push("/dashboard")}
         >Regresar..</button>
         
       </div>

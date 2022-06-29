@@ -11,6 +11,7 @@ import { categoriesRequested } from "../../actions/categoriesAction";
 import { selectComponentRequested } from "../../actions/selectcomponentAction";
 import { deleteCategoryAction } from "../../actions/deletecategoryAction";
 import { productoByCategoryRequested } from "../../actions/productbycategoryAction";
+import { editCategoryAction } from "../../actions/editcategoryAction";
 
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -72,6 +73,49 @@ const Categories = (props) => {
 
     //#endregion
 
+  //#region Modal Editar
+
+  const [showEdit, setShowEdit] = useState(false);
+  const handleCloseEdit = () => setShowEdit(false);
+  const handleShowEdit = () => setShowEdit(true);
+
+  const initialStateEdit = {
+    name_cat: "",
+    description_cat: "",
+  };
+
+  const [formValueEdit, setFormValueEdit] = useState(initialStateEdit);
+  
+  
+  const redirectEdit = (category) => {
+    //navigate(`/categoryEdit/${category.id_cat}`, { replace: true });
+    setFormValueEdit(category);
+    handleShowEdit();
+  };
+  const { name_cat, description_cat } = formValueEdit;
+
+  const onHandleSubmitEdit = (e) => {
+    //e.preventDefault();
+    if (name_cat && description_cat) {
+      console.log(formValueEdit);
+      dispatch(editCategoryAction({ formValueEdit }));
+      toast.success("Categoría actualizada satisfactoriamente.");
+      setTimeout(() => dispatch(categoriesRequested()), 1000);
+      setTimeout(handleCloseEdit());
+    } else {
+      toast.error("ERROR");
+    }
+  };
+  const onChangeFormEdit = (e) => {
+    let { name, value } = e.target;
+    setFormValueEdit({
+      ...formValueEdit,
+      [name]: value,
+    });
+  };
+
+  //#endregion
+
   useEffect(() => {
     const cargarProductos = () => dispatch(categoriesRequested());
     cargarProductos();
@@ -132,19 +176,6 @@ const Categories = (props) => {
   const handleCloseDelete = () => setShowDelete(false);
   const handleShowDelete = () => setShowDelete(true);
 
-  /* async function onHandleSubmitDelete(data) {
-    console.log(data);
-    await sleep(1000);
-    setReseted(true);
-
-      //let resp = dispatch(createCategoryAction(data));
-      dispatch(deleteCategoryAction(data));
-      toast.success("Categoría elimnada!");
-      setTimeout(() => dispatch(categoriesRequested()), 1000);
-      setTimeout(() => setShowDelete(false), 1100);
-      //return resp;
-
-  } */
   const onHandleSubmitDelete = (e) => {
     e.preventDefault();
 
@@ -159,10 +190,6 @@ const Categories = (props) => {
   //#region React-Table
   const columns = useMemo(() => COLUMNS, []);
   const data = useMemo(() => [...categorias], [categorias]);
-
-  const redirectEdit = (category) => {
-    navigate(`/categoryEdit/${category.id_cat}`, { replace: true });
-  };
 
   const redirectProductByCategory = (idCategory) => {
     let id_cat = idCategory.id_cat;
@@ -442,6 +469,68 @@ const Categories = (props) => {
             Cerrar
           </Button>
         </Modal.Footer>
+      </Modal>
+
+      <Modal show={showEdit} onHide={handleCloseEdit}>
+        <Formik
+          initialValues={initialStateEdit}
+          //validationSchema={validationSchema}
+          onSubmit={onHandleSubmitEdit}
+        >
+          <Form>
+            <Modal.Header closeButton>
+              <Modal.Title>Editar categoría</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="form-container mt-5">
+                <div className="form-group">
+                  <label> Nombre de la categoría</label>
+                  <Field
+                    type="text"
+                    className="form-control"
+                    placeholder="Nombre de la categoría"
+                    name="name_cat"
+                    value={name_cat || ""}
+                    onChange={onChangeFormEdit}
+                  />
+                  <ErrorMessage
+                    name="name_cat"
+                    component="div"
+                    className="field-error text-danger"
+                  />
+                </div>
+                <div className="form-group">
+                  <label> Descripción de la categoría</label>
+                  <Field
+                    type="text"
+                    className="form-control"
+                    placeholder="Descripción de la categoría"
+                    name="description_cat"
+                    value={description_cat || ""}
+                    onChange={onChangeFormEdit}
+                  />
+                  <ErrorMessage
+                    name="description_cat"
+                    component="div"
+                    className="field-error text-danger"
+                  />
+                </div>
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <button
+                type="submit"
+                className="btn btn-dark font-weight-bold text-uppercase m-3"
+                disabled={name_cat === "" || description_cat === ""}
+              >
+                Guardar Cambios
+              </button>
+              <Button variant="secondary" onClick={handleCloseEdit}>
+                Cerrar
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </Formik>
       </Modal>
     </Fragment>
   );
