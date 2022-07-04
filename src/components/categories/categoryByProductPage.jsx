@@ -44,10 +44,56 @@ const CategoryByProduct = () => {
   );
   let categorias = '';
   if(Categoria){
-    console.log(Categoria);
     const { categoria } = Categoria;
     categorias = categoria;
   }
+
+  const { id_cat } = useParams();
+  //#endregion
+
+  //#region Modal Edit
+
+  const [showEdit, setShowEdit] = useState(false);
+  const handleCloseEdit = () => setShowEdit(false);
+  const handleShowEdit = () => setShowEdit(true);
+
+  const initialStateEdit = {
+    producto: "",
+    descripcion: "",
+    price_prd: 0,
+    isOnMenu: "",
+    id_cat: 0,
+    id_user: 68,
+    id_prd: 0,
+    imgURL_prd: "",
+  };
+  const [formValueEdit, setFormValueEdit] = useState(initialStateEdit);
+
+
+  const RedirectEditProduct = (product) => {
+    setFormValueEdit(product);
+    handleShowEdit();
+  };
+
+  const { producto, descripcion, imgURL_prd, price_prd, isOnMenu } = formValueEdit;
+
+  const onHandleSubmitEdit = (e) => {
+      e.preventDefault();
+      console.log(formValueEdit);
+      dispatch(editProductAction({ formValueEdit }));
+      toast.success("Categoría actualizada satisfactoriamente.");
+      setTimeout(() => dispatch(productoByCategoryRequested({ id_user: 68, id_cat })), 1000);
+      setTimeout(handleCloseEdit());
+
+  };
+  const onChangeFormEdit = (e) => {
+    let { name, value } = e.target;
+    setFormValueEdit({
+      ...formValueEdit,
+      [name]: value,
+    });
+  };
+
   //#endregion
 
   //#region UseTable
@@ -74,10 +120,6 @@ const CategoryByProduct = () => {
   const columns = useMemo(() => COLUMNS, []);
   const data = useMemo(() => [...categoryByProduct], [categoryByProduct]);
 
-  const RedirectEditProduct = (id_prd, id_cat) => {
-    //dispatch( productoByCategoryRequested({id_user:68, id_cat}) );
-    navigate(from, { replace: true })
-  };
 
   const tableHooks = (hooks) => {
     hooks.visibleColumns.push((columns) => [
@@ -97,7 +139,7 @@ const CategoryByProduct = () => {
             </PButton>
             <PButton
               className="mb-1"
-              onClick={() => RedirectEditProduct(row.original.id_prd, row.original.id_cat)}
+              onClick={() => RedirectEditProduct(row.original)}
             >
               <IconEdit></IconEdit>
             </PButton>
@@ -138,7 +180,7 @@ const CategoryByProduct = () => {
 
   //#endregion
 
-  const { id_cat } = useParams();
+
 
   //#region Eliminar
   let initialValuesDelete = {
@@ -503,7 +545,7 @@ const CategoryByProduct = () => {
           </button>
         </div>
         <button className="btn btn-primary"
-        //onClick={() => history.push("/dashboard")}
+        onClick={() => navigate(`/dashboard`, { replace: true })}
         >Regresar..</button>
         
       </div>
@@ -583,6 +625,119 @@ const CategoryByProduct = () => {
           </Modal.Footer>
         </Modal>
       </div>
+
+      <Modal show={showEdit} onHide={handleCloseEdit}>
+{/*         <Formik
+          initialValues={initialStateEdit}
+          //validationSchema={validationSchema}
+          onSubmit={onHandleSubmitEdit}
+        > */}
+          <form 
+            onSubmit={onHandleSubmitEdit}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Editar producto</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="form-container mt-5">
+                <div className="form-group">
+                  <label> Nombre del producto</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Nombre del producto"
+                    name="producto"
+                    value={producto || ""}
+                    onChange={onChangeFormEdit}
+                  />
+                </div>
+                <div className="form-group">
+                  <label> Descripción del producto</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Descripción del producto"
+                    name="descripcion"
+                    value={descripcion || ""}
+                    onChange={onChangeFormEdit}
+                  />
+
+                </div>
+
+                <div className="form-group">
+                  <label> Imagen del producto</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Imagen del producto"
+                    name="imgURL_prd"
+                    value={imgURL_prd || ""}
+                    onChange={onChangeFormEdit}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label> Precio del producto</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Precio del producto"
+                    name="price_prd"
+                    value={price_prd || ""}
+                    onChange={onChangeFormEdit}
+                  />
+                </div>
+
+                <div className="mb-3">
+                <label className="form-check-label">Menú</label>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="isOnMenu"
+                    value={true}
+                    checked={isOnMenu === true ? true : false}
+                    onChange={onChangeFormEdit}
+                  />
+                  <label className="form-check-label" htmlFor="isOnMenu">
+                    Sí
+                  </label>
+                </div>
+
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="isOnMenu"
+                    value={false}
+                    checked={isOnMenu === false ? true : false}
+                    onChange={onChangeFormEdit}
+                  />
+                  <label className="form-check-label" htmlFor="isOnMenu">
+                    No
+                  </label>
+                </div>
+              </div>
+                
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+            <button
+                type="submit"
+                className="btn btn-dark font-weight-bold text-uppercase m-3"
+                disabled={
+                  producto === "" || descripcion === "" || imgURL_prd === ""
+                }
+              >
+                Guardar Cambios
+              </button>
+              <Button variant="secondary" onClick={handleCloseEdit}>
+                Cerrar
+              </Button>
+            </Modal.Footer>
+          </form>
+        {/* </Formik> */}
+      </Modal>
     </>
   );
 };

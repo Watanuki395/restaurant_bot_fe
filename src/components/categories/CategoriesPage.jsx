@@ -1,14 +1,13 @@
 import React, { Fragment, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch, connect } from "react-redux";
-import { Link, useNavigate, useLocation, Navigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTable, usePagination } from "react-table";
 import { COLUMNS } from "./Columns";
 import { Modal, Button } from "react-bootstrap";
 import { GrAdd } from "react-icons/gr";
 
-import { createCategoryAction } from "../../actions/createcategoryAction";
+import { createCategoryAction } from '../../actions/createCategoriesAction';
 import { categoriesRequested } from "../../actions/categoriesAction";
-import { selectComponentRequested } from "../../actions/selectcomponentAction";
 import { deleteCategoryAction } from "../../actions/deletecategoryAction";
 import { productoByCategoryRequested } from "../../actions/productbycategoryAction";
 import { editCategoryAction } from "../../actions/editcategoryAction";
@@ -17,7 +16,7 @@ import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { IconDelete, IconEdit, IconSee, IconPlus, SButton } from "./style";
+import { IconDelete, IconEdit, IconSee, SButton } from "./style";
 import "../../index.css";
 
 const Categories = (props) => {
@@ -30,7 +29,7 @@ const Categories = (props) => {
   const [isReseted, setReseted] = useState(false);
   const [count, setCount] = useState(0);
 
-    //#region  Modal Agregar
+  //#region  Modal Agregar
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -56,10 +55,8 @@ const Categories = (props) => {
       setReseted(true);
       try {
         if (data) {
-          //let resp = dispatch(createCategoryAction(data));
           setReseted(true);
           dispatch(createCategoryAction(data));
-          //return resp;
         }
       } catch (err){
         console.log(err);
@@ -68,9 +65,8 @@ const Categories = (props) => {
   
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   
-    const createResponse = useSelector((state) => state.entries.createcategory.success);
-    const msg = useSelector((state) => state.entries.createcategory.msg);
-
+    const createResponse = useSelector((state) => state.entries.createCategory ? state.entries.createCategory.success : null);
+    const msg = useSelector((state) => state.entries.createCategory ? state.entries.createCategory.msg : null);
     //#endregion
 
   //#region Modal Editar
@@ -97,7 +93,6 @@ const Categories = (props) => {
   const onHandleSubmitEdit = (e) => {
     //e.preventDefault();
     if (name_cat && description_cat) {
-      console.log(formValueEdit);
       dispatch(editCategoryAction({ formValueEdit }));
       toast.success("Categoría actualizada satisfactoriamente.");
       setTimeout(() => dispatch(categoriesRequested()), 1000);
@@ -116,39 +111,11 @@ const Categories = (props) => {
 
   //#endregion
 
-  useEffect(() => {
-    const cargarProductos = () => dispatch(categoriesRequested());
-    cargarProductos();
-    try {
-      if(createResponse && !msg){
-        toast.success("Categoría creada!");
-        setTimeout(() => dispatch(categoriesRequested()), 1000);
-        setTimeout(() => setShow(false), 1100);
-        navigate(from, { replace: true })
-      } else if(msg){
-        console.log(msg);
-        toast.error("Esa categoría ya existe.");
-      }
-    } catch (e){
-      if(!e?.createResponse){
-        toast.error("Servidor no responde.");
-      } else if(!e?.status === 400){
-        toast.error("Servidor no responde.");
-      } else if(!e?.status === 204){
-        toast.error("Esa categoría ya existe.");
-      } else if(msg){
-        console.log(msg);
-        toast.error("Esa categoría ya existe.");
-      }
-    }
-
-  }, [createResponse]);
-
   //#region  UseSelector
 
-  let categorias = useSelector((state) => state.entries.categories.categories);
-  const error = useSelector((state) => state.entries.categories.error);
-  const loading = useSelector((state) => state.entries.categories.isFetching);
+  let categorias = useSelector((state) => state.entries.categories ? state.entries.categories.categories : null);
+  const error = useSelector((state) => state.entries.categories ? state.entries.categories.error : null);
+  const loading = useSelector((state) => state.entries.categories ? state.entries.categories.isFetching : null);
 
   //#endregion
 
@@ -180,11 +147,10 @@ const Categories = (props) => {
     e.preventDefault();
 
     dispatch(deleteCategoryAction(formValue));
-    toast.success("Categoría elimnada!");
-    setTimeout(() => dispatch(categoriesRequested()), 1000);
-    setTimeout(() => setShowDelete(false), 1100);
+    
   };
 
+  const deleteResponse = useSelector((state) => state.entries.deleteCategory ? state.entries.deleteCategory.success : null);
   //#endregion
 
   //#region React-Table
@@ -258,6 +224,43 @@ const Categories = (props) => {
   const { pageIndex } = state;
   //#endregion
 
+  useEffect(() => {
+    if(!createResponse && !deleteResponse){ //Revisar validación para que se ejecute solo la primera vez que entra
+      const cargarProductos = () => dispatch(categoriesRequested());
+      cargarProductos();
+    }
+    try {
+      if(createResponse && !msg){
+        toast.success("Categoría creada!");
+        setTimeout(() => dispatch(categoriesRequested()), 1000);
+        setTimeout(() => setShow(false), 1100);
+      } else if(msg){
+        toast.error("Esa categoría ya existe.");
+      }
+    } catch (e){
+      if(!e?.createResponse){
+        toast.error("Servidor no responde.");
+      } else if(!e?.status === 400){
+        toast.error("Servidor no responde.");
+      } else if(!e?.status === 204){
+        toast.error("Esa categoría ya existe.");
+      } else if(msg){
+        toast.error("Esa categoría ya existe.");
+      }
+    }
+
+    try{
+      if(deleteResponse){
+        toast.success("Categoría elimnada!");
+        setTimeout(() => dispatch(categoriesRequested()), 1000);
+        setTimeout(() => setShowDelete(false), 1100);
+      }
+    }catch(e){
+      toast.error("Ocurrió un error..!");
+    }
+  }, [createResponse, deleteResponse]);
+
+
   return (
     <Fragment>
       <div className="container">
@@ -287,24 +290,14 @@ const Categories = (props) => {
               validationSchema={validationSchema}
               onSubmit={(values) => onHandleSubmit(values)}
             >
-              {({ errors, touched, isSuccess, message, isSubmitting }) => (
+              {({isSubmitting }) => (
                 <Form>
                   <section className="">
                     <section className="">
                       <section className="">
                         <div>
-                          {!isSuccess ? (
-                            <div>{message}</div>
-                          ) : (
-                            <Navigate to="dashboard" />
-                          )}
                           <div className="form-container">
                             <div>
-                              {!isSuccess ? (
-                                <div>{message}</div>
-                              ) : (
-                                <Navigate to="dashboard" />
-                              )}
                               <div className="mb-3">
                                 <label
                                   htmlFor="name_cat"
