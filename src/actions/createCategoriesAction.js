@@ -10,7 +10,7 @@ export const createCategoryAction = data => ({
     isFetching: false
 })
 
-/* export const createCategoryActionSuccess = data => ({
+export const createCategoryActionSuccess = data => ({
     type: CREATE_CATEGORY_SUCCESS,
     data,
     isFetching: false,
@@ -24,4 +24,4 @@ export const createCategoryActionError = data => ({
     isFetching: false,
     success: false,
     error: true
-}) */
+}) 

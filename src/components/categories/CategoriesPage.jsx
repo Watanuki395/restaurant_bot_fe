@@ -66,6 +66,7 @@ const Categories = (props) => {
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   
     const createResponse = useSelector((state) => state.entries.createCategory ? state.entries.createCategory.success : null);
+    const createResponseError = useSelector((state) => state.entries.createCategory ? state.entries.createCategory.error : null);
     const msg = useSelector((state) => state.entries.createCategory ? state.entries.createCategory.msg : null);
     //#endregion
 
@@ -143,15 +144,16 @@ const Categories = (props) => {
   const handleCloseDelete = () => setShowDelete(false);
   const handleShowDelete = () => setShowDelete(true);
 
+  const [ deleted, setDeleted] = useState(false);
+
   const onHandleSubmitDelete = (e) => {
     e.preventDefault();
-
     dispatch(deleteCategoryAction(formValue));
-    
+    toast.success("Categoría eliminada!");
+    setTimeout(() => dispatch(categoriesRequested()), 1000);
+    setTimeout(() => setShowDelete(false), 1100);
   };
-
-  const deleteResponse = useSelector((state) => state.entries.deleteCategory ? state.entries.deleteCategory.success : null);
-  //#endregion
+//#endregion
 
   //#region React-Table
   const columns = useMemo(() => COLUMNS, []);
@@ -225,7 +227,7 @@ const Categories = (props) => {
   //#endregion
 
   useEffect(() => {
-    if(!createResponse && !deleteResponse){ //Revisar validación para que se ejecute solo la primera vez que entra
+    if(!createResponse){ //Revisar validación para que se ejecute solo la primera vez que entra
       const cargarProductos = () => dispatch(categoriesRequested());
       cargarProductos();
     }
@@ -234,7 +236,7 @@ const Categories = (props) => {
         toast.success("Categoría creada!");
         setTimeout(() => dispatch(categoriesRequested()), 1000);
         setTimeout(() => setShow(false), 1100);
-      } else if(msg){
+      } else if(createResponseError){
         toast.error("Esa categoría ya existe.");
       }
     } catch (e){
@@ -248,17 +250,7 @@ const Categories = (props) => {
         toast.error("Esa categoría ya existe.");
       }
     }
-
-    try{
-      if(deleteResponse){
-        toast.success("Categoría elimnada!");
-        setTimeout(() => dispatch(categoriesRequested()), 1000);
-        setTimeout(() => setShowDelete(false), 1100);
-      }
-    }catch(e){
-      toast.error("Ocurrió un error..!");
-    }
-  }, [createResponse, deleteResponse]);
+  }, [createResponse, createResponseError]);
 
 
   return (

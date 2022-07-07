@@ -10,8 +10,11 @@ import {
 function* createCategorySaga(payload) {
     try {
         const response = yield call(apiCall, 'POST', '/api/product/categories/', payload.data);
+        console.log(response);
         if(response){
             yield put({ type: CREATE_CATEGORY_SUCCESS, response });
+        }else{
+            yield put({ type: CREATE_CATEGORY_ERROR, response });
         }
     } catch(error) {
         yield put({ type: CREATE_CATEGORY_ERROR, error });

@@ -38,6 +38,7 @@ const CategoryByProduct = () => {
   const Categoria = useSelector(
     (state) => state.entries.productbycategory.productByCategory[0]
   );
+  console.log(Categoria);
   let categorias = '';
   if(Categoria){
     const { categoria } = Categoria;
@@ -263,13 +264,8 @@ const CategoryByProduct = () => {
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
   const createResponse = useSelector((state) => state.entries.createproduct ? state.entries.createproduct.success : null);
+  const createResponseError = useSelector((state) => state.entries.createproduct ? state.entries.createproduct.error : null);
   const msg = useSelector((state) => state.entries.createproduct ? state.entries.createproduct.msg : null);
-  const [isRepeat, setIsRepeat] = useState(false);
-  if(msg){
-    setIsRepeat(true);
-    console.log(isRepeat);
-  }
-  console.log(isRepeat);
   //#endregion
 
   //#region Modal Producto
@@ -291,17 +287,15 @@ const CategoryByProduct = () => {
       dispatch(productoByCategoryRequested({ id_user: 68, id_cat }));
     cargarProductoCat();
 
-    console.log(isRepeat);
+
     try{
-      if(createResponse && !msg && !isRepeat){
+      if(createResponse && !msg){
         toast.success("Producto agregado.");
         setTimeout(() => dispatch(productoByCategoryRequested({ id_user: 68, id_cat })),1000);
         setTimeout(() => setShow(false), 1100);
         setTimeout(() => navigate(`/CategoryByProduct/${Number(id_cat)}`, { replace: true }),1000);
         setShow(false);
-        setIsRepeat(false);
-      }else if(msg && isRepeat){
-        setIsRepeat(false);
+      }else if(createResponseError){
         toast.error("Ese producto ya existe.");
       }
     }catch(e){
