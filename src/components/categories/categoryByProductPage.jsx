@@ -1,16 +1,15 @@
-import React, { Fragment, useEffect, useState, useMemo } from "react";
-import { useSelector, useDispatch, connect } from "react-redux";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
 import { useTable, usePagination } from "react-table";
-import { GrAdd } from "react-icons/gr";
-import { IconDelete, IconEdit, IconSee, IconPlus, PButton } from "./style";
+import { GrAdd, GrUploadOption } from "react-icons/gr";
+
+import { IconDelete, IconEdit, IconSee, PButton, PreviewImg } from "./style";
 
 import { createProductAction } from "../../actions/createproductAction";
 import { productsRequested } from "../../actions/productsAction";
-import { Products } from "../product/Products";
 import { deleteProductAction } from "../../actions/deleteproductAction";
 import { productoByCategoryRequested } from "../../actions/productbycategoryAction";
-import { editProductAction } from "../../actions/editproductAction";
 
 import { Modal, Button } from "react-bootstrap";
 import * as Yup from "yup";
@@ -18,8 +17,19 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../index.css";
+import noImage from "../../imgs/no-image.jpeg";
 
-const CategoryByProduct = () => {
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
+import storage from "../../firebase";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
+const CategoryByProduct = ({ inputs, title }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,6 +45,9 @@ const CategoryByProduct = () => {
 
   const [isReseted, setReseted] = useState(false);
   const [count, setCount] = useState(0);
+  const [file, setFile] = useState("");
+  const [idata, setData] = useState({});
+  const [per, setPerc] = useState(null);
 
   const categoryByProduct = useSelector(
     (state) => state.entries.productbycategory.productByCategory
@@ -172,22 +185,24 @@ const CategoryByProduct = () => {
   //#region Agregar
 
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false)
+    setFile('')};
   const handleShow = () => setShow(true);
 
   //const [ select, setSelect ] = useState();
   //const changeRadioButton = (e) => setSelect(e.target.value)
   //Revisar bien
 
+  const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
   const initialValues = {
     name_prd: "",
     description_prd: "",
     id_cat: Number(id_cat),
     id_user: 68,
-    imgURL_prd: "",
+    file: "",
     price_prd: 0,
     isOnMenu: ''
-    //isOnMenu: select
   };
 
   const validationSchema = Yup.object().shape({
@@ -199,19 +214,29 @@ const CategoryByProduct = () => {
       .required("Campo Requerido")
       .min(2, `Mínimo 5 caracteres`)
       .max(255, `Máximo 255 caracteres`),
-    imgURL_prd: Yup.string()
-      .required("Campo Requerido")
-      .min(2, `Mínimo 2 caracteres`)
-      .max(255, `Máximo 255 caracteres`),
+    file: Yup.mixed()
+      //.nullable()
+      //.required("La imagen del producto es requerida")
+      .test(
+        "FILE_SIZE",
+        "El tamaño del archivo es demasiado grande.",
+        (value) => !value || (value && value.size <= 1024*1024)
+      )
+      .test(
+        "FILE_FORMAT",
+        "El archivo no esta en un formato permitido para una imagen.",
+        (value) => !value || (value && SUPPORTED_FORMATS.includes(value?.type))
+      ),
     price_prd: Yup.number()
       .required("Campo Requerido")
   });
 
   async function onHandleSubmit(data) {
-    await sleep(1000);
+    //await sleep(1000);
     setReseted(true);
     if (data) {
-      dispatch(createProductAction(data));
+      dispatch(createProductAction(data))
+
       toast.success("Producto agregado.");
       setTimeout(
         () => dispatch(productoByCategoryRequested({ id_user: 68, id_cat })),
@@ -223,6 +248,8 @@ const CategoryByProduct = () => {
         1000
       );
       setShow(false);
+      setFile('')
+      
     }
   }
 
@@ -236,10 +263,48 @@ const CategoryByProduct = () => {
   const handleShowProduct = () => setShowProduct(true);
 
   const RedirectProduct = (id_cat, id_prd) => {
-    dispatch(productsRequested({ id_user: 68, id_cat, id_prd }));
+    dispatch(productsRequested({ id_user: userInfo.id, id_cat, id_prd }));
     handleShowProduct();
   };
-  let responseProduct = useSelector((state) => state.entries.products.products);
+  let responseProduct = useSelector((state) => state.entries?.products?.products);
+  const userInfo = useSelector((state) => state.entries?.auth?.response?.user);
+
+
+    const uploadFile = () => {
+      const fileName =  userInfo.uuid + '_' + file.name;
+
+      console.log(fileName);
+      const storageRef = ref(storage, `/menu_images/${userInfo.id}/${fileName}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log("Upload is " + progress + "% done");
+          setPerc(progress);
+          switch (snapshot.state) {
+            case "paused":
+              console.log("Upload is paused");
+              break;
+            case "running":
+              console.log("Upload is running");
+              break;
+            default:
+              break;
+          }
+        },
+        (error) => {
+          console.log(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            setData((prev) => ({ ...prev, img: downloadURL }));
+          });
+        }
+      );
+    };
 
   //#endregion
 
@@ -255,23 +320,23 @@ const CategoryByProduct = () => {
         </button>
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Agregar una producto</Modal.Title>
+            <Modal.Title>Agregar Producto</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Formik
               initialValues={initialValues}
-              validationSchema={validationSchema}
-              //onSubmit={(values) => console.log(values)}
-              onSubmit={async (values) => {
-                if(values.isOnMenu === 'true'){
-                  values.isOnMenu = true
-                }else{
-                  values.isOnMenu = false
+              //validationSchema={validationSchema}
+              onSubmit={(values) => {
+                if (values.isOnMenu === "true") {
+                  values.isOnMenu = true;
+                } else {
+                  values.isOnMenu = false;
                 }
-                await new Promise(onHandleSubmit(values));
+                console.log(values)
+                onHandleSubmit(values);
               }}
             >
-              {({ errors, touched, isSuccess, message, isSubmitting }) => (
+              {({isSuccess, message, isSubmitting, values }) => (
                 <Form>
                   <section className="">
                     <section className="">
@@ -331,26 +396,6 @@ const CategoryByProduct = () => {
                               </div>
                               <div className="mb-3">
                                 <label
-                                  htmlFor="imgURL_prd"
-                                  className="form-label"
-                                >
-                                  Imagen
-                                </label>
-                                <Field
-                                  type="text"
-                                  className="form-text form-control"
-                                  name="imgURL_prd"
-                                  id="imgURL_prd"
-                                  placeholder="Imagen del producto"
-                                />
-                                <ErrorMessage
-                                  name="imgURL_prd"
-                                  component="div"
-                                  className="field-error text-danger"
-                                />
-                              </div>
-                              <div className="mb-3">
-                                <label
                                   htmlFor="price_prd"
                                   className="form-label"
                                 >
@@ -369,19 +414,16 @@ const CategoryByProduct = () => {
                                   className="field-error text-danger"
                                 />
                               </div>
-
+                              <label className="form-check-label">
+                                Agregar al Menú
+                              </label>
                               <div className="mb-3">
-                                <label
-                                  className="form-check-label"
-                                >
-                                  Menú
-                                </label>
-                                <div className="form-check">
+                                <div className="form-check form-check-inline">
                                   <Field
                                     className="form-check-input"
                                     type="radio"
                                     name="isOnMenu"
-                                    //id="isOnMenutrue"
+                                    id="isOnMenutrue"
                                     value={"true"}
                                     //onClick={changeRadioButton}
                                   />
@@ -392,13 +434,13 @@ const CategoryByProduct = () => {
                                     Sí
                                   </label>
                                 </div>
-                                
-                                <div className="form-check">
+
+                                <div className="form-check form-check-inline">
                                   <Field
                                     className="form-check-input"
                                     type="radio"
                                     name="isOnMenu"
-                                    //id="isOnMenufalse"
+                                    id="isOnMenufalse"
                                     value={"false"}
                                     //onClick={changeRadioButton}
                                   />
@@ -408,9 +450,32 @@ const CategoryByProduct = () => {
                                   >
                                     No
                                   </label>
-                                  {/* <p>{select}</p> */}
                                 </div>
+                                <div className="formInput py-3">
+                                  <label htmlFor="file">
+                                    Imagen: <GrUploadOption className="icon" />
+                                  </label>
+                                  <input
+                                    type="file"
+                                    id="file"
+                                    onChange={(e) => setFile(e.target.files[0])}
+                                    style={{ display: "none" }}
+                                  />
+                                </div>
+                                <PreviewImg
+                                  src={
+                                    file
+                                      ? URL.createObjectURL(file)
+                                      : noImage
+                                  }
+                                  className="img-fluid img-thumbnail" alt="..."
+                                />
                               </div>
+                              <ErrorMessage
+                                  name="file"
+                                  component="div"
+                                  className="field-error text-danger"
+                                />
                               <div className="d-grid gap-2 py-3">
                                 <button
                                   type="submit"
@@ -435,11 +500,6 @@ const CategoryByProduct = () => {
               )}
             </Formik>
           </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Cerrar
-            </Button>
-          </Modal.Footer>
         </Modal>
 
         <table {...getTableProps()} className="table">

@@ -54,3 +54,8 @@ export const IconSee = styled(FaEye)`
   cursor: pointer;
 `;
 
+export const PreviewImg  = styled.img `
+	max-width: 400px;
+	max-height: 300px;
+	object-fit: contain;
+`;
