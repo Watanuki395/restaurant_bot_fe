@@ -1,57 +1,58 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
+import { useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
 import { useTable, usePagination } from "react-table";
 import { GrAdd, GrUploadOption } from "react-icons/gr";
 
 import { IconDelete, IconEdit, IconSee, PButton, PreviewImg } from "./style";
 
-import { createProductAction } from "../../actions/createproductAction";
-import { productsRequested } from "../../actions/productsAction";
-import { deleteProductAction } from "../../actions/deleteproductAction";
-import { productoByCategoryRequested } from "../../actions/productbycategoryAction";
+import {
+  productoByCategoryRequested,
+  productsRequested,
+  createProductRequested,
+  deleteProductAction
+} from "../../actions/productsAction";
 
 import { Modal, Button } from "react-bootstrap";
 import * as Yup from "yup";
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { Formik, Field, Form, ErrorMessage, useFormikContext } from "formik";
 import "../../index.css";
 import noImage from "../../imgs/no-image.jpeg";
+import {Loading} from "../common/Loading";
 
-import {
-  addDoc,
-  collection,
-  doc,
-  serverTimestamp,
-  setDoc,
-} from "firebase/firestore";
+// import {
+//   addDoc,
+//   collection,
+//   doc,
+//   serverTimestamp,
+//   setDoc,
+// } from "firebase/firestore";
 import storage from "../../firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
-const CategoryByProduct = ({ inputs, title }) => {
+const CategoryByProduct = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard";
-
-  useEffect(() => {
-    const cargarProductoCat = () =>
-      dispatch(productoByCategoryRequested({ id_user: 68, id_cat }));
-    cargarProductoCat();
-  }, []);
-
   //#region UseSelector and states
 
-  const [isReseted, setReseted] = useState(false);
-  const [count, setCount] = useState(0);
   const [file, setFile] = useState("");
   const [idata, setData] = useState({});
   const [per, setPerc] = useState(null);
+  const [loading, setLoading] = useState(false)
 
-  const categoryByProduct = useSelector(
-    (state) => state.entries.productbycategory.productByCategory
-  );
+  const categoryByProduct = useSelector((state) => state.entries.products?.productsByCategory);
+  const responseGetProduct = useSelector((state) => state.entries?.products?.productsByCategory);
+  const userInfo = useSelector((state) => state.entries.auth.response?.user);
+  const CreateProductResponse = useSelector((state) => state.entries.products.createdProduct);
+  const DeleteProductResponse = useSelector((state) => state.entries.products.deleteProductResponse);
+
+  useEffect(() => {
+    if(userInfo?.id){
+      dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat }))
+    }
+  }, [userInfo !== undefined && userInfo !== null]);
 
   //#endregion
 
@@ -80,7 +81,7 @@ const CategoryByProduct = ({ inputs, title }) => {
   const data = useMemo(() => [...categoryByProduct], [categoryByProduct]);
 
   const RedirectEditProduct = (id_prd, id_cat) => {
-    //dispatch( productoByCategoryRequested({id_user:68, id_cat}) );
+    //dispatch( productoByCategoryRequested({id_user:userInfo.id, id_cat}) );
     navigate(from, { replace: true })
   };
 
@@ -146,40 +147,37 @@ const CategoryByProduct = ({ inputs, title }) => {
   const { id_cat } = useParams();
 
   //#region Eliminar
-  let initialValuesDelete = {
-    id_cat: null,
-  };
-
+  const [idToDelete, setIdToDelete] = useState();
+  const [showDelete, setShowDelete] = useState(false);
   const ConfirmDelete = (id_prd) => {
-    setFormValue({ id_prd });
+    setIdToDelete(id_prd);
     handleShowDelete();
   };
-  const [formValue, setFormValue] = useState(initialValuesDelete);
-  const { id_prd } = formValue;
 
-  const onChangeForm = (e) => {
-    let { name, value } = e.target;
-    setFormValue({
-      ...formValue,
-      [name]: value,
-    });
-  };
-  const [showDelete, setShowDelete] = useState(false);
-  const handleCloseDelete = () => setShowDelete(false);
-  const handleShowDelete = () => setShowDelete(true);
-
-  const onHandleSubmitDelete = (e) => {
-    e.preventDefault();
-
-    dispatch(deleteProductAction(formValue));
-    toast.success("Producto elimnado!");
-    setTimeout(
-      () => dispatch(productoByCategoryRequested({ id_user: 68, id_cat })),
-      1000
-    );
-    setTimeout(() => setShowDelete(false), 1100);
+  const handleShowDelete = () => {
+      setShowDelete(!showDelete)
   };
 
+  const onHandleSubmitDelete = () => {
+    console.log(idToDelete);
+    setLoading(true);  
+    dispatch(deleteProductAction({id_prd:idToDelete}));
+    setIdToDelete(0);
+  };
+
+  useEffect(()=>{
+    if(DeleteProductResponse.mensaje){
+      dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat }))
+      //navigate(`/CategoryByProduct/${Number(id_cat)}`, { replace: true });
+      setShowDelete(false);
+      setLoading(false);      
+    }else if(DeleteProductResponse === 'ERROR'){
+      /// TODO: hacer mensaje de error personalizado y cargar los que ya existen
+     // navigate(`/CategoryByProduct/${Number(id_cat)}`, { replace: true });
+      setShowDelete(false);
+      setLoading(false);   
+    }
+  },[DeleteProductResponse.mensaje !== undefined && loading || DeleteProductResponse === 'ERROR' && loading])
   //#endregion
 
   //#region Agregar
@@ -190,17 +188,13 @@ const CategoryByProduct = ({ inputs, title }) => {
     setFile('')};
   const handleShow = () => setShow(true);
 
-  //const [ select, setSelect ] = useState();
-  //const changeRadioButton = (e) => setSelect(e.target.value)
-  //Revisar bien
-
   const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
   const initialValues = {
     name_prd: "",
     description_prd: "",
     id_cat: Number(id_cat),
-    id_user: 68,
-    file: "",
+    id_user: userInfo?.id,
+    imgURL_prd: "",
     price_prd: 0,
     isOnMenu: ''
   };
@@ -214,7 +208,7 @@ const CategoryByProduct = ({ inputs, title }) => {
       .required("Campo Requerido")
       .min(2, `Mínimo 5 caracteres`)
       .max(255, `Máximo 255 caracteres`),
-    file: Yup.mixed()
+      imgURL_prd: Yup.mixed()
       //.nullable()
       //.required("La imagen del producto es requerida")
       .test(
@@ -230,31 +224,6 @@ const CategoryByProduct = ({ inputs, title }) => {
     price_prd: Yup.number()
       .required("Campo Requerido")
   });
-
-  async function onHandleSubmit(data) {
-    //await sleep(1000);
-    setReseted(true);
-    if (data) {
-      dispatch(createProductAction(data))
-
-      toast.success("Producto agregado.");
-      setTimeout(
-        () => dispatch(productoByCategoryRequested({ id_user: 68, id_cat })),
-        1000
-      );
-      setTimeout(() => setShow(false), 1100);
-      setTimeout(
-        () => navigate(`/CategoryByProduct/${Number(id_cat)}`, { replace: true }),
-        1000
-      );
-      setShow(false);
-      setFile('')
-      
-    }
-  }
-
-  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
   //#endregion
 
   //#region Modal Producto
@@ -266,12 +235,35 @@ const CategoryByProduct = ({ inputs, title }) => {
     dispatch(productsRequested({ id_user: userInfo.id, id_cat, id_prd }));
     handleShowProduct();
   };
-  let responseProduct = useSelector((state) => state.entries?.products?.products);
-  const userInfo = useSelector((state) => state.entries?.auth?.response?.user);
 
+function onHandleSubmit(data) {
+    if (data) {
+      dispatch(createProductRequested(data))
+      setLoading(true)      
+    }
+  }
+
+  useEffect(() => {
+    if(CreateProductResponse.id_prd){
+      dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat }))
+      //navigate(`/CategoryByProduct/${Number(id_cat)}`, { replace: true })
+      setShow(false);
+      setFile('');
+      setLoading(false);      
+      if(file){
+        uploadFile();
+      }
+    } else if(CreateProductResponse === 'ERROR'){
+      //navigate(`/CategoryByProduct/${Number(id_cat)}`, { replace: true })
+      setShow(false);
+      setLoading(false); 
+    }
+
+  }, [CreateProductResponse.id_prd !== undefined && loading || 
+      CreateProductResponse === 'ERROR' && loading]);
 
     const uploadFile = () => {
-      const fileName =  userInfo.uuid + '_' + file.name;
+      const fileName =  userInfo.uuid + '_' + CreateProductResponse.id_prd + '_' + file.name;
 
       console.log(fileName);
       const storageRef = ref(storage, `/menu_images/${userInfo.id}/${fileName}`);
@@ -305,8 +297,10 @@ const CategoryByProduct = ({ inputs, title }) => {
         }
       );
     };
-
   //#endregion
+  const LoadingHandler = () => {
+    return <Loading message = " Agregando ..." />;
+  };
 
   return (
     <>
@@ -325,18 +319,17 @@ const CategoryByProduct = ({ inputs, title }) => {
           <Modal.Body>
             <Formik
               initialValues={initialValues}
-              //validationSchema={validationSchema}
+              validationSchema={validationSchema}
               onSubmit={(values) => {
                 if (values.isOnMenu === "true") {
                   values.isOnMenu = true;
                 } else {
                   values.isOnMenu = false;
                 }
-                console.log(values)
-                onHandleSubmit(values);
+                onHandleSubmit(values);      
               }}
             >
-              {({isSuccess, message, isSubmitting, values }) => (
+              {({isSuccess, message}) => (
                 <Form>
                   <section className="">
                     <section className="">
@@ -452,12 +445,12 @@ const CategoryByProduct = ({ inputs, title }) => {
                                   </label>
                                 </div>
                                 <div className="formInput py-3">
-                                  <label htmlFor="file">
+                                  <label htmlFor="imgURL_prd">
                                     Imagen: <GrUploadOption className="icon" />
                                   </label>
                                   <input
                                     type="file"
-                                    id="file"
+                                    id="imgURL_prd"
                                     onChange={(e) => setFile(e.target.files[0])}
                                     style={{ display: "none" }}
                                   />
@@ -472,22 +465,17 @@ const CategoryByProduct = ({ inputs, title }) => {
                                 />
                               </div>
                               <ErrorMessage
-                                  name="file"
+                                  name="imgURL_prd"
                                   component="div"
                                   className="field-error text-danger"
                                 />
                               <div className="d-grid gap-2 py-3">
                                 <button
                                   type="submit"
-                                  disabled={
-                                    count > 0 ? true : false || isSubmitting
-                                  }
+                                  disabled={loading}
                                   className="btn btn-dark btn-block mb-2"
                                 >
-                                  {isSubmitting && (
-                                    <span className="spinner-border spinner-border-sm mr-1"></span>
-                                  )}
-                                  Crear
+                                  {loading ? <LoadingHandler /> : "Agregar"}
                                 </button>
                               </div>
                             </div>
@@ -555,41 +543,17 @@ const CategoryByProduct = ({ inputs, title }) => {
         </div>
       </div>
 
-      <Modal show={showDelete} onHide={handleCloseProduct}>
-        <Modal.Header closeButton>
-          <Modal.Title>Eliminar producto</Modal.Title>
-        </Modal.Header>
+      <Modal show={showDelete} onHide={handleShowDelete}>
         <Modal.Body>
-          <form onSubmit={onHandleSubmitDelete}>
-            <div className="form-container">
               <div>
-                <input
-                  type="number"
-                  id="id_prd"
-                  name="id_prd"
-                  value={id_prd}
-                  onChange={onChangeForm}
-                  hidden
-                />
-                <h4>¿Está seguro que quiere eliminar ese producto?</h4>
-                <div className="  py-3">
-                  <button type="submit" className="btn btn-dark m-3">
-                    Eliminar
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-primary mr-3"
-                    onClick={handleCloseDelete}
-                  >
-                    Cancelar
-                  </button>
-                </div>
+                <h4>¿Está seguro de eliminar este producto?</h4>
               </div>
-            </div>
-          </form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseDelete}>
+        <Button variant="warning" onClick={onHandleSubmitDelete}>
+            Eliminar
+          </Button>
+          <Button variant="secondary" onClick={handleShowDelete}>
             Cerrar
           </Button>
         </Modal.Footer>
@@ -598,7 +562,7 @@ const CategoryByProduct = ({ inputs, title }) => {
       <div className="font-style">
         <Modal show={showProduct} onHide={handleCloseProduct}>
           <Modal.Header closeButton>
-            <Modal.Title>{responseProduct.producto}</Modal.Title>
+            <Modal.Title>{responseGetProduct.producto}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div className="form-product">
@@ -609,15 +573,15 @@ const CategoryByProduct = ({ inputs, title }) => {
                   alt="img"
                 />
                 <div className="  py-3">
-                  <p className="description">{responseProduct.descripcion}</p>
+                  <p className="description">{responseGetProduct.descripcion}</p>
                   <p className="gray">
-                    Categoría: <span>{responseProduct.categoria}</span>
+                    Categoría: <span>{responseGetProduct.categoria}</span>
                   </p>
                   <p>
-                    Menú: <span>{responseProduct.isOnMenu ? "Sí" : "No"}</span>
+                    Menú: <span>{responseGetProduct.isOnMenu ? "Sí" : "No"}</span>
                   </p>
                   <p>
-                    Precio: <span>{responseProduct.price_prd}</span>
+                    Precio: <span>{responseGetProduct.price_prd}</span>
                   </p>
                 </div>
               </div>

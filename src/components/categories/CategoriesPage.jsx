@@ -10,7 +10,7 @@ import { createCategoryAction } from "../../actions/createcategoryAction";
 import { categoriesRequested } from "../../actions/categoriesAction";
 import { selectComponentRequested } from "../../actions/selectcomponentAction";
 import { deleteCategoryAction } from "../../actions/deletecategoryAction";
-import { productoByCategoryRequested } from "../../actions/productbycategoryAction";
+import { productoByCategoryRequested } from "../../actions/productsAction";
 
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";

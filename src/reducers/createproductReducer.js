@@ -5,10 +5,9 @@ import {
 } from '../actions/index';
 
 const initialState = {
-    product: [],
-    success: null,
+    success: false,
     isFetching: false,
-    error: null
+    error: false
 };
 
 function createProduct(state = initialState, action){
@@ -18,7 +17,8 @@ function createProduct(state = initialState, action){
         case CREATE_PRODUCT_REQUESTED:
             return {
                 ...state,
-                isFetching: true
+                isFetching: true,
+                success: false,
             };
         case CREATE_PRODUCT_SUCCESS:
             return {
@@ -30,7 +30,6 @@ function createProduct(state = initialState, action){
         case CREATE_PRODUCT_ERROR:
             return {
                 ...state,
-                response,
                 success: false,
                 error: true,
                 isFetching: false
