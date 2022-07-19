@@ -8,7 +8,8 @@ const initialState = {
     product: [],
     success: null,
     isFetching: false,
-    error: null
+    error: null,
+    msg: ''
 };
 
 function createProduct(state = initialState, action){
@@ -25,7 +26,8 @@ function createProduct(state = initialState, action){
                 ...state,
                 response,
                 success: true,
-                isFetching: false
+                isFetching: false,
+                msg: response.msg
             };
         case CREATE_PRODUCT_ERROR:
             return {

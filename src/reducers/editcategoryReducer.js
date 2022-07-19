@@ -23,7 +23,8 @@ function editCategory(state = initialState, action){
         case EDIT_CATEGORY_SUCCESS:
             return{
                 ...state,
-                isFetching: false
+                isFetching: false,
+                response
                 //categoryEdit: null,
                 //categories: state.categories.map(category => category.id === action.payload.id ? category = action.payload : category)
             };

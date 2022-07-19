@@ -6,9 +6,9 @@ import {
 } from '../actions/index';
 import apiCall from '../api';
 
-function* editProductSaga({payload: {id_prd, formValue}}){
+function* editProductSaga({payload: { formValueEdit}}){
     try{
-        const response = yield call(apiCall, 'PUT', `/api/product/`, formValue);
+        const response = yield call(apiCall, 'PUT', `/api/product/`, formValueEdit);
         yield put({type: EDIT_PRODUCT_SUCCESS, response})
         
     }catch(error){

@@ -7,7 +7,7 @@ import categories from './categoriesReducer';
 import productbycategory from './productbycategoryReducer';
 import selectcomponent from './selectcomponentReducer';
 import products from './productsReducer';
-import createcategory from './createcategoryReducer';
+import createCategory from './createCategoriesReducer';
 import createproduct from './createproductReducer';
 import deleteCategory from './deletecategoryReducer';
 import editCategory from './editcategoryReducer';
@@ -23,7 +23,7 @@ const rootReducer = combineReducers({
   productbycategory,
   selectcomponent,
   products,
-  createcategory,
+  createCategory,
   createproduct,
   deleteCategory,
   editCategory,

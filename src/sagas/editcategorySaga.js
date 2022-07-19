@@ -6,9 +6,9 @@ import {
 } from '../actions/index';
 import apiCall from '../api';
 
-function* editCategorySaga({payload: {id_cat, formValue}}){
+function* editCategorySaga({payload: {formValueEdit}}){
     try{
-        const response = yield call(apiCall, 'PUT', `/api/product/categories/`, formValue);
+        const response = yield call(apiCall, 'PUT', `/api/product/categories/`, formValueEdit);
         yield put({type: EDIT_CATEGORY_SUCCESS, response})
         
     }catch(error){

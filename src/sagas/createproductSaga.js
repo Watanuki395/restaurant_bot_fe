@@ -10,7 +10,7 @@ import {
 function* createProductSaga(payload) {
     try {
         const response = yield call(apiCall, 'POST', '/api/product/', payload.product );
-        yield [put({ type: CREATE_PRODUCT_SUCCESS, response })];
+        yield put({ type: CREATE_PRODUCT_SUCCESS, response });
     } catch(error) {
         yield put({ type: CREATE_PRODUCT_ERROR, error });
     }

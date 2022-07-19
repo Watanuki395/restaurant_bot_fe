@@ -35,6 +35,21 @@ code {
   box-shadow: 0px 0px 10px 0px #0000;
   position: relative;
 }
+.img-100{
+  background: rgba(204, 198, 198, 0.884);
+  border-radius: 10px 10px 0px;
+  box-shadow: 0px 0px 10px 0px #000;
+  position: relative;
+}
+.img-100 img {
+  border-radius: 10px 10px 0px 0px;
+}
+
+.product{
+  border-radius: 0px 0px 10px 10px!important;
+  padding: 5px 10px 0px 10px!important;
+  box-shadow: 0px 0px 10px 0px #000!important;
+}
 
 .modal-title{
   font-family: 'Lato', sans-serif;
@@ -53,12 +68,12 @@ code {
 }
 
 .form-product p span {
-  color: gray;
+  color: rgb(15, 15, 15);
   margin-bottom: 0px!important;
 }
 .description {
   font-size: 25px;
-  border-bottom: 1px solid gray;
+  border-bottom: 1px solid #000;
 }
 
 span.littleSpan {
