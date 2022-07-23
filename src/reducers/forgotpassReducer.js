@@ -3,12 +3,6 @@ import {
     FORGOT_PASS_SUCCESS, 
     FORGOT_PASS_ERROR
   } from '../actions';
-  
-  const initialState = {
-    isFetching: false,
-    error: false,
-    success: false,
-  }
 
   export default function (state = [], action) {
     const response = action.response;

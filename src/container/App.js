@@ -18,12 +18,8 @@ import Layout from "../components/layouts/Layout";
 import Missing from "../components/missing/Missing";
 import Unauthorized from '../components/unauthorized/Unauthorized';
 import CategoriesPage from '../components/categories/CategoriesPage';
-import CreateCategoryPage from '../components/createCategory/CreateCategoryPage';
-import CreateProductPage from '../components/createProduct/CreateproductPage';
-import CategoryEditPage from '../components/categories/CategoryEditPage';
 import CategoryByProductPage from '../components/categories/CategoryByProductPage';
-import Products from '../components/product/Products';
-import EditProductPage from '../components/product/EditProductPage';
+import ProductPage from "../components/products/ProductPage";
 
 const App = () => {
 
@@ -56,12 +52,9 @@ const App = () => {
             <Route element={<RequireAuth allowedRoles={[ROLES.admin]}/>}>
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path='/dashboard/:id_cat' element={<CategoriesPage/>} />
-              <Route path='/createCategory' element={<CreateCategoryPage/>} />
-              <Route path='/createProduct' element={<CreateProductPage/>} />
-              <Route path='/categoryEdit/:id_cat' element={<CategoryEditPage/>} />
               <Route path='/CategoryByProduct/:id_cat' element={<CategoryByProductPage/>} />
-              <Route path='/Products' element={<Products/>} />
-              <Route path='/editProduct/:id_prd' element={<EditProductPage/>} />
+              <Route path='/Product' element={<ProductPage/>} />
+              <Route path='/Product/:id_prd' element={<ProductPage/>} />
             </Route>
           </Route>
 

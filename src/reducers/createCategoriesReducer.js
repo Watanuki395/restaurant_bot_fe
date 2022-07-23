@@ -4,14 +4,6 @@ import {
     CREATE_CATEGORY_ERROR
 } from '../actions/index';
 
-const initialState = {
-    category: [],
-    success: null,
-    isFetching: false,
-    error: null,
-    msg: ''
-}
-
 export default function createCategory(state = [], action){
     let response = action.response;
 

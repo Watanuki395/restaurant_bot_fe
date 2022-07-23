@@ -7,7 +7,6 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 
 import { loginUser } from "../../actions/loginActions";
 
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../index.css";
 

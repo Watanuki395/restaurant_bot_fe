@@ -1,16 +1,16 @@
 import React, { Fragment, useEffect, useState, useMemo } from "react";
-import { useSelector, useDispatch, connect } from "react-redux";
-import { Link, useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
 import { useTable, usePagination } from "react-table";
 import { GrAdd } from "react-icons/gr";
-import { IconDelete, IconEdit, IconSee, IconPlus, PButton } from "./style";
+import { IconDelete, IconEdit, IconSee, PButton } from "./style";
 
 import { createProductAction } from "../../actions/createproductAction";
 import { productsRequested } from "../../actions/productsAction";
-import { Products } from "../product/Products";
 import { deleteProductAction } from "../../actions/deleteproductAction";
 import { productoByCategoryRequested } from "../../actions/productbycategoryAction";
 import { editProductAction } from "../../actions/editproductAction";
+import Table from "../common/reactTable/Table";
 
 import { Modal, Button } from "react-bootstrap";
 import * as Yup from "yup";
@@ -96,10 +96,10 @@ const CategoryByProduct = () => {
   //#region UseTable
 
   const COLUMNS = [
-    /* {
-      Header: "#",
-      accessor: "id_prd",
-    }, */
+    {
+      Header: "Imagen",
+      accessor: "imgURL_prd",
+    },
     {
       Header: "Producto",
       accessor: "producto",
@@ -107,6 +107,10 @@ const CategoryByProduct = () => {
     {
       Header: "Descripción",
       accessor: "descripcion",
+    },
+    {
+      Header: "Menú",
+      accessor: "isOnMenu"
     },
     {
       Header: "Precio",
@@ -305,7 +309,7 @@ const CategoryByProduct = () => {
 
   return (
     <>
-      <div className="container">
+      <div style={{background: "black"}} className="container">
         <h3>Está en: {categorias || 'Agrega un producto para descubrir la categoría'}</h3>
         <button
           className="btn btn-warning btn-plus mt-3"
@@ -322,7 +326,6 @@ const CategoryByProduct = () => {
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
-              //onSubmit={(values) => console.log(values)}
               onSubmit={async (values) => {
                 if(values.isOnMenu === 'true'){
                   values.isOnMenu = true
@@ -442,9 +445,7 @@ const CategoryByProduct = () => {
                                     className="form-check-input"
                                     type="radio"
                                     name="isOnMenu"
-                                    //id="isOnMenutrue"
                                     value={"true"}
-                                    //onClick={changeRadioButton}
                                   />
                                   <label
                                     className="form-check-label"
@@ -459,9 +460,7 @@ const CategoryByProduct = () => {
                                     className="form-check-input"
                                     type="radio"
                                     name="isOnMenu"
-                                    //id="isOnMenufalse"
                                     value={"false"}
-                                    //onClick={changeRadioButton}
                                   />
                                   <label
                                     className="form-check-label"
@@ -469,7 +468,6 @@ const CategoryByProduct = () => {
                                   >
                                     No
                                   </label>
-                                  {/* <p>{select}</p> */}
                                 </div>
                               </div>
                               <div className="d-grid gap-2 py-3">
@@ -503,7 +501,9 @@ const CategoryByProduct = () => {
           </Modal.Footer>
         </Modal>
 
-        <table {...getTableProps()} className="table">
+        <Table data = {data} columns = {columns}/>
+
+        {/* <table {...getTableProps()} className="table">
           <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
@@ -530,9 +530,9 @@ const CategoryByProduct = () => {
               );
             })}
           </tbody>
-        </table>
+        </table> */}
 
-        <div className="text-center mt-2">
+        {/* <div className="text-center mt-2">
           <button
             className="btn btn-dark m-1"
             onClick={() => previousPage()}
@@ -553,7 +553,7 @@ const CategoryByProduct = () => {
           >
             Siguiente
           </button>
-        </div>
+        </div> */}
         <button className="btn btn-primary"
         onClick={() => navigate(`/dashboard`, { replace: true })}
         >Regresar..</button>
@@ -637,11 +637,6 @@ const CategoryByProduct = () => {
       </div>
 
       <Modal show={showEdit} onHide={handleCloseEdit}>
-{/*         <Formik
-          initialValues={initialStateEdit}
-          //validationSchema={validationSchema}
-          onSubmit={onHandleSubmitEdit}
-        > */}
           <form 
             onSubmit={onHandleSubmitEdit}
           >
@@ -746,7 +741,6 @@ const CategoryByProduct = () => {
               </Button>
             </Modal.Footer>
           </form>
-        {/* </Formik> */}
       </Modal>
     </>
   );

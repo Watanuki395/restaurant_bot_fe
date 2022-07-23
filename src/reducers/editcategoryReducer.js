@@ -25,9 +25,7 @@ function editCategory(state = initialState, action){
                 ...state,
                 isFetching: false,
                 response
-                //categoryEdit: null,
-                //categories: state.categories.map(category => category.id === action.payload.id ? category = action.payload : category)
-            };
+           };
         case EDIT_CATEGORY_ERROR:
             return {
             ...state, 

@@ -8,8 +8,6 @@ import apiCall from '../api';
 
 function* productByCategorySaga(payload) {
     try {
-
-        //const response = yield call(apiCallGET, 'GET', '/api/product/productsbycategory', payload.data);
         const response = yield call(apiCall, 'GET', `/api/product/productsbycategory?id_user=${payload.data.id_user}&id_cat=${payload.data.id_cat}`);
         yield put({type: PRODUCT_BY_CATEGORY_SUCCESS, response})
         

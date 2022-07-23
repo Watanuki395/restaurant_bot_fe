@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, connect, useSelector } from 'react-redux';
+import React from 'react';
+import { connect, useSelector } from 'react-redux';
 
 import Categories from '../categories/CategoriesPage'
-import ProductByCategory from '../productByCategory/productByCategory';
-import Products from '../product/Products';
 
 import {Container,
 Col4,
@@ -12,31 +10,11 @@ from "./style";
 
 
 function DashboardPage(props){
-
-  const componentSelected = useSelector(state => state.entries.selectcomponent.component.payload);
-
-const renderContent = React.useCallback(() => {
-  switch(componentSelected) {
-    case 'Categories': 
-      return <Categories />;
-    
-    case 'productByCategory': 
-      return <ProductByCategory />;
-
-      case 'products': 
-      return <Products />;
-
-    default: 
-      return <Categories />;
-    
-  }
-}, [componentSelected]);
-
-      
+  
     return (
       <>
         <Container>
-          {renderContent()}
+          <Categories/>
         </Container>
       </>
     );

@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   min-height: 88vh;
-  background: #ffffff;
+  background: #211F1F;
   display: flex;
 `;
 

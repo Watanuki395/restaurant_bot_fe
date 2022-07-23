@@ -11,6 +11,7 @@ import { categoriesRequested } from "../../actions/categoriesAction";
 import { deleteCategoryAction } from "../../actions/deletecategoryAction";
 import { productoByCategoryRequested } from "../../actions/productbycategoryAction";
 import { editCategoryAction } from "../../actions/editcategoryAction";
+import  Table  from "../common/reactTable/Table";
 
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -144,8 +145,6 @@ const Categories = (props) => {
   const handleCloseDelete = () => setShowDelete(false);
   const handleShowDelete = () => setShowDelete(true);
 
-  const [ deleted, setDeleted] = useState(false);
-
   const onHandleSubmitDelete = (e) => {
     e.preventDefault();
     dispatch(deleteCategoryAction(formValue));
@@ -256,6 +255,7 @@ const Categories = (props) => {
   return (
     <Fragment>
       <div className="container">
+        <div>
         {error ? (
           <p className="font-weight-bold alert alert-danger text-center mt-4">
             Hubo un error...
@@ -270,6 +270,13 @@ const Categories = (props) => {
           onClick={handleShow}
         >
           <GrAdd />
+        </button>
+        <button
+          className="btn btn-dark btn-plus mt-3 ml-3"
+          variant="primary"
+          onClick={""} //Pasarle el evento con los elementos a borrar
+        >
+          <IconDelete />
         </button>
 
         <Modal show={show} onHide={handleClose}>
@@ -361,7 +368,7 @@ const Categories = (props) => {
           </Modal.Footer>
         </Modal>
 
-        <table {...getTableProps()} className="table striped bordered hover">
+        {/* <table {...getTableProps()} className="table striped bordered hover">
           <thead className="thead-dark">
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
@@ -413,8 +420,11 @@ const Categories = (props) => {
           >
             Siguiente
           </button>
+        </div> */}
+       <Table data = {data} columns = {columns}></Table>
         </div>
-      </div>
+      </div> 
+
 
       <Modal show={showDelete} onHide={handleCloseDelete}>
         <Modal.Header closeButton>
@@ -459,7 +469,6 @@ const Categories = (props) => {
       <Modal show={showEdit} onHide={handleCloseEdit}>
         <Formik
           initialValues={initialStateEdit}
-          //validationSchema={validationSchema}
           onSubmit={onHandleSubmitEdit}
         >
           <Form>
