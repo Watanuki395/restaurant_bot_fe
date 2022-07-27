@@ -65,6 +65,11 @@ export const IconSee = styled(FaEye)`
   }
 `;
 
+export const PreviewImg  = styled.img `
+	max-width: 400px;
+	max-height: 300px;
+	object-fit: contain;
+`;
 export const BlackMode = styled.div`
   background-color: black;
 `;
