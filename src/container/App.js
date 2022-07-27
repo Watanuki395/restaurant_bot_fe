@@ -18,7 +18,7 @@ import Layout from "../components/layouts/Layout";
 import Missing from "../components/missing/Missing";
 import Unauthorized from '../components/unauthorized/Unauthorized';
 import CategoriesPage from '../components/categories/CategoriesPage';
-import CreateCategoryPage from '../components/createCategory/CreateCategoryPage';
+import CreateCategoryPage from '../components/createCategory/CreatecategoryPage';
 import CreateProductPage from '../components/createProduct/CreateproductPage';
 import CategoryEditPage from '../components/categories/CategoryEditPage';
 import CategoryByProductPage from '../components/categories/CategoryByProductPage';

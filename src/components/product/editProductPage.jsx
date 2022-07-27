@@ -4,7 +4,7 @@ import { Link, useNavigate, useLocation, Navigate, useParams } from "react-route
 
 import { selectComponentRequested } from "../../actions/selectcomponentAction";
 import { editProductAction } from "../../actions/editproductAction";
-import { productoByCategoryRequested } from "../../actions/productbycategoryAction";
+import { productoByCategoryRequested } from "../../actions/productsAction";
 
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -23,11 +23,11 @@ const EditProduct = () => {
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const data = useSelector(
-    (state) => state.entries.productbycategory.productByCategory
+    (state) => state.entries?.products?.response
   );
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const response = useSelector(
-    (state) => state.entries.productbycategory.productByCategory.error
+    (state) => state.entries?.products?.response
   );
   // eslint-disable-next-line react-hooks/rules-of-hooks
   let success = useSelector((state) => state.entries.editProduct.edit);

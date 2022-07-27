@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
-import { createProductAction } from '../../actions/createproductAction';
+import { createProductRequested } from '../../actions/createproductAction';
 
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -20,7 +20,7 @@ const createProductPage = () => {
   const [count, setCount] = useState(0);
   
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const id_Categoria = useSelector(state => state.entries.productbycategory.productByCategory);
+  const id_Categoria = useSelector(state => state.entries?.products?.data);
   console.log(id_Categoria);
 
   const initialValues = {
@@ -46,7 +46,7 @@ const createProductPage = () => {
   async function onHandleSubmit(data) {
     await sleep(1000);
     setReseted(true);
-    let resp = dispatch(createProductAction(data));
+    let resp = dispatch(createProductRequested(data));
     return resp;
   }
 

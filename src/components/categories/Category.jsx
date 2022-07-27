@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { productoByCategoryRequested } from '../../actions/productbycategoryAction'
+import { productoByCategoryRequested } from '../../actions/productsAction'
 import { selectComponentRequested } from '../../actions/selectcomponentAction';
 import {
     Tables, TableTh, TableTd,

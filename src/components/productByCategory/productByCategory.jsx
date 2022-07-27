@@ -6,7 +6,7 @@ import ProductByOneCategory from './productByOneCategory';
 
 const ProductByCategory = () => {
 
-    const productsByCategories = useSelector(state => state.entries.productbycategory.productByCategory);
+    const productsByCategories = useSelector(state => state.entries?.products?.response);
 
     return ( 
         <Fragment>

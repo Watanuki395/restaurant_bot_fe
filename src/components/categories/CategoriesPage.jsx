@@ -9,8 +9,7 @@ import { GrAdd } from "react-icons/gr";
 import { createCategoryAction } from '../../actions/createCategoriesAction';
 import { categoriesRequested } from "../../actions/categoriesAction";
 import { deleteCategoryAction } from "../../actions/deletecategoryAction";
-import { productoByCategoryRequested } from "../../actions/productbycategoryAction";
-import { editCategoryAction } from "../../actions/editcategoryAction";
+import { productoByCategoryRequested } from "../../actions/productsAction";
 
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";

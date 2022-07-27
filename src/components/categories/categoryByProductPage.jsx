@@ -1,51 +1,67 @@
-import React, { Fragment, useEffect, useState, useMemo } from "react";
-import { useSelector, useDispatch, connect } from "react-redux";
-import { Link, useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
+import React, { useEffect, useState, useMemo } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
 import { useTable, usePagination } from "react-table";
-import { GrAdd } from "react-icons/gr";
-import { IconDelete, IconEdit, IconSee, IconPlus, PButton } from "./style";
+import { GrAdd, GrUploadOption } from "react-icons/gr";
 
-import { createProductAction } from "../../actions/createproductAction";
-import { productsRequested } from "../../actions/productsAction";
-import { Products } from "../product/Products";
-import { deleteProductAction } from "../../actions/deleteproductAction";
-import { productoByCategoryRequested } from "../../actions/productbycategoryAction";
-import { editProductAction } from "../../actions/editproductAction";
+import { IconDelete, IconEdit, IconSee, PButton, PreviewImg } from "./style";
+
+import {
+  productoByCategoryRequested,
+  productsRequested,
+  createProductRequested,
+  deleteProductAction,
+  editProductAction
+} from "../../actions/productsAction";
 
 import { Modal, Button } from "react-bootstrap";
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import "../../index.css";
+import noImage from "../../imgs/no-image.jpeg";
+import {Loading} from "../common/Loading";
+
+// import {
+//   addDoc,
+//   collection,
+//   doc,
+//   serverTimestamp,
+//   setDoc,
+// } from "firebase/firestore";
+import storage from "../../firebase";
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 
 const CategoryByProduct = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard";
-
-
-
   //#region UseSelector and states
 
-  const [isReseted, setReseted] = useState(false);
-  const [count, setCount] = useState(0);
+  const [previewImg, setPreviewImg] = useState("");
+  const [urlToDelete, setUrlToDelete] = useState({});
+  const [perc, setPerc] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [prdLength, setPrdLength] = useState(0);
 
-  const categoryByProduct = useSelector(
-    (state) => state.entries.productbycategory.productByCategory
-  );
-  const Categoria = useSelector(
-    (state) => state.entries.productbycategory.productByCategory[0]
-  );
-  console.log(Categoria);
-  let categorias = '';
-  if(Categoria){
-    const { categoria } = Categoria;
-    categorias = categoria;
-  }
 
-  const { id_cat } = useParams();
+  const responseGetProduct = useSelector((state) => state.entries.products.productsByCategory);
+  const userInfo = useSelector((state) => state.entries.auth.response?.user);
+  const CreateProductResponse = useSelector((state) => state.entries.products.createdProduct);
+  const DeleteProductResponse = useSelector((state) => state.entries.products.deleteProductResponse);
+
+
+  useEffect(()=>{
+    console.log('esto cambio')
+  },[CreateProductResponse]);
+
+
+  useEffect(() => {
+    if(userInfo?.id){
+      dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat }));
+    }
+  }, [(userInfo !== undefined && userInfo !== null)]);
   //#endregion
 
   //#region Modal Edit
@@ -115,8 +131,12 @@ const CategoryByProduct = () => {
   ];
 
   const columns = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => [...categoryByProduct], [categoryByProduct]);
+  const data = useMemo(() => [...responseGetProduct], [responseGetProduct]);
 
+  const RedirectEditProduct = (id_prd, id_cat) => {
+    //dispatch( productoByCategoryRequested({id_user:userInfo.id, id_cat}) );
+    navigate(from, { replace: true })
+  };
 
   const tableHooks = (hooks) => {
     hooks.visibleColumns.push((columns) => [
@@ -142,7 +162,7 @@ const CategoryByProduct = () => {
             </PButton>
             <PButton
               className="mb-1"
-              onClick={() => ConfirmDelete(row.original.id_prd)}
+              onClick={() => ConfirmDelete(row.original.id_prd, row.original.producto, row.original.imgURL_prd, )}
             >
               <IconDelete></IconDelete>
             </PButton>
@@ -178,61 +198,73 @@ const CategoryByProduct = () => {
   //#endregion
 
   //#region Eliminar
-  let initialValuesDelete = {
-    id_cat: null,
-  };
-
-  const ConfirmDelete = (id_prd) => {
-    setFormValue({ id_prd });
+  const [idToDelete, setIdToDelete] = useState();
+  const [showDelete, setShowDelete] = useState(false);
+  const ConfirmDelete = (id_prd, product, imgURI) => {
+    setIdToDelete(id_prd);
+    setUrlToDelete(imgURI);
     handleShowDelete();
   };
-  const [formValue, setFormValue] = useState(initialValuesDelete);
-  const { id_prd } = formValue;
 
-  const onChangeForm = (e) => {
-    let { name, value } = e.target;
-    setFormValue({
-      ...formValue,
-      [name]: value,
-    });
-  };
-  const [showDelete, setShowDelete] = useState(false);
-  const handleCloseDelete = () => setShowDelete(false);
-  const handleShowDelete = () => setShowDelete(true);
-
-  const onHandleSubmitDelete = (e) => {
-    e.preventDefault();
-
-    dispatch(deleteProductAction(formValue));
-    toast.success("Producto elimnado!");
-    setTimeout(
-      () => dispatch(productoByCategoryRequested({ id_user: 68, id_cat })),
-      1000
-    );
-    setTimeout(() => setShowDelete(false), 1100);
+  const handleShowDelete = () => {
+      setShowDelete(!showDelete);
   };
 
+  const onHandleSubmitDelete = async () => {
+    setDeleting(true);  
+    if(urlToDelete){
+      let pictureRef = ref(storage, urlToDelete);
+      // Delete the file
+      deleteObject(pictureRef)
+        .then(() => {
+          // File deleted successfully
+          dispatch(deleteProductAction({ id_prd: idToDelete }));
+          setUrlToDelete("");
+        })
+        .catch((error) => {
+          console.log(error);
+          dispatch(deleteProductAction({ id_prd: idToDelete }));
+          setUrlToDelete("");
+        });
+    }else{
+      dispatch(deleteProductAction({id_prd:idToDelete}));
+    }
+  };
+
+  useEffect(()=>{
+    if(DeleteProductResponse.mensaje){
+      //dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat }))
+      setShowDelete(false);
+      setDeleting(false);      
+      setIdToDelete();     
+    }else if(DeleteProductResponse === 'ERROR'){
+      /// TODO: hacer mensaje de error personalizado y cargar los que ya existen
+     // navigate(`/CategoryByProduct/${Number(id_cat)}`, { replace: true });
+      setShowDelete(false);
+      setDeleting(false); 
+      setIdToDelete();  
+    }
+  },[(DeleteProductResponse.mensaje !== undefined && deleting) || 
+    (DeleteProductResponse === 'ERROR' && deleting)])
   //#endregion
 
   //#region Agregar
 
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false)
+    setPreviewImg('')};
   const handleShow = () => setShow(true);
 
-  //const [ select, setSelect ] = useState();
-  //const changeRadioButton = (e) => setSelect(e.target.value)
-  //Revisar bien
-
+  const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
   const initialValues = {
     name_prd: "",
     description_prd: "",
     id_cat: Number(id_cat),
-    id_user: 68,
+    id_user: userInfo?.id,
     imgURL_prd: "",
     price_prd: 0,
     isOnMenu: ''
-    //isOnMenu: select
   };
 
   const validationSchema = Yup.object().shape({
@@ -244,28 +276,22 @@ const CategoryByProduct = () => {
       .required("Campo Requerido")
       .min(2, `Mínimo 5 caracteres`)
       .max(255, `Máximo 255 caracteres`),
-    imgURL_prd: Yup.string()
-      .required("Campo Requerido")
-      .min(2, `Mínimo 2 caracteres`)
-      .max(255, `Máximo 255 caracteres`),
+      imgURL_prd: Yup.mixed()
+      //.nullable()
+      //.required("La imagen del producto es requerida")
+      .test(
+        "FILE_SIZE",
+        "El tamaño del archivo es demasiado grande.",
+        (value) => !value || (value && value.size <= 1024*1024)
+      )
+      .test(
+        "FILE_FORMAT",
+        "El archivo no esta en un formato permitido para una imagen.",
+        (value) => !value || (value && SUPPORTED_FORMATS.includes(value?.type))
+      ),
     price_prd: Yup.number()
       .required("Campo Requerido")
   });
-
-  async function onHandleSubmit(data) {
-    await sleep(1000);
-    setReseted(true);
-    if (data) {
-      dispatch(createProductAction(data));
-      
-    }
-  }
-
-  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-  const createResponse = useSelector((state) => state.entries.createproduct ? state.entries.createproduct.success : null);
-  const createResponseError = useSelector((state) => state.entries.createproduct ? state.entries.createproduct.error : null);
-  const msg = useSelector((state) => state.entries.createproduct ? state.entries.createproduct.msg : null);
   //#endregion
 
   //#region Modal Producto
@@ -274,12 +300,88 @@ const CategoryByProduct = () => {
   const handleShowProduct = () => setShowProduct(true);
 
   const RedirectProduct = (id_cat, id_prd) => {
-    dispatch(productsRequested({ id_user: 68, id_cat, id_prd }));
+    dispatch(productsRequested({ id_user: userInfo.id, id_cat, id_prd }));
     handleShowProduct();
   };
-  let responseProduct = useSelector((state) => state.entries.products.products);
 
+function onHandleSubmit(data) {
+    if (data) {
+      dispatch(createProductRequested(data))
+      setLoading(true)      
+    }
+  }
+
+  useEffect(() => {
+    if(CreateProductResponse.id_prd){
+      if (previewImg) {
+        const fileName = userInfo.uuid + "_" + CreateProductResponse.id_prd + "_" + previewImg.name;
+        const storageRef = ref(
+          storage,
+          `/menu_images/${userInfo.id}/${fileName}`
+        );
+        const uploadTask = uploadBytesResumable(storageRef, previewImg);
+
+        uploadTask
+          .on(
+            "state_changed",
+            (snapshot) => {
+              const progress =
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log("Upload is " +  Math.round(progress) + "% done");
+              setPerc( Math.round(progress));
+              switch (snapshot.state) {
+                case "paused":
+                  console.log("Upload is paused");
+                  break;
+                case "running":
+                  console.log("Upload is running");
+                  break;
+                default:
+                  break;
+              }
+            },
+            (error) => {
+              console.log(error);
+            },
+            async () => {
+              const imgURL_prd = await getDownloadURL(uploadTask.snapshot.ref);
+              dispatch(
+                editProductAction({
+                  id_user: userInfo.id,
+                  id_cat,
+                  id_prd: CreateProductResponse.id_prd,
+                  imgURL_prd,
+                })
+              );
+              // dispatch(
+              //   productoByCategoryRequested({ id_user: userInfo.id, id_cat })
+              // );
+              setShow(false);
+              setPreviewImg("");
+              setLoading(false);
+            }
+          )
+      }else{
+        //dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat }));
+        setShow(false);
+        setPreviewImg('');
+        setLoading(false);      
+      }
+    } else if(CreateProductResponse === 'ERROR'){
+      setShow(false);
+      setLoading(false); 
+    }
+
+  }, [(CreateProductResponse.id_prd !== undefined && loading) || 
+    (CreateProductResponse === 'ERROR' && loading)]);
+
+    const uploadFile = (id_prd) => {
+      
+    };
   //#endregion
+  const LoadingHandler = () => {
+    return <Loading message = {perc !== null && perc < 100 ? ` Agregando... ${perc}`: ' Agregando...'} />;
+  };
 
 
   useEffect(() => {
@@ -316,23 +418,22 @@ const CategoryByProduct = () => {
         </button>
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Agregar una producto</Modal.Title>
+            <Modal.Title>Agregar Producto</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
-              //onSubmit={(values) => console.log(values)}
-              onSubmit={async (values) => {
-                if(values.isOnMenu === 'true'){
-                  values.isOnMenu = true
-                }else{
-                  values.isOnMenu = false
+              onSubmit={(values) => {
+                if (values.isOnMenu === "true") {
+                  values.isOnMenu = true;
+                } else {
+                  values.isOnMenu = false;
                 }
-                await new Promise(onHandleSubmit(values));
+                onHandleSubmit(values);      
               }}
             >
-              {({ errors, touched, isSuccess, message, isSubmitting }) => (
+              {({isSuccess, message}) => (
                 <Form>
                   <section className="">
                     <section className="">
@@ -392,26 +493,6 @@ const CategoryByProduct = () => {
                               </div>
                               <div className="mb-3">
                                 <label
-                                  htmlFor="imgURL_prd"
-                                  className="form-label"
-                                >
-                                  Imagen
-                                </label>
-                                <Field
-                                  type="text"
-                                  className="form-text form-control"
-                                  name="imgURL_prd"
-                                  id="imgURL_prd"
-                                  placeholder="Imagen del producto"
-                                />
-                                <ErrorMessage
-                                  name="imgURL_prd"
-                                  component="div"
-                                  className="field-error text-danger"
-                                />
-                              </div>
-                              <div className="mb-3">
-                                <label
                                   htmlFor="price_prd"
                                   className="form-label"
                                 >
@@ -430,19 +511,16 @@ const CategoryByProduct = () => {
                                   className="field-error text-danger"
                                 />
                               </div>
-
+                              <label className="form-check-label">
+                                Agregar al Menú
+                              </label>
                               <div className="mb-3">
-                                <label
-                                  className="form-check-label"
-                                >
-                                  Menú
-                                </label>
-                                <div className="form-check">
+                                <div className="form-check form-check-inline">
                                   <Field
                                     className="form-check-input"
                                     type="radio"
                                     name="isOnMenu"
-                                    //id="isOnMenutrue"
+                                    id="isOnMenutrue"
                                     value={"true"}
                                     //onClick={changeRadioButton}
                                   />
@@ -453,13 +531,13 @@ const CategoryByProduct = () => {
                                     Sí
                                   </label>
                                 </div>
-                                
-                                <div className="form-check">
+
+                                <div className="form-check form-check-inline">
                                   <Field
                                     className="form-check-input"
                                     type="radio"
                                     name="isOnMenu"
-                                    //id="isOnMenufalse"
+                                    id="isOnMenufalse"
                                     value={"false"}
                                     //onClick={changeRadioButton}
                                   />
@@ -469,21 +547,39 @@ const CategoryByProduct = () => {
                                   >
                                     No
                                   </label>
-                                  {/* <p>{select}</p> */}
                                 </div>
+                                <div className="formInput py-3">
+                                  <label htmlFor="imgURL_prd">
+                                    Imagen: <GrUploadOption className="icon" />
+                                  </label>
+                                  <input
+                                    type="file"
+                                    id="imgURL_prd"
+                                    onChange={(e) => setPreviewImg(e.target.files[0])}
+                                    style={{ display: "none" }}
+                                  />
+                                </div>
+                                <PreviewImg
+                                  src={
+                                    previewImg
+                                      ? URL.createObjectURL(previewImg)
+                                      : noImage
+                                  }
+                                  className="img-fluid img-thumbnail" alt="..."
+                                />
                               </div>
+                              <ErrorMessage
+                                  name="imgURL_prd"
+                                  component="div"
+                                  className="field-error text-danger"
+                                />
                               <div className="d-grid gap-2 py-3">
                                 <button
                                   type="submit"
-                                  disabled={
-                                    count > 0 ? true : false || isSubmitting
-                                  }
+                                  disabled={loading}
                                   className="btn btn-dark btn-block mb-2"
                                 >
-                                  {isSubmitting && (
-                                    <span className="spinner-border spinner-border-sm mr-1"></span>
-                                  )}
-                                  Crear
+                                  {loading ? <LoadingHandler/> : "Agregar"}
                                 </button>
                               </div>
                             </div>
@@ -496,11 +592,6 @@ const CategoryByProduct = () => {
               )}
             </Formik>
           </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Cerrar
-            </Button>
-          </Modal.Footer>
         </Modal>
 
         <table {...getTableProps()} className="table">
@@ -560,41 +651,19 @@ const CategoryByProduct = () => {
         
       </div>
 
-      <Modal show={showDelete} onHide={handleCloseProduct}>
-        <Modal.Header closeButton>
-          <Modal.Title>Eliminar producto</Modal.Title>
-        </Modal.Header>
+      <Modal show={showDelete}>
         <Modal.Body>
-          <form onSubmit={onHandleSubmitDelete}>
-            <div className="form-container">
               <div>
-                <input
-                  type="number"
-                  id="id_prd"
-                  name="id_prd"
-                  value={id_prd}
-                  onChange={onChangeForm}
-                  hidden
-                />
-                <h4>¿Está seguro que quiere eliminar ese producto?</h4>
-                <div className="  py-3">
-                  <button type="submit" className="btn btn-dark m-3">
-                    Eliminar
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-primary mr-3"
-                    onClick={handleCloseDelete}
-                  >
-                    Cancelar
-                  </button>
-                </div>
+                <h4>¿Está seguro de eliminar este producto?</h4>
               </div>
-            </div>
-          </form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseDelete}>
+        <Button variant="warning" 
+                disabled={deleting}
+                onClick={onHandleSubmitDelete}>
+            {deleting ? <LoadingHandler /> : "Eliminar"}
+          </Button>
+          <Button variant="secondary" onClick={handleShowDelete}>
             Cerrar
           </Button>
         </Modal.Footer>
@@ -603,7 +672,7 @@ const CategoryByProduct = () => {
       <div className="font-style">
         <Modal show={showProduct} onHide={handleCloseProduct}>
           <Modal.Header closeButton>
-            <Modal.Title>{responseProduct.producto}</Modal.Title>
+            <Modal.Title>{responseGetProduct.producto}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
               <div className="img-100">
@@ -615,15 +684,15 @@ const CategoryByProduct = () => {
               </div>
             <div className="form-product product">
                 <div className="  py-3">
-                  <p className="description">{responseProduct.descripcion}</p>
+                  <p className="description">{responseGetProduct.descripcion}</p>
                   <p className="gray">
-                    <strong>Categoría: </strong><span>{responseProduct.categoria}</span>
+                    Categoría: <span>{responseGetProduct.categoria}</span>
                   </p>
                   <p>
-                    <strong>Menú: </strong><span>{responseProduct.isOnMenu ? "Sí" : "No"}</span>
+                    Menú: <span>{responseGetProduct.isOnMenu ? "Sí" : "No"}</span>
                   </p>
                   <p>
-                    <strong>Precio: </strong><span>{responseProduct.price_prd}</span>
+                    Precio: <span>{responseGetProduct.price_prd}</span>
                   </p>
                 </div>
             </div>
