@@ -1,14 +1,13 @@
 import React, { Fragment, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch, connect } from "react-redux";
-import { Link, useNavigate, useLocation, Navigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTable, usePagination } from "react-table";
 import { COLUMNS } from "./Columns";
 import { Modal, Button } from "react-bootstrap";
 import { GrAdd } from "react-icons/gr";
 
-import { createCategoryAction } from "../../actions/createcategoryAction";
+import { createCategoryAction } from '../../actions/createCategoriesAction';
 import { categoriesRequested } from "../../actions/categoriesAction";
-import { selectComponentRequested } from "../../actions/selectcomponentAction";
 import { deleteCategoryAction } from "../../actions/deletecategoryAction";
 import { productoByCategoryRequested } from "../../actions/productsAction";
 
@@ -16,7 +15,7 @@ import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { IconDelete, IconEdit, IconSee, IconPlus, SButton } from "./style";
+import { IconDelete, IconEdit, IconSee, SButton } from "./style";
 import "../../index.css";
 
 const Categories = (props) => {
@@ -29,7 +28,7 @@ const Categories = (props) => {
   const [isReseted, setReseted] = useState(false);
   const [count, setCount] = useState(0);
 
-    //#region  Modal Agregar
+  //#region  Modal Agregar
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -55,10 +54,8 @@ const Categories = (props) => {
       setReseted(true);
       try {
         if (data) {
-          //let resp = dispatch(createCategoryAction(data));
           setReseted(true);
           dispatch(createCategoryAction(data));
-          //return resp;
         }
       } catch (err){
         console.log(err);
@@ -67,44 +64,58 @@ const Categories = (props) => {
   
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   
-    const createResponse = useSelector((state) => state.entries.createcategory.success);
-    const msg = useSelector((state) => state.entries.createcategory.msg);
-
+    const createResponse = useSelector((state) => state.entries.createCategory ? state.entries.createCategory.success : null);
+    const createResponseError = useSelector((state) => state.entries.createCategory ? state.entries.createCategory.error : null);
+    const msg = useSelector((state) => state.entries.createCategory ? state.entries.createCategory.msg : null);
     //#endregion
 
-  useEffect(() => {
-    const cargarProductos = () => dispatch(categoriesRequested());
-    cargarProductos();
-    try {
-      if(createResponse && !msg){
-        toast.success("Categoría creada!");
-        setTimeout(() => dispatch(categoriesRequested()), 1000);
-        setTimeout(() => setShow(false), 1100);
-        navigate(from, { replace: true })
-      } else if(msg){
-        console.log(msg);
-        toast.error("Esa categoría ya existe.");
-      }
-    } catch (e){
-      if(!e?.createResponse){
-        toast.error("Servidor no responde.");
-      } else if(!e?.status === 400){
-        toast.error("Servidor no responde.");
-      } else if(!e?.status === 204){
-        toast.error("Esa categoría ya existe.");
-      } else if(msg){
-        console.log(msg);
-        toast.error("Esa categoría ya existe.");
-      }
-    }
+  //#region Modal Editar
 
-  }, [createResponse]);
+  const [showEdit, setShowEdit] = useState(false);
+  const handleCloseEdit = () => setShowEdit(false);
+  const handleShowEdit = () => setShowEdit(true);
+
+  const initialStateEdit = {
+    name_cat: "",
+    description_cat: "",
+  };
+
+  const [formValueEdit, setFormValueEdit] = useState(initialStateEdit);
+  
+  
+  const redirectEdit = (category) => {
+    //navigate(`/categoryEdit/${category.id_cat}`, { replace: true });
+    setFormValueEdit(category);
+    handleShowEdit();
+  };
+  const { name_cat, description_cat } = formValueEdit;
+
+  const onHandleSubmitEdit = (e) => {
+    //e.preventDefault();
+    if (name_cat && description_cat) {
+      dispatch(editCategoryAction({ formValueEdit }));
+      toast.success("Categoría actualizada satisfactoriamente.");
+      setTimeout(() => dispatch(categoriesRequested()), 1000);
+      setTimeout(handleCloseEdit());
+    } else {
+      toast.error("ERROR");
+    }
+  };
+  const onChangeFormEdit = (e) => {
+    let { name, value } = e.target;
+    setFormValueEdit({
+      ...formValueEdit,
+      [name]: value,
+    });
+  };
+
+  //#endregion
 
   //#region  UseSelector
 
-  let categorias = useSelector((state) => state.entries.categories.categories);
-  const error = useSelector((state) => state.entries.categories.error);
-  const loading = useSelector((state) => state.entries.categories.isFetching);
+  let categorias = useSelector((state) => state.entries.categories ? state.entries.categories.categories : null);
+  const error = useSelector((state) => state.entries.categories ? state.entries.categories.error : null);
+  const loading = useSelector((state) => state.entries.categories ? state.entries.categories.isFetching : null);
 
   //#endregion
 
@@ -132,37 +143,20 @@ const Categories = (props) => {
   const handleCloseDelete = () => setShowDelete(false);
   const handleShowDelete = () => setShowDelete(true);
 
-  /* async function onHandleSubmitDelete(data) {
-    console.log(data);
-    await sleep(1000);
-    setReseted(true);
+  const [ deleted, setDeleted] = useState(false);
 
-      //let resp = dispatch(createCategoryAction(data));
-      dispatch(deleteCategoryAction(data));
-      toast.success("Categoría elimnada!");
-      setTimeout(() => dispatch(categoriesRequested()), 1000);
-      setTimeout(() => setShowDelete(false), 1100);
-      //return resp;
-
-  } */
   const onHandleSubmitDelete = (e) => {
     e.preventDefault();
-
     dispatch(deleteCategoryAction(formValue));
-    toast.success("Categoría elimnada!");
+    toast.success("Categoría eliminada!");
     setTimeout(() => dispatch(categoriesRequested()), 1000);
     setTimeout(() => setShowDelete(false), 1100);
   };
-
-  //#endregion
+//#endregion
 
   //#region React-Table
   const columns = useMemo(() => COLUMNS, []);
   const data = useMemo(() => [...categorias], [categorias]);
-
-  const redirectEdit = (category) => {
-    navigate(`/categoryEdit/${category.id_cat}`, { replace: true });
-  };
 
   const redirectProductByCategory = (idCategory) => {
     let id_cat = idCategory.id_cat;
@@ -231,6 +225,33 @@ const Categories = (props) => {
   const { pageIndex } = state;
   //#endregion
 
+  useEffect(() => {
+    if(!createResponse){ //Revisar validación para que se ejecute solo la primera vez que entra
+      const cargarProductos = () => dispatch(categoriesRequested());
+      cargarProductos();
+    }
+    try {
+      if(createResponse && !msg){
+        toast.success("Categoría creada!");
+        setTimeout(() => dispatch(categoriesRequested()), 1000);
+        setTimeout(() => setShow(false), 1100);
+      } else if(createResponseError){
+        toast.error("Esa categoría ya existe.");
+      }
+    } catch (e){
+      if(!e?.createResponse){
+        toast.error("Servidor no responde.");
+      } else if(!e?.status === 400){
+        toast.error("Servidor no responde.");
+      } else if(!e?.status === 204){
+        toast.error("Esa categoría ya existe.");
+      } else if(msg){
+        toast.error("Esa categoría ya existe.");
+      }
+    }
+  }, [createResponse, createResponseError]);
+
+
   return (
     <Fragment>
       <div className="container">
@@ -260,24 +281,14 @@ const Categories = (props) => {
               validationSchema={validationSchema}
               onSubmit={(values) => onHandleSubmit(values)}
             >
-              {({ errors, touched, isSuccess, message, isSubmitting }) => (
+              {({isSubmitting }) => (
                 <Form>
                   <section className="">
                     <section className="">
                       <section className="">
                         <div>
-                          {!isSuccess ? (
-                            <div>{message}</div>
-                          ) : (
-                            <Navigate to="dashboard" />
-                          )}
                           <div className="form-container">
                             <div>
-                              {!isSuccess ? (
-                                <div>{message}</div>
-                              ) : (
-                                <Navigate to="dashboard" />
-                              )}
                               <div className="mb-3">
                                 <label
                                   htmlFor="name_cat"
@@ -442,6 +453,68 @@ const Categories = (props) => {
             Cerrar
           </Button>
         </Modal.Footer>
+      </Modal>
+
+      <Modal show={showEdit} onHide={handleCloseEdit}>
+        <Formik
+          initialValues={initialStateEdit}
+          //validationSchema={validationSchema}
+          onSubmit={onHandleSubmitEdit}
+        >
+          <Form>
+            <Modal.Header closeButton>
+              <Modal.Title>Editar categoría</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="form-container mt-5">
+                <div className="form-group">
+                  <label> Nombre de la categoría</label>
+                  <Field
+                    type="text"
+                    className="form-control"
+                    placeholder="Nombre de la categoría"
+                    name="name_cat"
+                    value={name_cat || ""}
+                    onChange={onChangeFormEdit}
+                  />
+                  <ErrorMessage
+                    name="name_cat"
+                    component="div"
+                    className="field-error text-danger"
+                  />
+                </div>
+                <div className="form-group">
+                  <label> Descripción de la categoría</label>
+                  <Field
+                    type="text"
+                    className="form-control"
+                    placeholder="Descripción de la categoría"
+                    name="description_cat"
+                    value={description_cat || ""}
+                    onChange={onChangeFormEdit}
+                  />
+                  <ErrorMessage
+                    name="description_cat"
+                    component="div"
+                    className="field-error text-danger"
+                  />
+                </div>
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <button
+                type="submit"
+                className="btn btn-dark font-weight-bold text-uppercase m-3"
+                disabled={name_cat === "" || description_cat === ""}
+              >
+                Guardar Cambios
+              </button>
+              <Button variant="secondary" onClick={handleCloseEdit}>
+                Cerrar
+              </Button>
+            </Modal.Footer>
+          </Form>
+        </Formik>
       </Modal>
     </Fragment>
   );

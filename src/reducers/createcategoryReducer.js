@@ -1,4 +1,4 @@
-import {
+/* import {
     CREATECATEGORY_REQUESTED,
     CREATECATEGORY_SUCCESS,
     CREATECATEGORY_ERROR
@@ -12,7 +12,7 @@ const initialState = {
     msg: ''
 }
 
-function createCategory(state = initialState, action){
+function createCategory(state = [], action){
     let response = action.response;
 
     switch(action.type){
@@ -43,4 +43,4 @@ function createCategory(state = initialState, action){
 
 };
 
-export default createCategory;
+export default createCategory; */

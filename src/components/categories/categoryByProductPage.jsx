@@ -64,6 +64,51 @@ const CategoryByProduct = () => {
   }, [(userInfo !== undefined && userInfo !== null)]);
   //#endregion
 
+  //#region Modal Edit
+
+  const [showEdit, setShowEdit] = useState(false);
+  const handleCloseEdit = () => setShowEdit(false);
+  const handleShowEdit = () => setShowEdit(true);
+
+  const initialStateEdit = {
+    producto: "",
+    descripcion: "",
+    price_prd: 0,
+    isOnMenu: "",
+    id_cat: 0,
+    id_user: 68,
+    id_prd: 0,
+    imgURL_prd: "",
+  };
+  const [formValueEdit, setFormValueEdit] = useState(initialStateEdit);
+
+
+  const RedirectEditProduct = (product) => {
+    setFormValueEdit(product);
+    handleShowEdit();
+  };
+
+  const { producto, descripcion, imgURL_prd, price_prd, isOnMenu } = formValueEdit;
+
+  const onHandleSubmitEdit = (e) => {
+      e.preventDefault();
+      console.log(formValueEdit);
+      dispatch(editProductAction({ formValueEdit }));
+      toast.success("Categoría actualizada satisfactoriamente.");
+      setTimeout(() => dispatch(productoByCategoryRequested({ id_user: 68, id_cat })), 1000);
+      setTimeout(handleCloseEdit());
+
+  };
+  const onChangeFormEdit = (e) => {
+    let { name, value } = e.target;
+    setFormValueEdit({
+      ...formValueEdit,
+      [name]: value,
+    });
+  };
+
+  //#endregion
+
   //#region UseTable
 
   const COLUMNS = [
@@ -80,8 +125,8 @@ const CategoryByProduct = () => {
       accessor: "descripcion",
     },
     {
-      Header: "Categoría",
-      accessor: "categoria",
+      Header: "Precio",
+      accessor: "price_prd",
     },
   ];
 
@@ -111,7 +156,7 @@ const CategoryByProduct = () => {
             </PButton>
             <PButton
               className="mb-1"
-              onClick={() => RedirectEditProduct(row.original.id_prd, row.original.id_cat)}
+              onClick={() => RedirectEditProduct(row.original)}
             >
               <IconEdit></IconEdit>
             </PButton>
@@ -151,8 +196,6 @@ const CategoryByProduct = () => {
   const { pageIndex } = state;
 
   //#endregion
-
-  const { id_cat } = useParams();
 
   //#region Eliminar
   const [idToDelete, setIdToDelete] = useState();
@@ -340,9 +383,32 @@ function onHandleSubmit(data) {
     return <Loading message = {perc !== null && perc < 100 ? ` Agregando... ${perc}`: ' Agregando...'} />;
   };
 
+
+  useEffect(() => {
+    const cargarProductoCat = () =>
+      dispatch(productoByCategoryRequested({ id_user: 68, id_cat }));
+    cargarProductoCat();
+
+
+    try{
+      if(createResponse && !msg){
+        toast.success("Producto agregado.");
+        setTimeout(() => dispatch(productoByCategoryRequested({ id_user: 68, id_cat })),1000);
+        setTimeout(() => setShow(false), 1100);
+        setTimeout(() => navigate(`/CategoryByProduct/${Number(id_cat)}`, { replace: true }),1000);
+        setShow(false);
+      }else if(createResponseError){
+        toast.error("Ese producto ya existe.");
+      }
+    }catch(e){
+      console.log(e);
+    }
+  }, [createResponse]);
+
   return (
     <>
       <div className="container">
+        <h3>Está en: {categorias || 'Agrega un producto para descubrir la categoría'}</h3>
         <button
           className="btn btn-warning btn-plus mt-3"
           variant="primary"
@@ -579,6 +645,10 @@ function onHandleSubmit(data) {
             Siguiente
           </button>
         </div>
+        <button className="btn btn-primary"
+        onClick={() => navigate(`/dashboard`, { replace: true })}
+        >Regresar..</button>
+        
       </div>
 
       <Modal show={showDelete}>
@@ -605,13 +675,14 @@ function onHandleSubmit(data) {
             <Modal.Title>{responseGetProduct.producto}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <div className="form-product">
-              <div>
+              <div className="img-100">
                 <img
-                  className="w-100"
+                  className="img-fluid"
                   src="https://enlacocina.b-cdn.net/wp-content/uploads/2018/07/Productos-saludables-2.jpg"
                   alt="img"
                 />
+              </div>
+            <div className="form-product product">
                 <div className="  py-3">
                   <p className="description">{responseGetProduct.descripcion}</p>
                   <p className="gray">
@@ -624,7 +695,6 @@ function onHandleSubmit(data) {
                     Precio: <span>{responseGetProduct.price_prd}</span>
                   </p>
                 </div>
-              </div>
             </div>
           </Modal.Body>
           <Modal.Footer>
@@ -634,6 +704,119 @@ function onHandleSubmit(data) {
           </Modal.Footer>
         </Modal>
       </div>
+
+      <Modal show={showEdit} onHide={handleCloseEdit}>
+{/*         <Formik
+          initialValues={initialStateEdit}
+          //validationSchema={validationSchema}
+          onSubmit={onHandleSubmitEdit}
+        > */}
+          <form 
+            onSubmit={onHandleSubmitEdit}
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Editar producto</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="form-container mt-5">
+                <div className="form-group">
+                  <label> Nombre del producto</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Nombre del producto"
+                    name="producto"
+                    value={producto || ""}
+                    onChange={onChangeFormEdit}
+                  />
+                </div>
+                <div className="form-group">
+                  <label> Descripción del producto</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Descripción del producto"
+                    name="descripcion"
+                    value={descripcion || ""}
+                    onChange={onChangeFormEdit}
+                  />
+
+                </div>
+
+                <div className="form-group">
+                  <label> Imagen del producto</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Imagen del producto"
+                    name="imgURL_prd"
+                    value={imgURL_prd || ""}
+                    onChange={onChangeFormEdit}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label> Precio del producto</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Precio del producto"
+                    name="price_prd"
+                    value={price_prd || ""}
+                    onChange={onChangeFormEdit}
+                  />
+                </div>
+
+                <div className="mb-3">
+                <label className="form-check-label">Menú</label>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="isOnMenu"
+                    value={true}
+                    checked={isOnMenu === true ? true : false}
+                    onChange={onChangeFormEdit}
+                  />
+                  <label className="form-check-label" htmlFor="isOnMenu">
+                    Sí
+                  </label>
+                </div>
+
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="isOnMenu"
+                    value={false}
+                    checked={isOnMenu === false ? true : false}
+                    onChange={onChangeFormEdit}
+                  />
+                  <label className="form-check-label" htmlFor="isOnMenu">
+                    No
+                  </label>
+                </div>
+              </div>
+                
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+            <button
+                type="submit"
+                className="btn btn-dark font-weight-bold text-uppercase m-3"
+                disabled={
+                  producto === "" || descripcion === "" || imgURL_prd === ""
+                }
+              >
+                Guardar Cambios
+              </button>
+              <Button variant="secondary" onClick={handleCloseEdit}>
+                Cerrar
+              </Button>
+            </Modal.Footer>
+          </form>
+        {/* </Formik> */}
+      </Modal>
     </>
   );
 };
