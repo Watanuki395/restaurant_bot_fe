@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import Footer from "../common/Layout/footer/Footer";
@@ -85,7 +85,6 @@ class RegisterPage extends Component {
             password2: "",
           }}
           validationSchema={this.formSchema}
-          //onSubmit={(values) => console.log(values)}
           onSubmit={(values) => this.props.dispatch(registerUserAction(values))}
         >
           <Form >

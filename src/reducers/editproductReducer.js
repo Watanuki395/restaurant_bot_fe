@@ -27,8 +27,6 @@ function editProduct(state = initialState, action){
                 isFetching: false,
                 edit: true,
                 response
-                //categoryEdit: null,
-                //categories: state.categories.map(category => category.id === action.payload.id ? category = action.payload : category)
             };
         case EDIT_PRODUCT_ERROR:
             return {

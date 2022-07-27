@@ -1,10 +1,16 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { Fragment, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
 import { useTable, usePagination } from "react-table";
-import { GrAdd, GrUploadOption } from "react-icons/gr";
+import { GrAdd } from "react-icons/gr";
+import { IconDelete, IconEdit, IconSee, PButton } from "./style";
 
-import { IconDelete, IconEdit, IconSee, PButton, PreviewImg } from "./style";
+import { createProductAction } from "../../actions/createproductAction";
+import { productsRequested } from "../../actions/productsAction";
+import { deleteProductAction } from "../../actions/deleteproductAction";
+import { productoByCategoryRequested } from "../../actions/productbycategoryAction";
+import { editProductAction } from "../../actions/editproductAction";
+import Table from "../common/reactTable/Table";
 
 import {
   productoByCategoryRequested,
@@ -112,10 +118,10 @@ const CategoryByProduct = () => {
   //#region UseTable
 
   const COLUMNS = [
-    /* {
-      Header: "#",
-      accessor: "id_prd",
-    }, */
+    {
+      Header: "Imagen",
+      accessor: "imgURL_prd",
+    },
     {
       Header: "Producto",
       accessor: "producto",
@@ -123,6 +129,10 @@ const CategoryByProduct = () => {
     {
       Header: "Descripción",
       accessor: "descripcion",
+    },
+    {
+      Header: "Menú",
+      accessor: "isOnMenu"
     },
     {
       Header: "Precio",
@@ -407,7 +417,7 @@ function onHandleSubmit(data) {
 
   return (
     <>
-      <div className="container">
+      <div style={{background: "black"}} className="container">
         <h3>Está en: {categorias || 'Agrega un producto para descubrir la categoría'}</h3>
         <button
           className="btn btn-warning btn-plus mt-3"
@@ -424,11 +434,11 @@ function onHandleSubmit(data) {
             <Formik
               initialValues={initialValues}
               validationSchema={validationSchema}
-              onSubmit={(values) => {
-                if (values.isOnMenu === "true") {
-                  values.isOnMenu = true;
-                } else {
-                  values.isOnMenu = false;
+              onSubmit={async (values) => {
+                if(values.isOnMenu === 'true'){
+                  values.isOnMenu = true
+                }else{
+                  values.isOnMenu = false
                 }
                 onHandleSubmit(values);      
               }}
@@ -522,7 +532,6 @@ function onHandleSubmit(data) {
                                     name="isOnMenu"
                                     id="isOnMenutrue"
                                     value={"true"}
-                                    //onClick={changeRadioButton}
                                   />
                                   <label
                                     className="form-check-label"
@@ -539,7 +548,6 @@ function onHandleSubmit(data) {
                                     name="isOnMenu"
                                     id="isOnMenufalse"
                                     value={"false"}
-                                    //onClick={changeRadioButton}
                                   />
                                   <label
                                     className="form-check-label"
@@ -594,7 +602,9 @@ function onHandleSubmit(data) {
           </Modal.Body>
         </Modal>
 
-        <table {...getTableProps()} className="table">
+        <Table data = {data} columns = {columns}/>
+
+        {/* <table {...getTableProps()} className="table">
           <thead>
             {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
@@ -621,9 +631,9 @@ function onHandleSubmit(data) {
               );
             })}
           </tbody>
-        </table>
+        </table> */}
 
-        <div className="text-center mt-2">
+        {/* <div className="text-center mt-2">
           <button
             className="btn btn-dark m-1"
             onClick={() => previousPage()}
@@ -644,7 +654,7 @@ function onHandleSubmit(data) {
           >
             Siguiente
           </button>
-        </div>
+        </div> */}
         <button className="btn btn-primary"
         onClick={() => navigate(`/dashboard`, { replace: true })}
         >Regresar..</button>
@@ -706,11 +716,6 @@ function onHandleSubmit(data) {
       </div>
 
       <Modal show={showEdit} onHide={handleCloseEdit}>
-{/*         <Formik
-          initialValues={initialStateEdit}
-          //validationSchema={validationSchema}
-          onSubmit={onHandleSubmitEdit}
-        > */}
           <form 
             onSubmit={onHandleSubmitEdit}
           >
@@ -815,7 +820,6 @@ function onHandleSubmit(data) {
               </Button>
             </Modal.Footer>
           </form>
-        {/* </Formik> */}
       </Modal>
     </>
   );

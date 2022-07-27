@@ -7,7 +7,6 @@ import {
 
 function* selectComponentSaga(payload){
     try {
-        //const response = yield call(payload);
         yield put({type: SELECTCOMPONENT_SUCCESS, payload})
         
     } catch(error) {

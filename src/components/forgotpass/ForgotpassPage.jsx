@@ -66,7 +66,6 @@ function ForgotPassPage (props){
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        //onSubmit={(values) => console.log(values)}
         onSubmit={(values) => onHandleSubmit(values)}
       >{({ errors, touched, isSubmitting }) => (
         <Form >

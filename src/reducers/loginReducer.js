@@ -5,13 +5,6 @@ import {
   LOGOUT_USER_SUCCESS
 } from '../actions';
 
-
-const initialState = {
-  logged: null,
-  success: null,
-  error: false
-}
-
 export default function(state = [], action) {
 
   const response = action.response;

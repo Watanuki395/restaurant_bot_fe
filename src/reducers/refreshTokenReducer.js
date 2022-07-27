@@ -4,12 +4,6 @@ import {
     REFRESH_TOKEN_ERROR
 } from '../actions';
 
-const initialState = {
-    isFetching: false,
-    error: false,
-    success: false,
-}
-
 export default function (state = [], action) {
     const response = action.response;
 

@@ -40,22 +40,36 @@ export const IconDelete = styled(FaTrash)`
   font-size: 20px;
   margin-right: 10px;
   cursor: pointer;
-  `;
+  &:hover{
+    /* font-size: 21px;
+    transition: ease 0.5s; */
+    color: white;
+  }
+`;
 
 export const IconEdit = styled(FaEdit)`
   color: #5BC1F5;
   font-size: 20px;
   cursor: pointer;
-  `;
+  &:hover{
+    color: white;
+  }
+`;
 
 export const IconSee = styled(FaEye)`
   color: gray;
   font-size: 20px;
   cursor: pointer;
+  &:hover{
+    color: white;
+  }
 `;
 
 export const PreviewImg  = styled.img `
 	max-width: 400px;
 	max-height: 300px;
 	object-fit: contain;
+`;
+export const BlackMode = styled.div`
+  background-color: black;
 `;
