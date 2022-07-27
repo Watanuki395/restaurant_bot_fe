@@ -10,7 +10,6 @@ import productsSaga from './productsSaga';
 import createCategorySaga from './createcategorySaga';
 import deleteCategorySaga from './deletecategorySaga';
 import editCategorySaga from './editcategorySaga';
-import editProductSaga from './editproductSaga';
 
 export default function* rootSaga() {
   yield all([
@@ -24,6 +23,5 @@ export default function* rootSaga() {
     fork(createCategorySaga),
     fork(deleteCategorySaga),
     fork(editCategorySaga),
-    fork(editProductSaga)
   ]);
 }

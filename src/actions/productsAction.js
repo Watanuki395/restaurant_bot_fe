@@ -10,7 +10,10 @@ import {
   PRODUCT_BY_CATEGORY_ERROR,
   DELETE_PRODUCT_REQUESTED,
   DELETE_PRODUCT_SUCCESS,
-  DELETE_PRODUCT_ERROR
+  DELETE_PRODUCT_ERROR,
+  EDIT_PRODUCT_REQUESTED,
+  EDIT_PRODUCT_SUCCESS,
+  EDIT_PRODUCT_ERROR
 } from "./index";
 
 
@@ -94,3 +97,23 @@ export const deleteProductError = (data) => {
       payload: data
   }
 };
+export const editProductAction = ( data ) => {
+  return {
+      type: EDIT_PRODUCT_REQUESTED,
+      data
+  }
+}
+
+export const editProductSuccess = () => {
+  return {
+      type: EDIT_PRODUCT_SUCCESS,
+      editing: true
+  }
+}
+
+export const editProductError = ( error ) => {
+  return {
+      type: EDIT_PRODUCT_ERROR,
+      payload: error
+  }
+}

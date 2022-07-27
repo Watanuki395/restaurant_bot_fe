@@ -10,7 +10,10 @@ import {
   PRODUCT_BY_CATEGORY_ERROR,
   DELETE_PRODUCT_REQUESTED,
   DELETE_PRODUCT_SUCCESS,
-  DELETE_PRODUCT_ERROR
+  DELETE_PRODUCT_ERROR,
+  EDIT_PRODUCT_REQUESTED,
+  EDIT_PRODUCT_SUCCESS,
+  EDIT_PRODUCT_ERROR
 } from "../actions/index";
 
 const initialState = {
@@ -19,7 +22,8 @@ const initialState = {
   error: false,
   productsByCategory: [],
   createdProduct:[],
-  deleteProductResponse:[]
+  deleteProductResponse:[],
+  editedProduct:[]
 };
 
 function ProductsReducers(state = initialState, action) {
@@ -51,22 +55,22 @@ function ProductsReducers(state = initialState, action) {
       return {
         ...state,
         isFetching: true,
-        success: false
+        success: false,
       };
     case CREATE_PRODUCT_SUCCESS:
       return {
         ...state,
         createdProduct: response,
         success: true,
-        isFetching: false
+        isFetching: false,
       };
     case CREATE_PRODUCT_ERROR:
       return {
         ...state,
         success: false,
-        createdProduct: 'ERROR',
+        createdProduct: "ERROR",
         error: true,
-        isFetching: false
+        isFetching: false,
       };
     case PRODUCT_BY_CATEGORY_REQUESTED: {
       return {
@@ -93,23 +97,35 @@ function ProductsReducers(state = initialState, action) {
     case DELETE_PRODUCT_REQUESTED:
       return {
         ...state,
-        isFetching: true
+        isFetching: true,
       };
     case DELETE_PRODUCT_SUCCESS:
       return {
         ...state,
-        isFetching: false,
-        error: false,
-        success: true,
         deleteProductResponse: response,
       };
     case DELETE_PRODUCT_ERROR:
       return {
         ...state,
+        deleteProductResponse: "ERROR",
+      };
+    case EDIT_PRODUCT_REQUESTED:
+      return {
+        ...state,
+        isFetching: true,
+      };
+
+    case EDIT_PRODUCT_SUCCESS:
+      return {
+        ...state,
         isFetching: false,
-        error: true,
-        success: false,
-        deleteProductResponse: 'ERROR',
+        editedProduct: response
+      };
+    case EDIT_PRODUCT_ERROR:
+      return {
+        ...state,
+        isFetching: false,
+        message: action.payload,
       };
 
     default: {

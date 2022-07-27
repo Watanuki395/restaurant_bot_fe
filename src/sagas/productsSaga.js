@@ -12,7 +12,10 @@ import {
     PRODUCT_BY_CATEGORY_ERROR,
     DELETE_PRODUCT_REQUESTED,
     DELETE_PRODUCT_SUCCESS,
-    DELETE_PRODUCT_ERROR } 
+    DELETE_PRODUCT_ERROR,
+    EDIT_PRODUCT_REQUESTED,
+    EDIT_PRODUCT_SUCCESS,
+    EDIT_PRODUCT_ERROR } 
     from '../actions/index';
 import apiCall from '../api';
 import { toast } from "react-toastify";
@@ -70,7 +73,7 @@ function* deleteProductSaga(payload){
     try{
         const response = yield call(apiCall, 'DELETE', `/api/product/${payload.payload.id_prd}`);
         if(response){
-            toast.warn("Producto elimnado!");
+            toast.warn("Producto elimnado!",{position: "bottom-right"});
             yield put({type: DELETE_PRODUCT_SUCCESS, response})
         }else{
             yield put({type: DELETE_PRODUCT_ERROR, response})
@@ -81,6 +84,20 @@ function* deleteProductSaga(payload){
     }
 };
 
+function* editProductSaga(payload){
+    try{
+        const response = yield call(apiCall, 'PUT', `/api/product/`, payload.data);
+        if(response){
+            yield put({type: EDIT_PRODUCT_SUCCESS, response})
+            return response
+        }else{
+            yield put({type: EDIT_PRODUCT_ERROR, response})
+        }
+    }catch(error){
+        yield put({type: EDIT_PRODUCT_ERROR, error})
+    }
+};
+
 
 //watcher
 function* sagas(){
@@ -88,6 +105,7 @@ function* sagas(){
     yield takeLatest(CREATE_PRODUCT_REQUESTED, createProductSaga);
     yield takeLatest(PRODUCT_BY_CATEGORY_REQUESTED, productByCategorySaga);
     yield takeLatest(DELETE_PRODUCT_REQUESTED, deleteProductSaga);
+    yield takeLatest(EDIT_PRODUCT_REQUESTED, editProductSaga);
 }
 
 export default sagas;

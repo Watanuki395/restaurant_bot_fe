@@ -10,12 +10,13 @@ import {
   productoByCategoryRequested,
   productsRequested,
   createProductRequested,
-  deleteProductAction
+  deleteProductAction,
+  editProductAction
 } from "../../actions/productsAction";
 
 import { Modal, Button } from "react-bootstrap";
 import * as Yup from "yup";
-import { Formik, Field, Form, ErrorMessage, useFormikContext } from "formik";
+import { Formik, Field, Form, ErrorMessage } from "formik";
 import "../../index.css";
 import noImage from "../../imgs/no-image.jpeg";
 import {Loading} from "../common/Loading";
@@ -28,7 +29,7 @@ import {Loading} from "../common/Loading";
 //   setDoc,
 // } from "firebase/firestore";
 import storage from "../../firebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 
 const CategoryByProduct = () => {
   const dispatch = useDispatch();
@@ -37,23 +38,30 @@ const CategoryByProduct = () => {
   const from = location.state?.from?.pathname || "/dashboard";
   //#region UseSelector and states
 
-  const [file, setFile] = useState("");
-  const [idata, setData] = useState({});
-  const [per, setPerc] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [previewImg, setPreviewImg] = useState("");
+  const [urlToDelete, setUrlToDelete] = useState({});
+  const [perc, setPerc] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [prdLength, setPrdLength] = useState(0);
 
-  const categoryByProduct = useSelector((state) => state.entries.products?.productsByCategory);
-  const responseGetProduct = useSelector((state) => state.entries?.products?.productsByCategory);
+
+  const responseGetProduct = useSelector((state) => state.entries.products.productsByCategory);
   const userInfo = useSelector((state) => state.entries.auth.response?.user);
   const CreateProductResponse = useSelector((state) => state.entries.products.createdProduct);
   const DeleteProductResponse = useSelector((state) => state.entries.products.deleteProductResponse);
 
+
+  useEffect(()=>{
+    console.log('esto cambio')
+  },[CreateProductResponse]);
+
+
   useEffect(() => {
     if(userInfo?.id){
-      dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat }))
+      dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat }));
     }
-  }, [userInfo !== undefined && userInfo !== null]);
-
+  }, [(userInfo !== undefined && userInfo !== null)]);
   //#endregion
 
   //#region UseTable
@@ -78,7 +86,7 @@ const CategoryByProduct = () => {
   ];
 
   const columns = useMemo(() => COLUMNS, []);
-  const data = useMemo(() => [...categoryByProduct], [categoryByProduct]);
+  const data = useMemo(() => [...responseGetProduct], [responseGetProduct]);
 
   const RedirectEditProduct = (id_prd, id_cat) => {
     //dispatch( productoByCategoryRequested({id_user:userInfo.id, id_cat}) );
@@ -109,7 +117,7 @@ const CategoryByProduct = () => {
             </PButton>
             <PButton
               className="mb-1"
-              onClick={() => ConfirmDelete(row.original.id_prd)}
+              onClick={() => ConfirmDelete(row.original.id_prd, row.original.producto, row.original.imgURL_prd, )}
             >
               <IconDelete></IconDelete>
             </PButton>
@@ -149,35 +157,52 @@ const CategoryByProduct = () => {
   //#region Eliminar
   const [idToDelete, setIdToDelete] = useState();
   const [showDelete, setShowDelete] = useState(false);
-  const ConfirmDelete = (id_prd) => {
+  const ConfirmDelete = (id_prd, product, imgURI) => {
     setIdToDelete(id_prd);
+    setUrlToDelete(imgURI);
     handleShowDelete();
   };
 
   const handleShowDelete = () => {
-      setShowDelete(!showDelete)
+      setShowDelete(!showDelete);
   };
 
-  const onHandleSubmitDelete = () => {
-    console.log(idToDelete);
-    setLoading(true);  
-    dispatch(deleteProductAction({id_prd:idToDelete}));
-    setIdToDelete(0);
+  const onHandleSubmitDelete = async () => {
+    setDeleting(true);  
+    if(urlToDelete){
+      let pictureRef = ref(storage, urlToDelete);
+      // Delete the file
+      deleteObject(pictureRef)
+        .then(() => {
+          // File deleted successfully
+          dispatch(deleteProductAction({ id_prd: idToDelete }));
+          setUrlToDelete("");
+        })
+        .catch((error) => {
+          console.log(error);
+          dispatch(deleteProductAction({ id_prd: idToDelete }));
+          setUrlToDelete("");
+        });
+    }else{
+      dispatch(deleteProductAction({id_prd:idToDelete}));
+    }
   };
 
   useEffect(()=>{
     if(DeleteProductResponse.mensaje){
-      dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat }))
-      //navigate(`/CategoryByProduct/${Number(id_cat)}`, { replace: true });
+      //dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat }))
       setShowDelete(false);
-      setLoading(false);      
+      setDeleting(false);      
+      setIdToDelete();     
     }else if(DeleteProductResponse === 'ERROR'){
       /// TODO: hacer mensaje de error personalizado y cargar los que ya existen
      // navigate(`/CategoryByProduct/${Number(id_cat)}`, { replace: true });
       setShowDelete(false);
-      setLoading(false);   
+      setDeleting(false); 
+      setIdToDelete();  
     }
-  },[DeleteProductResponse.mensaje !== undefined && loading || DeleteProductResponse === 'ERROR' && loading])
+  },[(DeleteProductResponse.mensaje !== undefined && deleting) || 
+    (DeleteProductResponse === 'ERROR' && deleting)])
   //#endregion
 
   //#region Agregar
@@ -185,7 +210,7 @@ const CategoryByProduct = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => {
     setShow(false)
-    setFile('')};
+    setPreviewImg('')};
   const handleShow = () => setShow(true);
 
   const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
@@ -245,61 +270,74 @@ function onHandleSubmit(data) {
 
   useEffect(() => {
     if(CreateProductResponse.id_prd){
-      dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat }))
-      //navigate(`/CategoryByProduct/${Number(id_cat)}`, { replace: true })
-      setShow(false);
-      setFile('');
-      setLoading(false);      
-      if(file){
-        uploadFile();
+      if (previewImg) {
+        const fileName = userInfo.uuid + "_" + CreateProductResponse.id_prd + "_" + previewImg.name;
+        const storageRef = ref(
+          storage,
+          `/menu_images/${userInfo.id}/${fileName}`
+        );
+        const uploadTask = uploadBytesResumable(storageRef, previewImg);
+
+        uploadTask
+          .on(
+            "state_changed",
+            (snapshot) => {
+              const progress =
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log("Upload is " +  Math.round(progress) + "% done");
+              setPerc( Math.round(progress));
+              switch (snapshot.state) {
+                case "paused":
+                  console.log("Upload is paused");
+                  break;
+                case "running":
+                  console.log("Upload is running");
+                  break;
+                default:
+                  break;
+              }
+            },
+            (error) => {
+              console.log(error);
+            },
+            async () => {
+              const imgURL_prd = await getDownloadURL(uploadTask.snapshot.ref);
+              dispatch(
+                editProductAction({
+                  id_user: userInfo.id,
+                  id_cat,
+                  id_prd: CreateProductResponse.id_prd,
+                  imgURL_prd,
+                })
+              );
+              // dispatch(
+              //   productoByCategoryRequested({ id_user: userInfo.id, id_cat })
+              // );
+              setShow(false);
+              setPreviewImg("");
+              setLoading(false);
+            }
+          )
+      }else{
+        //dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat }));
+        setShow(false);
+        setPreviewImg('');
+        setLoading(false);      
       }
     } else if(CreateProductResponse === 'ERROR'){
-      //navigate(`/CategoryByProduct/${Number(id_cat)}`, { replace: true })
       setShow(false);
       setLoading(false); 
     }
 
-  }, [CreateProductResponse.id_prd !== undefined && loading || 
-      CreateProductResponse === 'ERROR' && loading]);
+  }, [(CreateProductResponse.id_prd !== undefined && loading) || 
+    (CreateProductResponse === 'ERROR' && loading)]);
 
-    const uploadFile = () => {
-      const fileName =  userInfo.uuid + '_' + CreateProductResponse.id_prd + '_' + file.name;
-
-      console.log(fileName);
-      const storageRef = ref(storage, `/menu_images/${userInfo.id}/${fileName}`);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-          setPerc(progress);
-          switch (snapshot.state) {
-            case "paused":
-              console.log("Upload is paused");
-              break;
-            case "running":
-              console.log("Upload is running");
-              break;
-            default:
-              break;
-          }
-        },
-        (error) => {
-          console.log(error);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            setData((prev) => ({ ...prev, img: downloadURL }));
-          });
-        }
-      );
+    const uploadFile = (id_prd) => {
+      
     };
   //#endregion
   const LoadingHandler = () => {
-    return <Loading message = " Agregando ..." />;
+    return <Loading message = {perc !== null && perc < 100 ? ` Agregando... ${perc}`: ' Agregando...'} />;
   };
 
   return (
@@ -451,14 +489,14 @@ function onHandleSubmit(data) {
                                   <input
                                     type="file"
                                     id="imgURL_prd"
-                                    onChange={(e) => setFile(e.target.files[0])}
+                                    onChange={(e) => setPreviewImg(e.target.files[0])}
                                     style={{ display: "none" }}
                                   />
                                 </div>
                                 <PreviewImg
                                   src={
-                                    file
-                                      ? URL.createObjectURL(file)
+                                    previewImg
+                                      ? URL.createObjectURL(previewImg)
                                       : noImage
                                   }
                                   className="img-fluid img-thumbnail" alt="..."
@@ -475,7 +513,7 @@ function onHandleSubmit(data) {
                                   disabled={loading}
                                   className="btn btn-dark btn-block mb-2"
                                 >
-                                  {loading ? <LoadingHandler /> : "Agregar"}
+                                  {loading ? <LoadingHandler/> : "Agregar"}
                                 </button>
                               </div>
                             </div>
@@ -543,15 +581,17 @@ function onHandleSubmit(data) {
         </div>
       </div>
 
-      <Modal show={showDelete} onHide={handleShowDelete}>
+      <Modal show={showDelete}>
         <Modal.Body>
               <div>
                 <h4>¿Está seguro de eliminar este producto?</h4>
               </div>
         </Modal.Body>
         <Modal.Footer>
-        <Button variant="warning" onClick={onHandleSubmitDelete}>
-            Eliminar
+        <Button variant="warning" 
+                disabled={deleting}
+                onClick={onHandleSubmitDelete}>
+            {deleting ? <LoadingHandler /> : "Eliminar"}
           </Button>
           <Button variant="secondary" onClick={handleShowDelete}>
             Cerrar
