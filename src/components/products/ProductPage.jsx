@@ -1,8 +1,9 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
-import { createProductAction } from "../../actions/createproductAction";
-import { productoByCategoryRequested } from "../../actions/productbycategoryAction";
+//import { createProductAction } from "../../actions/createproductAction";
+import { createProductRequested } from "../../actions/createproductAction";
+import { productoByCategoryRequested } from "../../actions/productsAction";
 import { editProductAction } from "../../actions/editproductAction";
 
 import * as Yup from "yup";
@@ -52,7 +53,8 @@ const Product = () => {
         await sleep(1000);
         setReseted(true);
         if (data) {
-          dispatch(createProductAction(data));
+          //dispatch(createProductAction(data));
+          dispatch(createProductRequested(data));
           
         }
       }
