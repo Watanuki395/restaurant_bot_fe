@@ -8,22 +8,26 @@ import { IconDelete, IconEdit, IconSee, PButton } from "./style";
 import { createProductAction } from "../../actions/createproductAction";
 import { productsRequested } from "../../actions/productsAction";
 import { deleteProductAction } from "../../actions/deleteproductAction";
-import { productoByCategoryRequested } from "../../actions/productbycategoryAction";
+import { productoByCategoryRequested } from "../../actions/productsAction";
 import { editProductAction } from "../../actions/editproductAction";
 import Table from "../common/reactTable/Table";
+import { PreviewImg } from "./style";
+import { GrUploadOption } from "react-icons/gr";
 
 import {
-  productoByCategoryRequested,
-  productsRequested,
+/*   productoByCategoryRequested, 
+  productsRequested,*/
   createProductRequested,
-  deleteProductAction,
-  editProductAction
+  /* deleteProductAction, 
+  editProductAction*/
 } from "../../actions/productsAction";
 
 import { Modal, Button } from "react-bootstrap";
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import "../../index.css";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import noImage from "../../imgs/no-image.jpeg";
 import {Loading} from "../common/Loading";
 
@@ -57,6 +61,7 @@ const CategoryByProduct = () => {
   const CreateProductResponse = useSelector((state) => state.entries.products.createdProduct);
   const DeleteProductResponse = useSelector((state) => state.entries.products.deleteProductResponse);
 
+  const id_cat = useSelector();
 
   useEffect(()=>{
     console.log('esto cambio')
@@ -143,10 +148,10 @@ const CategoryByProduct = () => {
   const columns = useMemo(() => COLUMNS, []);
   const data = useMemo(() => [...responseGetProduct], [responseGetProduct]);
 
-  const RedirectEditProduct = (id_prd, id_cat) => {
+ /*  const RedirectEditProduct = (id_prd, id_cat) => {
     //dispatch( productoByCategoryRequested({id_user:userInfo.id, id_cat}) );
     navigate(from, { replace: true })
-  };
+  }; */
 
   const tableHooks = (hooks) => {
     hooks.visibleColumns.push((columns) => [
@@ -394,7 +399,7 @@ function onHandleSubmit(data) {
   };
 
 
-  useEffect(() => {
+  /* useEffect(() => {
     const cargarProductoCat = () =>
       dispatch(productoByCategoryRequested({ id_user: 68, id_cat }));
     cargarProductoCat();
@@ -413,12 +418,12 @@ function onHandleSubmit(data) {
     }catch(e){
       console.log(e);
     }
-  }, [createResponse]);
+  }, [createResponse]); */
 
   return (
     <>
       <div style={{background: "black"}} className="container">
-        <h3>Está en: {categorias || 'Agrega un producto para descubrir la categoría'}</h3>
+        {/* <h3>Está en: {categorias || 'Agrega un producto para descubrir la categoría'}</h3> */}
         <button
           className="btn btn-warning btn-plus mt-3"
           variant="primary"

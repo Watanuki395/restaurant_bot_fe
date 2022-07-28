@@ -2,7 +2,7 @@ import React, {useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTable, usePagination, useSortBy, useGlobalFilter, useRowSelect } from "react-table";
-import { productoByCategoryRequested } from "../../../actions/productbycategoryAction";
+import { productoByCategoryRequested } from "../../../actions/productsAction";
 import Filter from "./Filter";
 import { CheckBox } from "./CheckBox";
 

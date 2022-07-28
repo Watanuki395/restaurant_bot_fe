@@ -7,9 +7,9 @@ import { Route, Routes } from "react-router-dom";
 import Navbar from '../components/common/Layout/Navbar';
 import Sidebar from '../components/common/SideBar/SideBar';
 
-import LoginPage from "../components/auth/LoginPage";
+import LoginPage from "../components/auth/loginPage";
 import RegisterPage from "../components/auth/RegisterPage";
-import DashboardPage from "../components/dashboard/DashboardPage";
+import DashboardPage from "../components/dashboard/dashboardPage";
 import ForgotPassPage from "../components/forgotpass/ForgotpassPage";
 
 import RequireAuth from "../components/requireAuth/RequireAuth";
@@ -18,7 +18,7 @@ import Layout from "../components/layouts/Layout";
 import Missing from "../components/missing/Missing";
 import Unauthorized from '../components/unauthorized/Unauthorized';
 import CategoriesPage from '../components/categories/CategoriesPage';
-import CategoryByProductPage from '../components/categories/CategoryByProductPage';
+import CategoryByProductPage from '../components/categories/categoryByProductPage';
 import ProductPage from "../components/products/ProductPage";
 
 const App = () => {
