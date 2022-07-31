@@ -1,4 +1,4 @@
-import {
+/* import {
     DELETE_CATEGORY_REQUESTED,
     DELETE_CATEGORY_SUCCESS,
     DELETE_CATEGORY_ERROR
@@ -45,4 +45,4 @@ function deleteCategory(state = initialState, action){
     }
 }
 
-export default deleteCategory;
+export default deleteCategory; */

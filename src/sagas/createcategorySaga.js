@@ -1,4 +1,4 @@
-import { put, call, takeLatest } from 'redux-saga/effects';
+/* import { put, call, takeLatest } from 'redux-saga/effects';
 import apiCall from '../api/index';
 
 import {
@@ -25,4 +25,4 @@ function* sagas(){
     yield takeLatest(CREATE_CATEGORY_REQUESTED, createCategorySaga);
 }
 
-export default sagas;
+export default sagas; */

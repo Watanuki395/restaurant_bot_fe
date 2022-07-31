@@ -1,4 +1,4 @@
-import {
+/* import {
     CREATE_CATEGORY_REQUESTED,
     CREATE_CATEGORY_SUCCESS,
     CREATE_CATEGORY_ERROR
@@ -36,4 +36,4 @@ export default function createCategory(state = [], action){
             return state;
         } 
     }
-}
+} */

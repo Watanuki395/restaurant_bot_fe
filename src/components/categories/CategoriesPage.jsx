@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IconDelete, IconEdit, IconSee, SButton } from "./style";
 import "../../index.css";
+import {Loading} from "../common/Loading";
 
 const Categories = (props) => {
   const dispatch = useDispatch();
@@ -68,177 +69,34 @@ const Categories = (props) => {
   
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   
-    const createResponse = useSelector((state) => state.entries.createCategory ? state.entries.createCategory.success : null);
-    const createResponseError = useSelector((state) => state.entries.createCategory ? state.entries.createCategory.error : null);
-    const msg = useSelector((state) => state.entries.createCategory ? state.entries.createCategory.msg : null);
+    const createResponse = useSelector((state) => state.entries.categories ? state.entries.categories.createdCategory.id_cat : null);
     //#endregion
-
-  //#region Modal Editar
-
-  const [showEdit, setShowEdit] = useState(false);
-  const handleCloseEdit = () => setShowEdit(false);
-  const handleShowEdit = () => setShowEdit(true);
-
-  const initialStateEdit = {
-    name_cat: "",
-    description_cat: "",
-  };
-
-  const [formValueEdit, setFormValueEdit] = useState(initialStateEdit);
-  
-  
-  const redirectEdit = (category) => {
-    //navigate(`/categoryEdit/${category.id_cat}`, { replace: true });
-    setFormValueEdit(category);
-    handleShowEdit();
-  };
-  const { name_cat, description_cat } = formValueEdit;
-
-  const onHandleSubmitEdit = (e) => {
-    //e.preventDefault();
-    if (name_cat && description_cat) {
-      dispatch(editCategoryAction({ formValueEdit }));
-      toast.success("Categoría actualizada satisfactoriamente.");
-      setTimeout(() => dispatch(categoriesRequested()), 1000);
-      setTimeout(handleCloseEdit());
-    } else {
-      toast.error("ERROR");
-    }
-  };
-  const onChangeFormEdit = (e) => {
-    let { name, value } = e.target;
-    setFormValueEdit({
-      ...formValueEdit,
-      [name]: value,
-    });
-  };
-
-  //#endregion
 
   //#region  UseSelector
 
   let categorias = useSelector((state) => state.entries.categories ? state.entries.categories.categories : null);
   const error = useSelector((state) => state.entries.categories ? state.entries.categories.error : null);
-  const loading = useSelector((state) => state.entries.categories ? state.entries.categories.isFetching : null);
+  const DeleteProductResponse = useSelector((state) => state.entries.categories.deleteCategoryResponse);
 
   //#endregion
-
-  //#region  Modal Eliminar
-
-  let initialValuesDelete = {
-    id_cat: null,
-  };
-  const confirmDelete = (id_cat) => {
-    setFormValue({ id_cat });
-    handleShowDelete();
-  };
-  const [formValue, setFormValue] = useState(initialValuesDelete);
-  const { id_cat } = formValue;
-
-  const onChangeForm = (e) => {
-    let { name, value } = e.target;
-    setFormValue({
-      ...formValue,
-      [name]: value,
-    });
-  };
-
-  const [showDelete, setShowDelete] = useState(false);
-  const handleCloseDelete = () => setShowDelete(false);
-  const handleShowDelete = () => setShowDelete(true);
-
-  const onHandleSubmitDelete = (e) => {
-    e.preventDefault();
-    dispatch(deleteCategoryAction(formValue));
-    toast.success("Categoría eliminada!");
-    setTimeout(() => dispatch(categoriesRequested()), 1000);
-    setTimeout(() => setShowDelete(false), 1100);
-  };
-//#endregion
 
   //#region React-Table
   const columns = useMemo(() => COLUMNS, []);
   const data = useMemo(() => [...categorias], [categorias]);
-
-  const redirectProductByCategory = (idCategory) => {
-    let id_cat = idCategory.id_cat;
-    dispatch(productoByCategoryRequested({ id_user: 68, id_cat }));
-    navigate(`/CategoryByProduct/${idCategory.id_cat}`, { replace: true });
-  };
-
-  const tableHooks = (hooks) => {
-    hooks.visibleColumns.push((columns) => [
-      ...columns,
-      {
-        id: "Edit",
-        Header: "Edit",
-        Cell: ({ row }) => (
-          <>
-            <SButton
-              className="mb-1"
-              onClick={() => redirectProductByCategory(row.original)}
-            >
-              <IconSee></IconSee>
-            </SButton>
-
-            <SButton
-              className={isEvent(row.id) ? "bg-green-400" : ""}
-              onClick={() => redirectEdit(row.original)}
-            >
-              <IconEdit></IconEdit>
-            </SButton>
-
-            <SButton
-              className=""
-              onClick={() => confirmDelete(row.original.id_cat)}
-            >
-              {/* <SButton className="" onClick={()=> dispatch(deleteProductAction(row.original.id_cat))}> */}
-              <IconDelete></IconDelete>
-            </SButton>
-          </>
-        ),
-      },
-    ]);
-  };
-
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    page,
-    nextPage,
-    previousPage,
-    canNextPage,
-    canPreviousPage,
-    pageOptions,
-    state,
-    prepareRow,
-  } = useTable(
-    {
-      columns,
-      data,
-    },
-    usePagination,
-    tableHooks
-  );
-
-  const isEvent = (id) => id % 2 === 0;
-
-  const { pageIndex } = state;
   //#endregion
 
   useEffect(() => {
-    if(!createResponse){ //Revisar validación para que se ejecute solo la primera vez que entra
+    /* if(!createResponse){  //Revisar validación para que se ejecute solo la primera vez que entra
       const cargarProductos = () => dispatch(categoriesRequested());
       cargarProductos();
-    }
+     } */
     try {
-      if(createResponse && !msg){
-        toast.success("Categoría creada!");
+      if(createResponse !== [] && createResponse !== 'ERROR'){
         setTimeout(() => dispatch(categoriesRequested()), 1000);
         setTimeout(() => setShow(false), 1100);
-      } else if(createResponseError){
-        toast.error("Esa categoría ya existe.");
+      } else{
+        const cargarProductos = () => dispatch(categoriesRequested());
+      cargarProductos();
       }
     } catch (e){
       if(!e?.createResponse){
@@ -247,12 +105,15 @@ const Categories = (props) => {
         toast.error("Servidor no responde.");
       } else if(!e?.status === 204){
         toast.error("Esa categoría ya existe.");
-      } else if(msg){
-        toast.error("Esa categoría ya existe.");
       }
     }
-  }, [createResponse, createResponseError]);
+  }, [createResponse]);
 
+  useEffect(()=>{
+    if(DeleteProductResponse){
+      setTimeout(() => dispatch(categoriesRequested()), 1000);
+    }
+  }, [DeleteProductResponse]);
 
   return (
     <Fragment>
@@ -264,7 +125,7 @@ const Categories = (props) => {
           </p>
         ) : null}
 
-        {loading ? <p className="text-center">Cargando...</p> : null}
+
 
         <button
           className="btn btn-warning btn-plus mt-3"
@@ -281,7 +142,14 @@ const Categories = (props) => {
           <IconDelete />
         </button>
 
-        <Modal show={show} onHide={handleClose}>
+        
+
+       <Table data = {data} columns = {columns}></Table>
+
+        </div>
+      </div> 
+
+      <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Agregar una categoría nueva</Modal.Title>
           </Modal.Header>
@@ -370,164 +238,6 @@ const Categories = (props) => {
           </Modal.Footer>
         </Modal>
 
-        {/* <table {...getTableProps()} className="table striped bordered hover">
-          <thead className="thead-dark">
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <th {...column.getHeaderProps()} scope="col">
-                    {column.render("Header")}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-
-          <tbody {...getTableBodyProps()}>
-            {page.map((row, idx) => {
-              prepareRow(row);
-              return (
-                <tr
-                  {...row.getRowProps()}
-                  className={isEvent(idx) ? "bg-green-400 bg-opacity-10" : ""}
-                >
-                  {row.cells.map((cell) => {
-                    return (
-                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        <div className="text-center mt-2">
-          <button
-            className="btn btn-dark m-1"
-            onClick={() => previousPage()}
-            disabled={!canPreviousPage}
-          >
-            Anterior
-          </button>
-          <span>
-            Page{" "}
-            <strong>
-              {pageIndex + 1} of {pageOptions.length}
-            </strong>{" "}
-          </span>
-          <button
-            className="btn btn-dark"
-            onClick={() => nextPage()}
-            disabled={!canNextPage}
-          >
-            Siguiente
-          </button>
-        </div> */}
-       <Table data = {data} columns = {columns}></Table>
-        </div>
-      </div> 
-
-
-      <Modal show={showDelete} onHide={handleCloseDelete}>
-        <Modal.Header closeButton>
-          <Modal.Title>Eliminar categoría</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form onSubmit={onHandleSubmitDelete}>
-            <div className="form-container">
-              <div>
-                <input
-                  type="number"
-                  id="id_cat"
-                  name="id_cat"
-                  value={id_cat}
-                  onChange={onChangeForm}
-                  hidden
-                />
-                <h4>¿Está seguro que quiere eliminar esa categoría?</h4>
-                <div className="  py-3">
-                  <button type="submit" className="btn btn-dark m-3">
-                    Eliminar
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-primary mr-3"
-                    onClick={handleCloseDelete}
-                  >
-                    Cancelar
-                  </button>
-                </div>
-              </div>
-            </div>
-          </form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseDelete}>
-            Cerrar
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal show={showEdit} onHide={handleCloseEdit}>
-        <Formik
-          initialValues={initialStateEdit}
-          onSubmit={onHandleSubmitEdit}
-        >
-          <Form>
-            <Modal.Header closeButton>
-              <Modal.Title>Editar categoría</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="form-container mt-5">
-                <div className="form-group">
-                  <label> Nombre de la categoría</label>
-                  <Field
-                    type="text"
-                    className="form-control"
-                    placeholder="Nombre de la categoría"
-                    name="name_cat"
-                    value={name_cat || ""}
-                    onChange={onChangeFormEdit}
-                  />
-                  <ErrorMessage
-                    name="name_cat"
-                    component="div"
-                    className="field-error text-danger"
-                  />
-                </div>
-                <div className="form-group">
-                  <label> Descripción de la categoría</label>
-                  <Field
-                    type="text"
-                    className="form-control"
-                    placeholder="Descripción de la categoría"
-                    name="description_cat"
-                    value={description_cat || ""}
-                    onChange={onChangeFormEdit}
-                  />
-                  <ErrorMessage
-                    name="description_cat"
-                    component="div"
-                    className="field-error text-danger"
-                  />
-                </div>
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              <button
-                type="submit"
-                className="btn btn-dark font-weight-bold text-uppercase m-3"
-                disabled={name_cat === "" || description_cat === ""}
-              >
-                Guardar Cambios
-              </button>
-              <Button variant="secondary" onClick={handleCloseEdit}>
-                Cerrar
-              </Button>
-            </Modal.Footer>
-          </Form>
-        </Formik>
-      </Modal>
     </Fragment>
   );
 };

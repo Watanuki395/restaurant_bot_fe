@@ -1,4 +1,4 @@
-import {
+/* import {
     EDIT_CATEGORY_REQUESTED,
     EDIT_CATEGORY_SUCCESS,
     EDIT_CATEGORY_ERROR
@@ -22,4 +22,4 @@ export const editCategoryErrorAction = ( error ) => {
         type: EDIT_CATEGORY_ERROR,
         payload: error
     }
-}
+} */
