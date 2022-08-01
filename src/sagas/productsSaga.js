@@ -73,7 +73,7 @@ function* deleteProductSaga(payload){
     try{
         const response = yield call(apiCall, 'DELETE', `/api/product/${payload.payload.id_prd}`);
         if(response){
-            toast.warn("Producto elimnado!",{position: "bottom-right"});
+            toast.warn("Producto eliminado!",{position: "bottom-right"});
             yield put({type: DELETE_PRODUCT_SUCCESS, response})
         }else{
             yield put({type: DELETE_PRODUCT_ERROR, response})

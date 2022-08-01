@@ -47,6 +47,8 @@ const CategoryByProduct = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard";
   //#region UseSelector and states
+  const id_cat = useParams();
+  console.log(id_cat.id_cat);
 
   const [previewImg, setPreviewImg] = useState("");
   const [urlToDelete, setUrlToDelete] = useState({});
@@ -61,8 +63,7 @@ const CategoryByProduct = () => {
   const CreateProductResponse = useSelector((state) => state.entries.products.createdProduct);
   const DeleteProductResponse = useSelector((state) => state.entries.products.deleteProductResponse);
 
-  const id_cat = useSelector();
-
+  const { id_cat } = useParams();
   useEffect(()=>{
     console.log('esto cambio')
   },[CreateProductResponse]);
@@ -70,7 +71,7 @@ const CategoryByProduct = () => {
 
   useEffect(() => {
     if(userInfo?.id){
-      dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat }));
+      dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat:id_cat.id_cat })); //Cambiar el id_cat
     }
   }, [(userInfo !== undefined && userInfo !== null)]);
   //#endregion
@@ -106,7 +107,7 @@ const CategoryByProduct = () => {
       console.log(formValueEdit);
       dispatch(editProductAction({ formValueEdit }));
       toast.success("Categoría actualizada satisfactoriamente.");
-      setTimeout(() => dispatch(productoByCategoryRequested({ id_user: 68, id_cat })), 1000);
+      setTimeout(() => dispatch(productoByCategoryRequested({ id_user: 68, id_cat:id_cat.id_cat })), 1000); //Cambiar el Id_cat
       setTimeout(handleCloseEdit());
 
   };
