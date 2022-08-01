@@ -25,6 +25,13 @@ export const TableTd = styled.td`
   color: #000;
 `;
 
+export const TableImgs = styled.img`
+    width: 45px;
+    height: 45px;
+    border-radius: 15px;
+    border: 1px solid #ddd;
+`;
+
 export const SButton = styled.button`
   border: none;
   background-color: rgba(212, 255, 241, 0.76);

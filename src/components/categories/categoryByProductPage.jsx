@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
 import { useTable, usePagination } from "react-table";
 import { GrAdd } from "react-icons/gr";
-import { IconDelete, IconEdit, IconSee, PButton } from "./style";
+import { IconDelete, IconEdit, IconSee, PButton, TableImgs } from "./style";
 
 import Table from "../common/reactTable/Table";
 import { PreviewImg } from "./style";
@@ -115,6 +115,9 @@ const CategoryByProduct = () => {
     {
       Header: "Imagen",
       accessor: "imgURL_prd",
+      Cell: tableProps => (
+        <TableImgs src={tableProps.row.original.imgURL_prd}></TableImgs>
+      )
     },
     {
       Header: "Producto",
