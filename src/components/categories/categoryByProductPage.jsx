@@ -63,6 +63,7 @@ const CategoryByProduct = () => {
   const CreateProductResponse = useSelector((state) => state.entries.products.createdProduct);
   const DeleteProductResponse = useSelector((state) => state.entries.products.deleteProductResponse);
 
+  const { id_cat } = useParams();
   useEffect(()=>{
     console.log('esto cambio')
   },[CreateProductResponse]);

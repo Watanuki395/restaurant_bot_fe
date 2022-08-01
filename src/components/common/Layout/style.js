@@ -6,12 +6,20 @@ import {BiRestaurant} from 'react-icons/bi';
 export const Nav = styled.nav`
     background:#000;
     height:80px;
+    border-bottom: 0.5px solid rgb(231, 228, 228);
     display:flex;
+    align-items: center;
     justify-content:space-between;
     padding: 0.5rem calc((100vw - 1000px) / 2);
     z-index:10;
     position:sticky;
     top:0;
+    font-size: 14px;
+    color: #555;
+
+    @media (min-width: 600px) {
+    height: 50px;
+    }
 `;
 
 export const NavLink = styled(Link)`
@@ -44,14 +52,34 @@ export const Bars = styled(FaBars)`
 `;
 
 export const NavMenu = styled.div`
+    flex: 30%;
     display: flex;
-    align-items: center;
-    //margin-right: -24px;
-    margin-right: 24px;
+    justify-content: flex-end;
+    padding-right: 50px;
 
     @media screen and (max-width: 768px){
         display: none;
     }
+`;
+
+export const NavItem = styled.div`
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+    position: relative;
+    cursor: pointer;
+    font-size:25px;
+
+    &:hover {
+        transition: all 0.2s ease-in-out;
+        color: #B46719;
+    }
+
+`;
+export const NavAvatar = styled.img`
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
 `;
 
 export const NavBtn = styled.nav`
@@ -91,7 +119,7 @@ font-weight: bold;
 font-size:25px;
 
 &:hover {
-    transform: scale(2);
+    transform: scale(1.5);
 }
 `;
 
