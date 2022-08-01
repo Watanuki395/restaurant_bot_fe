@@ -5,21 +5,16 @@ import { useTable, usePagination } from "react-table";
 import { GrAdd } from "react-icons/gr";
 import { IconDelete, IconEdit, IconSee, PButton } from "./style";
 
-import { createProductAction } from "../../actions/createproductAction";
-import { productsRequested } from "../../actions/productsAction";
-import { deleteProductAction } from "../../actions/deleteproductAction";
-import { productoByCategoryRequested } from "../../actions/productsAction";
-import { editProductAction } from "../../actions/editproductAction";
 import Table from "../common/reactTable/Table";
 import { PreviewImg } from "./style";
 import { GrUploadOption } from "react-icons/gr";
 
 import {
-/*   productoByCategoryRequested, 
-  productsRequested,*/
+productoByCategoryRequested, 
+  productsRequested,
   createProductRequested,
-  /* deleteProductAction, 
-  editProductAction*/
+  deleteProductAction, 
+  editProductAction
 } from "../../actions/productsAction";
 
 import { Modal, Button } from "react-bootstrap";
@@ -47,30 +42,24 @@ const CategoryByProduct = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/dashboard";
   //#region UseSelector and states
-  const id_cat = useParams();
-  console.log(id_cat.id_cat);
+
+  const {id_cat} = useParams();
 
   const [previewImg, setPreviewImg] = useState("");
   const [urlToDelete, setUrlToDelete] = useState({});
   const [perc, setPerc] = useState(null);
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [prdLength, setPrdLength] = useState(0);
-
 
   const responseGetProduct = useSelector((state) => state.entries.products.productsByCategory);
   const userInfo = useSelector((state) => state.entries.auth.response?.user);
   const CreateProductResponse = useSelector((state) => state.entries.products.createdProduct);
   const DeleteProductResponse = useSelector((state) => state.entries.products.deleteProductResponse);
 
-  useEffect(()=>{
-    console.log('esto cambio')
-  },[CreateProductResponse]);
-
 
   useEffect(() => {
     if(userInfo?.id){
-      dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat:id_cat.id_cat })); //Cambiar el id_cat
+      dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat })); //Cambiar el id_cat
     }
   }, [(userInfo !== undefined && userInfo !== null)]);
   //#endregion
@@ -87,7 +76,7 @@ const CategoryByProduct = () => {
     price_prd: 0,
     isOnMenu: "",
     id_cat: 0,
-    id_user: 68,
+    id_user: userInfo?.id,
     id_prd: 0,
     imgURL_prd: "",
   };
@@ -106,7 +95,7 @@ const CategoryByProduct = () => {
       console.log(formValueEdit);
       dispatch(editProductAction({ formValueEdit }));
       toast.success("Categoría actualizada satisfactoriamente.");
-      setTimeout(() => dispatch(productoByCategoryRequested({ id_user: 68, id_cat:id_cat.id_cat })), 1000); //Cambiar el Id_cat
+      setTimeout(() => dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat })), 1000);
       setTimeout(handleCloseEdit());
 
   };

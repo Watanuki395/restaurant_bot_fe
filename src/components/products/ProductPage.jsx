@@ -1,10 +1,13 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation, Navigate, useParams } from "react-router-dom";
-//import { createProductAction } from "../../actions/createproductAction";
-import { createProductRequested } from "../../actions/createproductAction";
-import { productoByCategoryRequested } from "../../actions/productsAction";
-import { editProductAction } from "../../actions/editproductAction";
+import {
+    productoByCategoryRequested, 
+    productsRequested,
+    createProductRequested,
+    deleteProductAction, 
+    editProductAction
+  } from "../../actions/productsAction";
 
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";

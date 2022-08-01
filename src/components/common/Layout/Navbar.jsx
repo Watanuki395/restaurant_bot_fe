@@ -3,14 +3,19 @@ import { useNavigate } from 'react-router-dom';
 //import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { logoutUser } from '../../../actions/loginActions';
+import { MdOutlineDarkMode, MdOutlineLogout } from "react-icons/md";
 import {
   Nav,
   NavLink,
   NavMenu,
   NavBtnLink,
   Bars,
-  NavIcon
-}from './style'
+  NavIcon,
+  NavItem,
+  NavAvatar
+}from './style';
+
+import LogoImg from "../../../imgs/no-image.jpeg";
 
 const Navbar = (props) => {
   
@@ -54,26 +59,19 @@ const Navbar = (props) => {
     return (
       <>
         <Nav>
-          <NavLink to="/" >
-            <NavIcon/>QR Bot
-          </NavLink>
-          <Bars onClick={props.toggle}/>
-            <NavMenu>
+          <Bars onClick={props.toggle} />
+          <NavMenu>
+            <NavItem>
+              <MdOutlineDarkMode onClick={() => dispatch({ type: "TOGGLE" })} /> 
+            </NavItem>
+            <NavItem>
+              <MdOutlineLogout onClick={() => onLogoutClick()} />
+            </NavItem>
             <NavLink to="/user">
-              Usuario
+              <NavItem>
+                <NavAvatar src={LogoImg}></NavAvatar>
+              </NavItem>
             </NavLink>
-            <NavLink to="/product">
-              Producto
-            </NavLink>
-            <NavLink to="/reports">
-              Reportes
-            </NavLink>
-            <NavLink to="/support"> 
-              Soporte
-            </NavLink>
-            <button className='nav-link active' onClick={onLogoutClick}>
-                      Salir
-            </button>
           </NavMenu>
         </Nav>
       </>

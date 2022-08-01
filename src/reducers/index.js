@@ -6,10 +6,6 @@ import refreshtoken from './refreshTokenReducer'
 import categories from './categoriesReducer';
 import selectcomponent from './selectcomponentReducer';
 import products from './productsReducer';
-import createcategory from './createcategoryReducer';
-import deleteCategory from './deletecategoryReducer';
-import editCategory from './editcategoryReducer';
-import editProduct from './editproductReducer';
 
 const rootReducer = combineReducers({
   register, 
@@ -18,11 +14,7 @@ const rootReducer = combineReducers({
   forgotpass,
   categories,
   selectcomponent,
-  products,
-  createcategory,
-  deleteCategory,
-  editCategory,
-  editProduct
+  products
 });
 
 export default rootReducer;
