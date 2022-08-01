@@ -7,10 +7,10 @@ import refreshTokenSaga from './refreshTokenSaga';
 import categoriesSaga from './categoriesSaga';
 import selectComponentSaga from './selectcomponentSagas';
 import productsSaga from './productsSaga';
-import createCategorySaga from './createcategorySaga';
+/* import createCategorySaga from './createcategorySaga';
 import deleteCategorySaga from './deletecategorySaga';
 import editCategorySaga from './editcategorySaga';
-
+ */
 export default function* rootSaga() {
   yield all([
     fork(loginSaga),
@@ -20,8 +20,8 @@ export default function* rootSaga() {
     fork(categoriesSaga),
     fork(selectComponentSaga),
     fork(productsSaga),
-    fork(createCategorySaga),
+    /* fork(createCategorySaga),
     fork(deleteCategorySaga),
-    fork(editCategorySaga),
+    fork(editCategorySaga), */
   ]);
 }

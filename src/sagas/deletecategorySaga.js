@@ -1,4 +1,4 @@
-import { put, call, takeLatest } from 'redux-saga/effects';
+/* import { put, call, takeLatest } from 'redux-saga/effects';
 import {
     DELETE_CATEGORY_REQUESTED,
     DELETE_CATEGORY_SUCCESS,
@@ -22,4 +22,4 @@ function* sagas()
     yield takeLatest(DELETE_CATEGORY_REQUESTED, deleteCategorySaga);
 }
 
-export default sagas;
+export default sagas; */

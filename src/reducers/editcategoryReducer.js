@@ -1,4 +1,4 @@
-import {
+/* import {
     EDIT_CATEGORY_REQUESTED,
     EDIT_CATEGORY_SUCCESS,
     EDIT_CATEGORY_ERROR
@@ -40,4 +40,4 @@ function editCategory(state = initialState, action){
     }
 }
 
-export default editCategory;
+export default editCategory; */
