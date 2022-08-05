@@ -9,7 +9,7 @@ import {
   useRowSelect,
 } from "react-table";
 import { categoriesRequested } from "../../../actions/categoriesAction";
-import { productoByCategoryRequested } from "../../../actions/productsAction";
+import { deleteProductAction, productoByCategoryRequested } from "../../../actions/productsAction";
 import { deleteCategoryAction } from "../../../actions/categoriesAction";
 import { editCategoryAction } from "../../../actions/categoriesAction";
 import Filter from "./Filter";
@@ -24,28 +24,40 @@ import { Modal, Button } from "react-bootstrap";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
+import storage from "../../../firebase";
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
+
 const Table = ({ data, columns }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   //let categorias = useSelector((state) => state.entries.categories ? state.entries.categories.categories : null);
+  const userInfo = useSelector((state) => state.entries.auth.response?.user);
 
-  const redirectProductByCategory = (idCategory) => {
-    let id_cat = idCategory.id_cat;
-    dispatch(productoByCategoryRequested({ id_user: 68, id_cat }));
-    navigate(`/CategoryByProduct/${idCategory.id_cat}`, { replace: true });
+  const [ id_cat, setIdCat ] = useState();
+  const redirectProductByCategory = (Category) => {
+    //let id_cat = idCategory.id_cat;
+    setIdCat(Category.id_cat);
+    console.log(id_cat);
+    dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat }));
+    navigate(`/CategoryByProduct/${Category.id_cat}`, { replace: true });
   };
 
   //#region  Modal Eliminar
   const [idToDelete, setIdToDelete] = useState();
+  const [idProductToDelete, setProductIdToDelete] = useState();
+  const [urlToDelete, setUrlToDelete] = useState({});
   const [showDelete, setShowDelete] = useState(false);
 
   const [perc, setPerc] = useState(null);
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  const confirmDelete = (id_cat) => {
+  const confirmDelete = (id_cat, id_prd, imgURI) => {
     setIdToDelete(id_cat);
+    setProductIdToDelete(id_prd);
+    setUrlToDelete(imgURI);
     handleShowDelete(false);
+    console.log(imgURI);
   };
 
   const handleShowDelete = () => {
@@ -54,8 +66,32 @@ const Table = ({ data, columns }) => {
 
   const onHandleSubmitDelete = (e) => {
     e.preventDefault();
-    dispatch(deleteCategoryAction(idToDelete));
-    setLoading(true);
+    if(urlToDelete){
+      console.log(urlToDelete)
+      let pictureRef = ref(storage, urlToDelete);
+      // Delete the file
+      deleteObject(pictureRef)
+        .then(() => {
+          // File deleted successfully
+          dispatch(deleteProductAction({ id_prd: idProductToDelete }));
+          setUrlToDelete("");
+          setProductIdToDelete();
+        })
+        .catch((error) => {
+          console.log(error);
+          dispatch(deleteProductAction({ id_prd: idProductToDelete }));
+          setUrlToDelete("");
+          setProductIdToDelete();
+        });
+    }else if(urlToDelete){
+      dispatch(deleteProductAction({ id_prd: idProductToDelete }));
+      setUrlToDelete("");
+      setProductIdToDelete();
+    }else{
+      dispatch(deleteCategoryAction(idToDelete));
+      setLoading(true);
+    }
+    
   };
 
   const LoadingHandler = () => {
@@ -71,12 +107,23 @@ const Table = ({ data, columns }) => {
   };
 
   const responseDeleteCategory = useSelector((state) =>
-    state.entries.categories ? state.entries.categories.deletedCategory : null
+    state.entries.categories ? state.entries.categories.deleted : null
+  );
+  const responseDeleteProduct = useSelector((state) =>
+    state.entries.categories ? state.entries.products.deleted : null
   );
 
   useEffect(() => {
+    if (responseDeleteProduct) {
+      setTimeout(() => setShowDelete(false), 1000);
+      setTimeout(() => dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat:id_cat })), 1000);
+      setLoading(false);
+    }
+  }, [responseDeleteProduct]);
+
+  useEffect(() => {
     if (responseDeleteCategory) {
-      setTimeout(() => setShowDelete(false), 1100);
+      setTimeout(() => setShowDelete(false), 1000);
       setTimeout(() => dispatch(categoriesRequested()), 1000);
       setLoading(false);
     }
@@ -120,11 +167,11 @@ const Table = ({ data, columns }) => {
 };
 
  const responseEdit = useSelector((state) =>
- state.entries.categories ? state.entries.categories.editedCategory : null
+ state.entries.categories ? state.entries.categories.edited : null
 );
 
  useEffect(()=>{
-    if(responseEdit !== []){
+    if(responseEdit){
       setTimeout(() => dispatch(categoriesRequested()), 1000);
       setTimeout(handleCloseEdit());
     }
@@ -156,7 +203,7 @@ const Table = ({ data, columns }) => {
 
             <SButton
               className=""
-              onClick={() => confirmDelete(row.original.id_cat)}
+              onClick={() => confirmDelete(row.original.id_cat, row.original.id_prd, row.original.imgURL_prd)}
             >
               <IconDelete></IconDelete>
             </SButton>
@@ -300,7 +347,8 @@ const Table = ({ data, columns }) => {
         <Modal show={showDelete}>
           <Modal.Body>
             <div>
-              <h4>¿Está seguro de eliminar este producto?</h4>
+              {urlToDelete ? <h4>¿Está seguro de eliminar este producto?</h4> : <h4>¿Está seguro de eliminar esta categoría?</h4>}
+              
             </div>
           </Modal.Body>
           <Modal.Footer>

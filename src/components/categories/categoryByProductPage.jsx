@@ -53,13 +53,13 @@ const CategoryByProduct = () => {
 
   const responseGetProduct = useSelector((state) => state.entries.products.productsByCategory);
   const userInfo = useSelector((state) => state.entries.auth.response?.user);
-  const CreateProductResponse = useSelector((state) => state.entries.products.createdProduct);
+  const CreateProductResponse = useSelector((state) => state.entries.products ? state.entries.products.createdProduct : null);
   const DeleteProductResponse = useSelector((state) => state.entries.products.deleteProductResponse);
 
 
   useEffect(() => {
     if(userInfo?.id){
-      dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat })); //Cambiar el id_cat
+      //dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat })); //Cambiar el id_cat
     }
   }, [(userInfo !== undefined && userInfo !== null)]);
   //#endregion
@@ -166,7 +166,7 @@ const CategoryByProduct = () => {
             </PButton>
             <PButton
               className="mb-1"
-              onClick={() => ConfirmDelete(row.original.id_prd, row.original.producto, row.original.imgURL_prd, )}
+              //onClick={() => ConfirmDelete(row.original.id_prd, row.original.producto, row.original.imgURL_prd, )}
             >
               <IconDelete></IconDelete>
             </PButton>
@@ -202,7 +202,7 @@ const CategoryByProduct = () => {
   //#endregion
 
   //#region Eliminar
-  const [idToDelete, setIdToDelete] = useState();
+  /* const [idToDelete, setIdToDelete] = useState();
   const [showDelete, setShowDelete] = useState(false);
   const ConfirmDelete = (id_prd, product, imgURI) => {
     setIdToDelete(id_prd);
@@ -233,7 +233,7 @@ const CategoryByProduct = () => {
     }else{
       dispatch(deleteProductAction({id_prd:idToDelete}));
     }
-  };
+  }; 
 
   useEffect(()=>{
     if(DeleteProductResponse.mensaje){
@@ -249,7 +249,7 @@ const CategoryByProduct = () => {
       setIdToDelete();  
     }
   },[(DeleteProductResponse.mensaje !== undefined && deleting) || 
-    (DeleteProductResponse === 'ERROR' && deleting)])
+    (DeleteProductResponse === 'ERROR' && deleting)])*/
   //#endregion
 
   //#region Agregar
@@ -296,6 +296,12 @@ const CategoryByProduct = () => {
     price_prd: Yup.number()
       .required("Campo Requerido")
   });
+
+  useEffect(()=>{
+    if(userInfo?.id){
+      dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat })); //Cambiar el id_cat
+    }
+  }, [CreateProductResponse]);
   //#endregion
 
   //#region Modal Producto
@@ -416,7 +422,8 @@ function onHandleSubmit(data) {
         <button
           className="btn btn-warning btn-plus mt-3"
           variant="primary"
-          onClick={handleShow}
+          onClick={() => navigate(`/Product/${id_cat}`, { replace: true })}
+          //onClick={handleShow}
         >
           <GrAdd />
         </button>
@@ -655,7 +662,7 @@ function onHandleSubmit(data) {
         
       </div>
 
-      <Modal show={showDelete}>
+      {/* <Modal show={showDelete}>
         <Modal.Body>
               <div>
                 <h4>¿Está seguro de eliminar este producto?</h4>
@@ -671,7 +678,7 @@ function onHandleSubmit(data) {
             Cerrar
           </Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
 
       <div className="font-style">
         <Modal show={showProduct} onHide={handleCloseProduct}>

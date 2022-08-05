@@ -23,7 +23,9 @@ const initialState = {
   productsByCategory: [],
   createdProduct:[],
   deleteProductResponse:[],
-  editedProduct:[]
+  editedProduct:[],
+  deleted: null,
+  created: null
 };
 
 function ProductsReducers(state = initialState, action) {
@@ -63,6 +65,7 @@ function ProductsReducers(state = initialState, action) {
         createdProduct: response,
         success: true,
         isFetching: false,
+        created: true
       };
     case CREATE_PRODUCT_ERROR:
       return {
@@ -103,6 +106,7 @@ function ProductsReducers(state = initialState, action) {
       return {
         ...state,
         deleteProductResponse: response,
+        deleted: true
       };
     case DELETE_PRODUCT_ERROR:
       return {
