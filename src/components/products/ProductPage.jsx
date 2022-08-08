@@ -103,13 +103,13 @@ const Product = () => {
   });
 
   useEffect(() => {
-    if (CreateProductResponse && isCreated) {
+    if (CreateProductResp && isCreated) {
       setIsCreated(false);
-      console.log(isCreated);
+      //navigate(-1);
       //dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat: id_cat.id_cat })); //Cambiar el id_cat
       navigate(`/CategoryByProduct/${id_cat.id_cat}`, { replace: true })
     }
-  }, [CreateProductResponse, isCreated]);
+  }, [CreateProductResp]);
   //#endregion
 
   //#region Modal Producto

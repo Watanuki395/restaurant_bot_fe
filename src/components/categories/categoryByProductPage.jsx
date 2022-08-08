@@ -40,6 +40,7 @@ const CategoryByProduct = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+  console.log(location);
   const from = location.state?.from?.pathname || "/dashboard";
   //#region UseSelector and states
 
