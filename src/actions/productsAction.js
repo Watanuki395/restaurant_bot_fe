@@ -13,7 +13,10 @@ import {
   DELETE_PRODUCT_ERROR,
   EDIT_PRODUCT_REQUESTED,
   EDIT_PRODUCT_SUCCESS,
-  EDIT_PRODUCT_ERROR
+  EDIT_PRODUCT_ERROR,
+  ADD_IMG_REQUESTED,
+  ADD_IMG_SUCCESS,
+  ADD_IMG_ERROR
 } from "./index";
 
 
@@ -114,6 +117,27 @@ export const editProductSuccess = () => {
 export const editProductError = ( error ) => {
   return {
       type: EDIT_PRODUCT_ERROR,
+      payload: error
+  }
+}
+
+export const addImgAction = ( data ) => {
+  return {
+      type: ADD_IMG_REQUESTED,
+      data
+  }
+}
+
+export const addImgSuccess = () => {
+  return {
+      type: ADD_IMG_SUCCESS,
+      editing: true
+  }
+}
+
+export const addImgError = ( error ) => {
+  return {
+      type: ADD_IMG_ERROR,
       payload: error
   }
 }

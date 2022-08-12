@@ -13,6 +13,7 @@ import {
   deleteProductAction,
   editProductAction,
 } from "../../actions/productsAction";
+import { addImgAction } from "../../actions/productsAction"
 
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -170,7 +171,7 @@ const Product = () => {
           async () => {
             const imgURL_prd = await getDownloadURL(uploadTask.snapshot.ref);
             dispatch(
-              editProductAction({
+              addImgAction({
                 id_user: userInfo.id,
                 id_cat,
                 id_prd: CreateProductResponse.id_prd,

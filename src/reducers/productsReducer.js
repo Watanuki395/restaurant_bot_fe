@@ -13,7 +13,10 @@ import {
   DELETE_PRODUCT_ERROR,
   EDIT_PRODUCT_REQUESTED,
   EDIT_PRODUCT_SUCCESS,
-  EDIT_PRODUCT_ERROR
+  EDIT_PRODUCT_ERROR,
+  ADD_IMG_REQUESTED,
+  ADD_IMG_SUCCESS,
+  ADD_IMG_ERROR
 } from "../actions/index";
 
 const initialState = {
@@ -24,6 +27,7 @@ const initialState = {
   createdProduct:[],
   deleteProductResponse:[],
   editedProduct:[],
+  editedImgProduct:[],
   deleted: null,
   created: null
 };
@@ -131,6 +135,24 @@ function ProductsReducers(state = initialState, action) {
         isFetching: false,
         message: action.payload,
       };
+      case ADD_IMG_REQUESTED:
+        return {
+          ...state,
+          isFetching: true,
+        };
+  
+      case ADD_IMG_SUCCESS:
+        return {
+          ...state,
+          isFetching: false,
+          editedImgProduct: response
+        };
+      case ADD_IMG_ERROR:
+        return {
+          ...state,
+          isFetching: false,
+          message: action.payload,
+        };
 
     default: {
       return state;

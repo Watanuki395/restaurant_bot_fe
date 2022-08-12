@@ -1,7 +1,7 @@
 export default async function apiCall(method, url, data){
     if(method==='GET' || method==='DELETE'){
         try {
-            const resp = await fetch(process.env.REACT_API_URL + url, // TODO: tenemos que cambiar el URL
+            const resp = await fetch("http://localhost:8081" + url, // TODO: tenemos que cambiar el URL
             { 
                 method,
                 credentials: 'include',
@@ -25,7 +25,7 @@ export default async function apiCall(method, url, data){
             }
     }else{
         try {
-            const resp = await fetch(process.env.REACT_API_URL + url, // TODO: tenemos que cambiar el URL
+            const resp = await fetch("http://localhost:8081" + url, // TODO: tenemos que cambiar el URL
             { 
                 method,
                 credentials: 'include',
