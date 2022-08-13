@@ -581,7 +581,7 @@ const Table = ({ data, columns }) => {
       <Modal show={showEditProduct} onHide={handleCloseEditProduct}>
         <form onSubmit={onHandleSubmitEditProduct}>
           <Modal.Header closeButton>
-            <Modal.Title>Editar producto</Modal.Title>
+            <Modal.Title>Editar Producto</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div className="form-container mt-5">
