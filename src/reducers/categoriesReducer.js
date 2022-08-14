@@ -21,7 +21,9 @@ import {
     error: null,
     createdCategory:[],
     deletedCategory: [],
-    editedCategory: []
+    editedCategory: [],
+    edited: null,
+    deleted: null
   }
   
    // eslint-disable-next-line import/no-anonymous-default-export
@@ -82,6 +84,7 @@ import {
       return {
         ...state,
         deletedCategory: response,
+        deleted: true
       };
       case DELETE_CATEGORY_ERROR:
       return {
@@ -99,7 +102,8 @@ import {
             return{
                 ...state,
                 isFetching: false,
-                editedCategory: response
+                editedCategory: response,
+                edited: true
            };
         case EDIT_CATEGORY_ERROR:
             return {

@@ -53,61 +53,18 @@ const CategoryByProduct = () => {
 
   const responseGetProduct = useSelector((state) => state.entries.products.productsByCategory);
   const userInfo = useSelector((state) => state.entries.auth.response?.user);
-  const CreateProductResponse = useSelector((state) => state.entries.products.createdProduct);
+  const CreateProductResponse = useSelector((state) => state.entries.products ? state.entries.products.createdProduct : null);
   const DeleteProductResponse = useSelector((state) => state.entries.products.deleteProductResponse);
 
 
   useEffect(() => {
     if(userInfo?.id){
-      dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat })); //Cambiar el id_cat
+      //dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat })); //Cambiar el id_cat
     }
   }, [(userInfo !== undefined && userInfo !== null)]);
   //#endregion
 
-  //#region Modal Edit
-
-  const [showEdit, setShowEdit] = useState(false);
-  const handleCloseEdit = () => setShowEdit(false);
-  const handleShowEdit = () => setShowEdit(true);
-
-  const initialStateEdit = {
-    producto: "",
-    descripcion: "",
-    price_prd: 0,
-    isOnMenu: "",
-    id_cat: 0,
-    id_user: userInfo?.id,
-    id_prd: 0,
-    imgURL_prd: "",
-  };
-  const [formValueEdit, setFormValueEdit] = useState(initialStateEdit);
-
-
-  const RedirectEditProduct = (product) => {
-    setFormValueEdit(product);
-    handleShowEdit();
-  };
-
-  const { producto, descripcion, imgURL_prd, price_prd, isOnMenu } = formValueEdit;
-
-  const onHandleSubmitEdit = (e) => {
-      e.preventDefault();
-      console.log(formValueEdit);
-      dispatch(editProductAction({ formValueEdit }));
-      toast.success("Categoría actualizada satisfactoriamente.");
-      setTimeout(() => dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat })), 1000);
-      setTimeout(handleCloseEdit());
-
-  };
-  const onChangeFormEdit = (e) => {
-    let { name, value } = e.target;
-    setFormValueEdit({
-      ...formValueEdit,
-      [name]: value,
-    });
-  };
-
-  //#endregion
+  
 
   //#region UseTable
 
@@ -163,13 +120,13 @@ const CategoryByProduct = () => {
             </PButton>
             <PButton
               className="mb-1"
-              onClick={() => RedirectEditProduct(row.original)}
+              //onClick={() => RedirectEditProduct(row.original)}
             >
               <IconEdit></IconEdit>
             </PButton>
             <PButton
               className="mb-1"
-              onClick={() => ConfirmDelete(row.original.id_prd, row.original.producto, row.original.imgURL_prd, )}
+              //onClick={() => ConfirmDelete(row.original.id_prd, row.original.producto, row.original.imgURL_prd, )}
             >
               <IconDelete></IconDelete>
             </PButton>
@@ -205,7 +162,7 @@ const CategoryByProduct = () => {
   //#endregion
 
   //#region Eliminar
-  const [idToDelete, setIdToDelete] = useState();
+  /* const [idToDelete, setIdToDelete] = useState();
   const [showDelete, setShowDelete] = useState(false);
   const ConfirmDelete = (id_prd, product, imgURI) => {
     setIdToDelete(id_prd);
@@ -236,7 +193,7 @@ const CategoryByProduct = () => {
     }else{
       dispatch(deleteProductAction({id_prd:idToDelete}));
     }
-  };
+  }; 
 
   useEffect(()=>{
     if(DeleteProductResponse.mensaje){
@@ -252,7 +209,7 @@ const CategoryByProduct = () => {
       setIdToDelete();  
     }
   },[(DeleteProductResponse.mensaje !== undefined && deleting) || 
-    (DeleteProductResponse === 'ERROR' && deleting)])
+    (DeleteProductResponse === 'ERROR' && deleting)])*/
   //#endregion
 
   //#region Agregar
@@ -299,6 +256,12 @@ const CategoryByProduct = () => {
     price_prd: Yup.number()
       .required("Campo Requerido")
   });
+
+  useEffect(()=>{
+    if(userInfo?.id){
+      dispatch(productoByCategoryRequested({ id_user: userInfo.id, id_cat })); //Cambiar el id_cat
+    }
+  }, [CreateProductResponse]);
   //#endregion
 
   //#region Modal Producto
@@ -391,27 +354,6 @@ function onHandleSubmit(data) {
   };
 
 
-  /* useEffect(() => {
-    const cargarProductoCat = () =>
-      dispatch(productoByCategoryRequested({ id_user: 68, id_cat }));
-    cargarProductoCat();
-
-
-    try{
-      if(createResponse && !msg){
-        toast.success("Producto agregado.");
-        setTimeout(() => dispatch(productoByCategoryRequested({ id_user: 68, id_cat })),1000);
-        setTimeout(() => setShow(false), 1100);
-        setTimeout(() => navigate(`/CategoryByProduct/${Number(id_cat)}`, { replace: true }),1000);
-        setShow(false);
-      }else if(createResponseError){
-        toast.error("Ese producto ya existe.");
-      }
-    }catch(e){
-      console.log(e);
-    }
-  }, [createResponse]); */
-
   return (
     <>
       <div style={{background: "black"}} className="container">
@@ -419,7 +361,8 @@ function onHandleSubmit(data) {
         <button
           className="btn btn-warning btn-plus mt-3"
           variant="primary"
-          onClick={handleShow}
+          onClick={() => navigate(`/Product/${id_cat}`, { replace: true })}
+          //onClick={handleShow}
         >
           <GrAdd />
         </button>
@@ -601,80 +544,14 @@ function onHandleSubmit(data) {
 
         <Table data = {data} columns = {columns}/>
 
-        {/* <table {...getTableProps()} className="table">
-          <thead>
-            {headerGroups.map((headerGroup) => (
-              <tr {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column) => (
-                  <th {...column.getHeaderProps()} scope="col">
-                    {column.render("Header")}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-
-          <tbody {...getTableBodyProps()}>
-            {page.map((row, idx) => {
-              prepareRow(row);
-              return (
-                <tr {...row.getRowProps()}>
-                  {row.cells.map((cell) => {
-                    return (
-                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table> */}
-
-        {/* <div className="text-center mt-2">
-          <button
-            className="btn btn-dark m-1"
-            onClick={() => previousPage()}
-            disabled={!canPreviousPage}
-          >
-            Anterior
-          </button>
-          <span>
-            Page{" "}
-            <strong>
-              {pageIndex + 1} of {pageOptions.length}
-            </strong>{" "}
-          </span>
-          <button
-            className="btn btn-dark"
-            onClick={() => nextPage()}
-            disabled={!canNextPage}
-          >
-            Siguiente
-          </button>
-        </div> */}
+        
         <button className="btn btn-primary"
         onClick={() => navigate(`/dashboard`, { replace: true })}
         >Regresar..</button>
         
       </div>
 
-      <Modal show={showDelete}>
-        <Modal.Body>
-              <div>
-                <h4>¿Está seguro de eliminar este producto?</h4>
-              </div>
-        </Modal.Body>
-        <Modal.Footer>
-        <Button variant="warning" 
-                disabled={deleting}
-                onClick={onHandleSubmitDelete}>
-            {deleting ? <LoadingHandler /> : "Eliminar"}
-          </Button>
-          <Button variant="secondary" onClick={handleShowDelete}>
-            Cerrar
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      
 
       <div className="font-style">
         <Modal show={showProduct} onHide={handleCloseProduct}>
@@ -712,112 +589,6 @@ function onHandleSubmit(data) {
         </Modal>
       </div>
 
-      <Modal show={showEdit} onHide={handleCloseEdit}>
-          <form 
-            onSubmit={onHandleSubmitEdit}
-          >
-            <Modal.Header closeButton>
-              <Modal.Title>Editar producto</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="form-container mt-5">
-                <div className="form-group">
-                  <label> Nombre del producto</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Nombre del producto"
-                    name="producto"
-                    value={producto || ""}
-                    onChange={onChangeFormEdit}
-                  />
-                </div>
-                <div className="form-group">
-                  <label> Descripción del producto</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Descripción del producto"
-                    name="descripcion"
-                    value={descripcion || ""}
-                    onChange={onChangeFormEdit}
-                  />
-
-                </div>
-
-                <div className="form-group">
-                  <label> Imagen del producto</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Imagen del producto"
-                    name="imgURL_prd"
-                    value={imgURL_prd || ""}
-                    onChange={onChangeFormEdit}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label> Precio del producto</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Precio del producto"
-                    name="price_prd"
-                    value={price_prd || ""}
-                    onChange={onChangeFormEdit}
-                  />
-                </div>
-
-                <div className="mb-3">
-                <label className="form-check-label">Menú</label>
-                <div className="form-check">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="isOnMenu"
-                    value={true}
-                    checked={isOnMenu === true ? true : false}
-                    onChange={onChangeFormEdit}
-                  />
-                  <label className="form-check-label" htmlFor="isOnMenu">
-                    Sí
-                  </label>
-                </div>
-
-                <div className="form-check">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="isOnMenu"
-                    value={false}
-                    checked={isOnMenu === false ? true : false}
-                    onChange={onChangeFormEdit}
-                  />
-                  <label className="form-check-label" htmlFor="isOnMenu">
-                    No
-                  </label>
-                </div>
-              </div>
-                
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-            <button
-                type="submit"
-                className="btn btn-dark font-weight-bold text-uppercase m-3"
-                disabled={
-                  producto === "" || descripcion === "" || imgURL_prd === ""
-                }
-              >
-                Guardar Cambios
-              </button>
-              <Button variant="secondary" onClick={handleCloseEdit}>
-                Cerrar
-              </Button>
-            </Modal.Footer>
-          </form>
-      </Modal>
     </>
   );
 };

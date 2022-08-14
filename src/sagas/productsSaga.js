@@ -15,7 +15,10 @@ import {
     DELETE_PRODUCT_ERROR,
     EDIT_PRODUCT_REQUESTED,
     EDIT_PRODUCT_SUCCESS,
-    EDIT_PRODUCT_ERROR } 
+    EDIT_PRODUCT_ERROR,
+    ADD_IMG_REQUESTED,
+    ADD_IMG_SUCCESS,
+    ADD_IMG_ERROR } 
     from '../actions/index';
 import apiCall from '../api';
 import { toast } from "react-toastify";
@@ -85,10 +88,12 @@ function* deleteProductSaga(payload){
 };
 
 function* editProductSaga(payload){
+    console.log(payload.data.formValueEditProduct);
     try{
-        const response = yield call(apiCall, 'PUT', `/api/product/`, payload.data);
+        const response = yield call(apiCall, 'PUT', `/api/product/`, payload.data.formValueEditProduct);
         if(response){
             yield put({type: EDIT_PRODUCT_SUCCESS, response})
+            toast.success("Producto Actualizado!",{position: "bottom-right"});
             return response
         }else{
             yield put({type: EDIT_PRODUCT_ERROR, response})
@@ -98,6 +103,19 @@ function* editProductSaga(payload){
     }
 };
 
+function* addImgSaga(payload){
+    try{
+        const response = yield call(apiCall, 'PUT', `/api/product/`, payload.data);
+        if(response){
+            yield put({type: ADD_IMG_SUCCESS, response})
+            return response
+        }else{
+            yield put({type: ADD_IMG_ERROR, response})
+        }
+    }catch(error){
+        yield put({type: ADD_IMG_ERROR, error})
+    }
+};
 
 //watcher
 function* sagas(){
@@ -106,6 +124,7 @@ function* sagas(){
     yield takeLatest(PRODUCT_BY_CATEGORY_REQUESTED, productByCategorySaga);
     yield takeLatest(DELETE_PRODUCT_REQUESTED, deleteProductSaga);
     yield takeLatest(EDIT_PRODUCT_REQUESTED, editProductSaga);
+    yield takeLatest(ADD_IMG_REQUESTED, addImgSaga);
 }
 
 export default sagas;
