@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 //import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
@@ -12,12 +12,38 @@ import {
   Bars,
   NavIcon,
   NavItem,
-  NavAvatar
+  NavAvatar,
+  NavLinkLabel
 }from './style';
 
 import LogoImg from "../../../imgs/no-image.jpeg";
+import { navItems, navItemsWithLogin } from "./NavItems.js";
 
 const Navbar = (props) => {
+  const [mobile, setMobile] = useState(false);
+  const [sidebar, setSidebar] = useState(false);
+
+  useEffect(() => {
+    if (window.innerWidth < 1065) {
+      setMobile(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1065) {
+        setMobile(true);
+      } else {
+        setMobile(false);
+        setSidebar(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   
  // const isLogged = useSelector(state => state.entries.auth.logged)
   
@@ -29,55 +55,79 @@ const Navbar = (props) => {
     history("/login");
   }
 
-  if(!props.logged){
     return (
       <>
         <Nav>
-          <NavLink to="/" >
-            <NavIcon/>QR Bot
+          <NavLink to="/">
+            <NavIcon />
+            QR Bot
           </NavLink>
-          <Bars onClick={props.toggle}/>
-            <NavMenu>
-            <NavLink to="/info">
-              Información
-            </NavLink>
-            <NavLink to="/contact-us">
-              Contactanos
-            </NavLink>
-            <NavLink to="/register">
-              Registrarme
-            </NavLink>
-            <NavBtnLink to="/login"> 
-              Iniciar Sesion
-            </NavBtnLink>
-          </NavMenu>
-        </Nav>
-      </>
-    );
-  }
-  if(props.logged){
-    return (
-      <>
-        <Nav>
           <Bars onClick={props.toggle} />
-          <NavMenu>
-            <NavItem>
-              <MdOutlineDarkMode onClick={() => dispatch({ type: "TOGGLE" })} /> 
-            </NavItem>
-            <NavItem>
-              <MdOutlineLogout onClick={() => onLogoutClick()} />
-            </NavItem>
-            <NavLink to="/user">
-              <NavItem>
-                <NavAvatar src={LogoImg}></NavAvatar>
-              </NavItem>
-            </NavLink>
-          </NavMenu>
+          {!props.logged ? (
+            <NavMenu>
+              {navItems.map((item) => {
+                return (
+                  <NavLink to={item.path}>
+                    {item.icon}
+                    <NavLinkLabel>{item.title}</NavLinkLabel>
+                  </NavLink>
+                );
+              })}
+            </NavMenu>
+          ) : (
+            <NavMenu>
+              {navItemsWithLogin.map((item) => {
+                return (
+                  <NavLink to={item.path}>
+                    {item.icon}
+                    <NavLinkLabel onClick={item.onClick}>
+                      {item.title}
+                    </NavLinkLabel>
+                  </NavLink>
+                );
+              })}
+            </NavMenu>
+          )}
         </Nav>
       </>
     );
-  }
-    
+  
+
+  // <NavLink to="/info">
+  //             Información
+  //           </NavLink>
+  //           <NavLink to="/contact-us">
+  //             Contactanos
+  //           </NavLink>
+  //           <NavLink to="/register">
+  //             Registrarme
+  //           </NavLink>
+  //           <NavBtnLink to="/login"> 
+  //             Iniciar Sesion
+  //           </NavBtnLink>
+
+  // if(props.logged){
+  //   return (
+  //     <>
+  //       <Nav>
+  //         <Bars onClick={props.toggle} />
+  //         <NavMenu>
+  //           <NavItem>
+  //             <MdOutlineDarkMode onClick={() => dispatch({ type: "TOGGLE" })} /> 
+  //           </NavItem>
+  //           <NavItem>
+  //             <MdOutlineLogout onClick={() => onLogoutClick()} />
+  //           </NavItem>
+  //           <NavLink to="/user">
+  //             <NavItem>
+  //               <NavAvatar src={LogoImg}></NavAvatar>
+  //             </NavItem>
+  //           </NavLink>
+  //         </NavMenu>
+  //       </Nav>
+  //     </>
+  //   );
+  // }
 }
 
 const mapStateToProps = (state,ownProps) => { 

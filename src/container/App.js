@@ -11,6 +11,9 @@ import LoginPage from "../components/auth/loginPage";
 import RegisterPage from "../components/auth/RegisterPage";
 import DashboardPage from "../components/dashboard/dashboardPage";
 import ForgotPassPage from "../components/forgotpass/ForgotpassPage";
+import ServicesPage from "../components/services/ServicesPage";
+import ContactUsPage from "../components/contact-us/ContactUsPage";
+import HomePage from "../components/home/HomePage";
 
 import RequireAuth from "../components/requireAuth/RequireAuth";
 import PersistLogin from "../components/persistlogin/PersistLogin";
@@ -18,6 +21,7 @@ import Layout from "../components/layouts/Layout";
 import Missing from "../components/missing/Missing";
 import Unauthorized from '../components/unauthorized/Unauthorized';
 import CategoriesPage from '../components/categories/CategoriesPage';
+import RestaurantMenuPage from '../components/restaurant-menu/RestaurantMenuPage';
 import CategoryByProductPage from '../components/categories/categoryByProductPage';
 import ProductPage from "../components/products/ProductPage";
 
@@ -41,9 +45,12 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           {/* public routes */}
-          <Route path="/" element={<LoginPage />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/forgotpass" element={<ForgotPassPage />} />
+          <Route path="/services" element={<ServicesPage />} />
+          <Route path="/contact-us" element={<ContactUsPage />} />
           <Route path="/forgotpass" element={<ForgotPassPage />} />
           <Route path="unauthorized" element={<Unauthorized />} />
 
@@ -51,6 +58,7 @@ const App = () => {
           <Route element={<PersistLogin />}>
             <Route element={<RequireAuth allowedRoles={[ROLES.admin]}/>}>
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/menu" element={<RestaurantMenuPage />} />
               <Route path='/dashboard/:id_cat' element={<CategoriesPage/>} />
               <Route path='/CategoryByProduct/:id_cat' element={<CategoryByProductPage/>} />
               <Route path='/Product/:id_cat' element={<ProductPage/>} />
