@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { connect, useDispatch, useSelector } from "react-redux";
-import Footer from "../common/Layout/footer/Footer";
+import Footer from "../common/footer/Footer";
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 

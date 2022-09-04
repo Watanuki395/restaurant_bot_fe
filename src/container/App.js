@@ -4,8 +4,11 @@ import { Route, Routes } from "react-router-dom";
 
 //import PrivateRoute from './privateRoute';
 
-import Navbar from '../components/common/Layout/Navbar';
-import Sidebar from '../components/common/SideBar/SideBar';
+import Navbar from '../components/common/Navbar/Navbar';
+import { ThemeProvider } from "styled-components";
+import LayoutSB from "../components/common/Layout/Layout";
+import { GlobalStyle } from "../styles/globalStyles";
+import { darkTheme, lightTheme } from "../styles/theme";
 
 import LoginPage from "../components/auth/loginPage";
 import RegisterPage from "../components/auth/RegisterPage";
@@ -25,6 +28,8 @@ import RestaurantMenuPage from '../components/restaurant-menu/RestaurantMenuPage
 import CategoryByProductPage from '../components/categories/categoryByProductPage';
 import ProductPage from "../components/products/ProductPage";
 
+export const ThemeContext = React.createContext(null);
+
 const App = () => {
 
   const [isOpen, setIsOpen] = useState(false);
@@ -33,6 +38,9 @@ const App = () => {
     setIsOpen(!isOpen);
   };
 
+  const [theme, setTheme] = useState("light");
+  const themeStyle = theme === "light" ? lightTheme : darkTheme;
+
   const ROLES = {
     User: 2001,
     admin: true,
@@ -40,8 +48,11 @@ const App = () => {
 
   return (
     <>
-      <Sidebar isOpen={isOpen} toggle={toggle} />
-      <Navbar toggle={toggle} />
+    <ThemeContext.Provider value={{ setTheme, theme }}>
+    <ThemeProvider theme={themeStyle}>
+    <GlobalStyle />
+      <Navbar toggle={toggle}/>
+      <LayoutSB>
       <Routes>
         <Route path="/" element={<Layout />}>
           {/* public routes */}
@@ -70,6 +81,9 @@ const App = () => {
           <Route path="*" element={<Missing />} />
         </Route>
       </Routes>
+      </LayoutSB>
+      </ThemeProvider>
+      </ThemeContext.Provider>
     </>
   );
 };
