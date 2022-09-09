@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
 
 import { forgotPassRequest } from "../../actions/forgotpassAction";
-import '../../index.css';
+//import '../../index.css';
 
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";

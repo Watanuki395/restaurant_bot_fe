@@ -20,7 +20,7 @@ productoByCategoryRequested,
 import { Modal, Button } from "react-bootstrap";
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
-import "../../index.css";
+//import "../../index.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import noImage from "../../imgs/no-image.jpeg";

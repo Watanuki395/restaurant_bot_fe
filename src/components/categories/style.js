@@ -77,6 +77,13 @@ export const PreviewImg  = styled.img `
 	max-height: 300px;
 	object-fit: contain;
 `;
-export const BlackMode = styled.div`
-  background-color: black;
+
+export const FormContainer = styled.div`
+  background: rgba(204, 198, 198, 0.884);
+  margin-top: 175px;
+  padding: 30px;
+  margin: 50px 0 50px 0;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 0px #0000;
+  position: relative;
 `;

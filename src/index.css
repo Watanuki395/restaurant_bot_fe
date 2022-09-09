@@ -1,3 +1,4 @@
+/* 
 body {
   margin: 0;
   padding: 0;
@@ -14,9 +15,9 @@ code {
 }
 
 .bg{
-  background: linear-gradient(to bottom, rgba(68, 73, 78, 0.63), rgba(62, 63, 90, 0.596)), url('./imgs/bar.jpg') no-repeat;
+  background: linear-gradient(to bottom, rgba(68, 73, 78, 0.63), rgba(62, 63, 90, 0.596)), url('./imgs/bar.jpg') no-repeat; 
   width: 100%;
-  /* height: 100vh; */ 
+ height: 100vh; 
   background-size: 100%; 
   position: relative;
 }
@@ -98,4 +99,4 @@ span.haveAccount a {
 
 .bg-green-400{
   background-color: rgba(212, 255, 241, 0.76);
-}
+} */

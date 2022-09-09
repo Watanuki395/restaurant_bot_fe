@@ -12,11 +12,11 @@ import { darkTheme, lightTheme } from "../styles/theme";
 
 import LoginPage from "../components/auth/loginPage";
 import RegisterPage from "../components/auth/RegisterPage";
-import DashboardPage from "../components/dashboard/dashboardPage";
+import DashboardPage from "../pages/dashboard/dashboardPage";
 import ForgotPassPage from "../components/forgotpass/ForgotpassPage";
 import ServicesPage from "../components/services/ServicesPage";
 import ContactUsPage from "../components/contact-us/ContactUsPage";
-import HomePage from "../components/home/HomePage";
+import HomePage from "../pages/home/HomePage";
 
 import RequireAuth from "../components/requireAuth/RequireAuth";
 import PersistLogin from "../components/persistlogin/PersistLogin";
@@ -38,7 +38,7 @@ const App = () => {
     setIsOpen(!isOpen);
   };
 
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState("dark");
   const themeStyle = theme === "light" ? lightTheme : darkTheme;
 
   const ROLES = {

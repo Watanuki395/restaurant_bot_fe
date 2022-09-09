@@ -1,17 +1,17 @@
 import React, { Fragment, useEffect, useState, useMemo } from "react";
 import { useSelector, useDispatch, connect } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useTable, usePagination } from "react-table";
+//import { useTable, usePagination } from "react-table";
 import { COLUMNS } from "./Columns";
 import { Modal, Button } from "react-bootstrap";
 import { GrAdd } from "react-icons/gr";
 
 import { createCategoryAction } from '../../actions/createCategoriesAction';
 import { categoriesRequested } from "../../actions/categoriesAction";
-import { deleteCategoryAction } from "../../actions/deletecategoryAction";
+//import { deleteCategoryAction } from "../../actions/deletecategoryAction";
 //import { productoByCategoryRequested } from "../../actions/productbycategoryAction";
-import { productoByCategoryRequested } from "../../actions/productsAction";
-import { editCategoryAction } from "../../actions/editcategoryAction";
+//import { productoByCategoryRequested } from "../../actions/productsAction";
+//import { editCategoryAction } from "../../actions/editcategoryAction";
 import  Table  from "../common/reactTable/Table";
 //import { productoByCategoryRequested } from "../../actions/productsAction";
 
@@ -19,7 +19,7 @@ import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { IconDelete, IconEdit, IconSee, SButton } from "./style";
+import { IconDelete, IconEdit, IconSee, SButton, FormContainer } from "./style";
 import "../../index.css";
 import {Loading} from "../common/Loading";
 
@@ -116,7 +116,7 @@ const Categories = (props) => {
   }, [DeleteProductResponse]);
 
   return (
-    <Fragment>
+    <>
       <div className="container">
         <div>
         {error ? (
@@ -139,7 +139,7 @@ const Categories = (props) => {
           variant="primary"
           onClick={""} //Pasarle el evento con los elementos a borrar
         >
-          <IconDelete />
+          <IconDelete/>
         </button>
 
         
@@ -165,7 +165,7 @@ const Categories = (props) => {
                     <section className="">
                       <section className="">
                         <div>
-                          <div className="form-container">
+                          <FormContainer>
                             <div>
                               <div className="mb-3">
                                 <label
@@ -222,7 +222,7 @@ const Categories = (props) => {
                                 </button>
                               </div>
                             </div>
-                          </div>
+                          </FormContainer>
                         </div>
                       </section>
                     </section>
@@ -238,7 +238,7 @@ const Categories = (props) => {
           </Modal.Footer>
         </Modal>
 
-    </Fragment>
+    </>
   );
 };
 

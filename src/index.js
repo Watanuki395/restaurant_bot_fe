@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { disableReactDevTools } from '@fvilers/disable-react-devtools';
 
-import './index.css';
+//import './index.css';
 import App from './container/App';
 import 'bootstrap/dist/css/bootstrap.min.css';
 

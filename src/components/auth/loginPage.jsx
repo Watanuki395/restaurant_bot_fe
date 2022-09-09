@@ -8,7 +8,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import { loginUser } from "../../actions/loginActions";
 
 import "react-toastify/dist/ReactToastify.css";
-import "../../index.css";
+//import "../../index.css";
 
 import useAuth from "../../hooks/useAuth";
 //import useToggle from "../../hooks/useToggle";

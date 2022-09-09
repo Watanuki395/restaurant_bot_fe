@@ -19,7 +19,7 @@ import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "../../index.css";
+//import "../../index.css";
 import { PreviewImg } from "../categories/style";
 import { GrUploadOption } from "react-icons/gr";
 import storage from "../../firebase";

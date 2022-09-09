@@ -9,7 +9,7 @@ import { registerUserAction } from "../../actions/registerAction";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import '../../index.css';
+//import '../../index.css';
 
 toast.configure();
 class RegisterPage extends Component {
