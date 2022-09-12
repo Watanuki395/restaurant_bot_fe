@@ -17,7 +17,7 @@ export const WidgetTextWrapper = styled.div`
 
 export const WidgetWrapper = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   margin-top: 4rem;
   grid-gap: 2rem;
 

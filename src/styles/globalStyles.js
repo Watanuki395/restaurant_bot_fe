@@ -1,16 +1,15 @@
 import styled, { createGlobalStyle } from "styled-components";
 
 export const GlobalStyle = createGlobalStyle`
-    *{
+    *, *::before, *::after {
         margin: 0;
         box-sizing: border-box;
-		padding: 0;	
-		font-family: 'Montserrat', sans-serif;
+		padding: 0;
     }
     body {
         background: ${({ theme }) => theme.bg3};
         color: ${({ theme }) => theme.text};
-        font-family: 'Roboto', sans-serif;
+		font-family: 'Roboto', sans-serif;
         letter-spacing: .6px;
     }
 `;
@@ -23,7 +22,7 @@ export const Container = styled.div`
 	padding: 0 50px;
     background: ${({ theme }) => theme.bg2};
     color: ${({ theme }) => theme.text};
-	@media screen and (max-width: 960px) {
+	@media screen and (max-width: 768) {
 		padding: 0 30px;
 	}
 `;
@@ -63,7 +62,7 @@ export const Section = styled.section`
 	background: ${({ theme }) => theme.bg2};
     color: ${({ theme }) => theme.text};
 	position: ${({ position }) => (position ? position : '')};
-	width: ${({ width }) => (width ? width : '100vh')};
+	width: ${({ width }) => (width ? width : 'auto')};
 	min-width: ${({ minWidth }) => (minWidth ? minWidth : 'auto')};
 	max-width: ${({ maxWidth }) => (maxWidth ? maxWidth : 'auto')};
 	height: ${({ height }) => (height ? height : 'auto')};

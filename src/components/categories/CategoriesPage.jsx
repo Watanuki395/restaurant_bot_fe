@@ -20,7 +20,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IconDelete, IconEdit, IconSee, SButton, FormContainer } from "./style";
-import "../../index.css";
+
 import {Loading} from "../common/Loading";
 
 const Categories = (props) => {

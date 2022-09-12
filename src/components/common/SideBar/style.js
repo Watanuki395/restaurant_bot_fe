@@ -9,13 +9,24 @@ export const SSidebar = styled.div`
     height: 100vh;
     padding: ${v.lgSpacing};
     position: relative;
+    
+    @media screen and (max-width: 768px) {
+    width: ${({ isOpen }) => (!isOpen ? `auto` : v.sidebarWidth)};
+    background: ${({ theme }) => theme.bg};
+    height: 100vh;
+    padding: ${v.lgSpacing};
+    position: relative;
+    }
+    @media screen and (max-width: 568px) {
+    display:none;
+    }
 `;
 
 export const SSidebarButton = styled.button`
     ${btnReset};
     position: absolute;
     top: ${v.mdSpacing};
-    right: ${({ isOpen }) => (isOpen ? `-16px` : `-40px`)};
+    right: ${({ isOpen }) => (isOpen ? `2px` : `2px`)};
     width: 32px;
     height: 32px;
     border-radius: 50%;

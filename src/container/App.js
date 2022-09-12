@@ -47,12 +47,14 @@ const App = () => {
   };
 
   return (
-    <>
+
     <ThemeContext.Provider value={{ setTheme, theme }}>
     <ThemeProvider theme={themeStyle}>
     <GlobalStyle />
-      <Navbar toggle={toggle}/>
+
+      <>
       <LayoutSB>
+      <Navbar toggle={toggle}/>
       <Routes>
         <Route path="/" element={<Layout />}>
           {/* public routes */}
@@ -82,9 +84,10 @@ const App = () => {
         </Route>
       </Routes>
       </LayoutSB>
+      </>
       </ThemeProvider>
       </ThemeContext.Provider>
-    </>
+
   );
 };
 /*

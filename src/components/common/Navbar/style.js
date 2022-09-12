@@ -5,20 +5,21 @@ import {BiRestaurant} from 'react-icons/bi';
 
 export const Nav = styled.nav`
     background:#000;
-    height:80px;
+    height:60px;
     border-bottom: 0.5px solid rgb(231, 228, 228);
     display:flex;
     align-items: center;
-    justify-content:space-between;
+    justify-content:center;
     padding: 0.5rem calc((100vw - 1000px) / 2);
-    z-index:10;
+    z-index:50;
     position:sticky;
     top:0;
-    font-size: 14px;
-    color: #555;
+    font-size: 1.2rem;
+    width: 100%;
 
-    @media (min-width: 768px) {
+    @media screen and (max-width: 768px) {
     height: 50px;
+    width:100vh;
     }
 `;
 
@@ -70,7 +71,7 @@ export const Bars = styled(FaBars)`
         top: 0;
         right: 0;
         transform: translate(-100%, 75%);
-        font-size: 1.8rem;
+        font-size: 1.5rem;
         cursor: pointer;
     }
 `;
