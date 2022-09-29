@@ -56,7 +56,6 @@ const Navbar = (props) => {
   }
 
     return (
-      <>
         <Nav>
           <NavLink to="/">
             <NavIcon />
@@ -89,7 +88,6 @@ const Navbar = (props) => {
             </NavMenu>
           )}
         </Nav>
-      </>
     );
   
 

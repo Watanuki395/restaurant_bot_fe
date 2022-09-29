@@ -15,7 +15,8 @@ import {
 	WidgetTextWrapper,
   WidgetCounter,
   WidgetLink,
-  WidgetPercentage
+  WidgetPercentage,
+  WidgetContent
 } from "./styles";
 
 import {widgetData} from "./data"
@@ -61,25 +62,24 @@ const Widget = ({ type, reverse, inverse }) => {
   return (
     <Section smPadding="50px 10px" inverse id="widget">
       <Container>
-            <WidgetTextWrapper>
-              <WidgetTitle>Datos Importantes</WidgetTitle>
-            </WidgetTextWrapper>
             <WidgetWrapper>
             {widgetData.map((item) => (
-
               <WidgetColumn>
-              <WidgetName>{item.name}</WidgetName>
+                <WidgetContent>
+                <WidgetName>{item.name}</WidgetName>
                   <WidgetCounter>
-                    {item.isMoney && "$"} {amount}
+                    {item.isMoney && "$"} {amount?amount:0}
                   </WidgetCounter>
-                  <WidgetPercentage perc={diff}>
+                  <WidgetLink>{item.link}</WidgetLink>
+                </WidgetContent>
+                <WidgetContent>
+                <WidgetPercentage perc={diff}>
                     {diff < 0 ? <MdKeyboardArrowDown /> : <MdKeyboardArrowUp />}
                     {diff} %
                   </WidgetPercentage>
                   <WidgetIconWrapper  className={item.imgClass}>{item.icon}</WidgetIconWrapper>
-                  <WidgetLink>{item.link}</WidgetLink>
+                </WidgetContent>
               </WidgetColumn>
-
             ))}
             </WidgetWrapper>
       </Container>

@@ -18,12 +18,11 @@ export const WidgetTextWrapper = styled.div`
 export const WidgetWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  margin-top: 4rem;
-  grid-gap: 2rem;
+  grid-column-gap: 1.5rem;
 
   @media screen and (max-width: 1100px) {
     grid-template-columns: repeat(2, 1fr);
-    grid-row-gap: 3rem;
+    grid-row-gap: 1rem;
   }
 
   @media screen and (max-width: 568px) {
@@ -32,27 +31,31 @@ export const WidgetWrapper = styled.div`
 `;
 
 export const WidgetColumn = styled.div`
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  align-items: center;
-  //background: #f3f3f3;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  justify-content: space-between;
   padding: 10px;
-  box-shadow: 0 0 32px 8px #d0d0d0;
-  border-radius: 20px;
+  -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+  box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+  border-radius: 10px;
+`;
+
+export const WidgetContent = styled.div`
+  display: flex;
+  flex-direction:column;
+  flex-flow: column wrap;
+  justify-content: space-between;
 `;
 
 export const WidgetIconWrapper = styled.div`
-  margin-bottom: 1rem;
-  border-radius: 50%;
-  border: 2px solid #000;
-
-  padding: 30px;
+  align-self: flex-end;
+  font-size: 18px;
 `;
 export const WidgetName = styled.h3`
   font-weight: 600;
   font-size: 1.3rem;
   letter-spacing: 2px;
+  align-self: flex-start;
 
   @media screen and (max-width: 768px) {
     font-weight: 400;
@@ -66,16 +69,16 @@ export const WidgetText = styled.p`
   font-size: 0.9rem;
   line-height: 1.73;
   letter-spacing: 0.5px;
-  color: #626881;
 
   @media screen and (max-width: 768px) {
     display: none;
   }
 `;
 
-export const WidgetCounter = styled.p`
+export const WidgetCounter = styled.span`
   font-size: 28px;
   font-weight: 300;
+  align-self: flex-start;
 
   @media screen and (max-width: 768px) {
     font-size: 18px;
@@ -85,13 +88,15 @@ export const WidgetCounter = styled.p`
 
 export const WidgetLink = styled.span`
   width: max-content;
-  font-size: 12px;
+  font-size: 11px;
   border-bottom: 1px solid gray;
+  align-self: flex-start;
 `;
 
 export const WidgetPercentage = styled.div`
   display: flex;
   align-items: center;
   font-size: 14px;
+  align-self: flex-end;
   color: ${({ perc }) => (perc > 0 ? 'green' : 'red')};
 `;

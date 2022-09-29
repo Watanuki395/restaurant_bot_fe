@@ -24,7 +24,7 @@ import Layout from "../components/layouts/Layout";
 import Missing from "../components/missing/Missing";
 import Unauthorized from '../components/unauthorized/Unauthorized';
 import CategoriesPage from '../components/categories/CategoriesPage';
-import RestaurantMenuPage from '../components/restaurant-menu/RestaurantMenuPage';
+import MenuPage from  "../pages/menu/MenuPage";
 import CategoryByProductPage from '../components/categories/categoryByProductPage';
 import ProductPage from "../components/products/ProductPage";
 
@@ -53,7 +53,7 @@ const App = () => {
     <GlobalStyle />
 
       <>
-      <LayoutSB>
+      <LayoutSB toggle={toggle}>
       <Navbar toggle={toggle}/>
       <Routes>
         <Route path="/" element={<Layout />}>
@@ -71,7 +71,7 @@ const App = () => {
           <Route element={<PersistLogin />}>
             <Route element={<RequireAuth allowedRoles={[ROLES.admin]}/>}>
               <Route path="/dashboard" element={<DashboardPage />} />
-              <Route path="/menu" element={<RestaurantMenuPage />} />
+              <Route path="/menu" element={<MenuPage />} />
               <Route path='/dashboard/:id_cat' element={<CategoriesPage/>} />
               <Route path='/CategoryByProduct/:id_cat' element={<CategoryByProductPage/>} />
               <Route path='/Product/:id_cat' element={<ProductPage/>} />
