@@ -26,9 +26,7 @@ function* categoriesSaga() {
         }else {
             yield put({type: CATEGORIES_ERROR, response})
         }
-        
     } catch(error) {
-
         yield put({type: CATEGORIES_ERROR, error})
 
     }

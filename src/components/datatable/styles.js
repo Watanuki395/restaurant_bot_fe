@@ -53,4 +53,54 @@ export const ProdLink = styled(Link)`
   }
 `;
 
+export const ViewLink = styled(Link)`
+      display:flex;
+      padding: 2px 5px;
+      border-radius: 5px;
+      color: ${({ theme }) => theme.viewText};
+      border: 1px dotted ${({ theme }) => theme.viewText};
+      cursor: pointer;
+
+  &:hover {
+    transition: all 0.2s ease-in-out;
+    color: #d6a10d;
+  }
+
+  &.active {
+    color: #d6a10d;
+  }
+
+  @media screen and (max-width: 768px) {
+    //display: none;
+  }
+`;
+
+export const DeleteButtom = styled.div`
+      display:flex;
+      padding: 2px 5px;
+      border-radius: 5px;
+      color: ${({ theme }) => theme.deleteText};
+      border: 1px dotted ${({ theme }) => theme.deleteText};
+      cursor: pointer;
+
+  &:hover {
+    transition: all 0.2s ease-in-out;
+    color: #d6a10d;
+  }
+
+  &.active {
+    color: #d6a10d;
+  }
+
+  @media screen and (max-width: 768px) {
+    //display: none;
+  }
+`;
+
+export const TableButtomWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 15px;
+`;
+
 
