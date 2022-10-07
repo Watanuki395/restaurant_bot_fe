@@ -70,6 +70,7 @@ export const Section = styled.section`
 	min-height: ${({ minHeight }) => (minHeight ? minHeight : 'auto')};
 	@media screen and (max-width: 768px) {
 		padding: ${({ smPadding }) => (smPadding ? smPadding : '70px 0')};
+		width: ${({ width }) => (width ? width : '100vh')};
 	}
 `;
 

@@ -115,19 +115,19 @@
         {
             label: "Home",
             icon: <AiOutlineHome />,
-            to: "/",
+            to: "/dashboard",
             notification: 0,
         },
         {
-            label: "Statistics",
+            label: "Menú",
             icon: <MdOutlineAnalytics />,
-            to: "/statistics",
+            to: "/menu",
             notification: 0,
         },
         {
-            label: "Customers",
+            label: "Users",
             icon: <BsPeople />,
-            to: "/customers",
+            to: "/users",
             notification: 0,
         },
         {

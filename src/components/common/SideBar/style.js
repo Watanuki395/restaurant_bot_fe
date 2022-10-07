@@ -31,12 +31,19 @@ export const SSidebarButton = styled.button`
     height: 32px;
     border-radius: 50%;
     background: ${({ theme }) => theme.bg};
-    box-shadow: 0 0 4px ${({ theme }) => theme.bg3}, 0 0 7px ${({ theme }) => theme.bg};
+    box-shadow: 0 0 8px ${({ theme }) => theme.bg3}, 0 0 10px ${({ theme }) => theme.bg3};
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transform: ${({ isOpen }) => (!isOpen ? `rotate(180deg)` : `initial`)};
+
+    &:hover {
+    transition: all 0.2s ease-in-out;
+    background: #1b1b1c;
+    color: #d6a10d;
+    }
+
 `;
 
 export const SLogo = styled.div`

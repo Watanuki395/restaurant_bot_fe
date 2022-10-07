@@ -2,9 +2,10 @@ import styled from "styled-components";
 import { NavLink as Link } from "react-router-dom";
 
 
-export const DataTableWrapper = styled.div`
+export const NewCatWrapper = styled.div`
     height: 700px;
     padding: 20px;
+    display: flex;
 
 
     @media screen and (max-width: 568px) {
@@ -13,17 +14,18 @@ export const DataTableWrapper = styled.div`
     }
 `;
 
-export const DatatableTitle = styled.div`
+export const NewCatTitle = styled.div`
     width: 100%;
     font-size: 24px;
-    color: gray;
-    margin-bottom: 10px;
+    color: ${({ theme }) => theme.text};
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
 
     @media screen and (max-width: 568px) {
         width:100%;
+        font-size: 20px;
     }
 `;
 
@@ -49,7 +51,6 @@ export const ProdLink = styled(Link)`
 
   @media screen and (max-width: 768px) {
     //display: none;
-    font-size: small;
   }
 `;
 

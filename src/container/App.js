@@ -23,10 +23,12 @@ import PersistLogin from "../components/persistlogin/PersistLogin";
 import Layout from "../components/layouts/Layout";
 import Missing from "../components/missing/Missing";
 import Unauthorized from '../components/unauthorized/Unauthorized';
-import CategoriesPage from '../components/categories/CategoriesPage';
+import NewCatPage from '../pages/addNew/newCat';
 import MenuPage from  "../pages/menu/MenuPage";
 import CategoryByProductPage from '../components/categories/categoryByProductPage';
 import ProductPage from "../components/products/ProductPage";
+
+import { productInputs, userInputs } from "./formSource";
 
 export const ThemeContext = React.createContext(null);
 
@@ -72,7 +74,7 @@ const App = () => {
             <Route element={<RequireAuth allowedRoles={[ROLES.admin]}/>}>
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/menu" element={<MenuPage />} />
-              <Route path='/dashboard/:id_cat' element={<CategoriesPage/>} />
+              <Route path='/new/category' element={<NewCatPage inputs={userInputs} title="Añadir Nueva Categoria"/>} />
               <Route path='/CategoryByProduct/:id_cat' element={<CategoryByProductPage/>} />
               <Route path='/Product/:id_cat' element={<ProductPage/>} />
               <Route path='/Product' element={<ProductPage/>} />

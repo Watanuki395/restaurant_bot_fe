@@ -60,7 +60,7 @@ const Datatable = (props) => {
         <DataTableWrapper>
           <DatatableTitle>
             {props.name}
-            <ProdLink to="/users/new">+ Producto</ProdLink>
+            <ProdLink to="/new/category">+ Categoria</ProdLink>
           </DatatableTitle>
           <DataGrid
             getRowId={(row) => row.id_cat}
